@@ -8,3 +8,6 @@ node_modules/
 
 # Configuración local del editor
 .claude/
+
+# Script utilitario para generar la imagen de compartir
+generate-og.ps1
