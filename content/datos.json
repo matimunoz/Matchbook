@@ -21,82 +21,100 @@
   ],
   "clubs": [
     {
-      "club": "Exploración Literaria",
-      "color": "#2F8CC4",
-      "titulo": "Sadako y las mil grullas de papel",
       "autor": "Eleanor Coerr",
-      "curaduria": "Cada mes votamos por un libro de temática distinta y exploramos nuevos mundos. Este mes: el Japón de posguerra, donde el origami se vuelve una pregunta urgente sobre la vida.",
+      "color": "#2F8CC4",
       "precio": 5000,
-      "portada": "portadas/sadako.jpg",
-      "mpLink": "https://mpago.la/2nVbBi5",
       "sesiones": [
         {
           "fecha": "Sábado 27 de junio, 11:30 hrs",
-          "moderador": { "nombre": "Paulette", "foto": "moderadores/paulette.jpg" },
-          "lugar": "Punto & Café, Arlegui 269, Viña del Mar",
+          "moderador": {
+            "nombre": "Paulette",
+            "foto": "moderadores/paulette.jpg"
+          },
+          "lugar": "Punto & Café, Viña del Mar",
           "cuposTotal": 10,
           "cuposTomados": 0
         },
         {
           "fecha": "Domingo 28 de junio, 14:00 hrs",
-          "moderador": { "nombre": "Matías", "foto": "moderadores/matias.jpg" },
-          "lugar": "La Florería",
+          "moderador": {
+            "nombre": "Matías",
+            "foto": "moderadores/matias.jpg"
+          },
+          "lugar": "La Florería, Viña del Mar",
           "cuposTotal": 10,
           "cuposTomados": 0
         }
-      ]
+      ],
+      "club": "Exploración Literaria",
+      "curaduria": "Cada mes votamos por un libro de temática distinta y exploramos nuevos mundos. Este mes: el Japón de posguerra, donde el origami se vuelve una pregunta urgente sobre la vida.",
+      "titulo": "Sadako y las mil grullas de papel",
+      "mpLink": "https://mpago.la/2nVbBi5",
+      "portada": "portadas/sadako.jpg"
     },
     {
-      "club": "Books Up",
-      "color": "#C9821F",
-      "titulo": "Mide lo que importa",
       "autor": "John Doerr",
-      "curaduria": "Lecturas de desarrollo personal y profesional con instancias de networking. Los OKRs de Doerr transformaron Google y la Fundación Gates.",
+      "color": "#C9821F",
       "precio": 10000,
-      "portada": "portadas/mide.jpg",
-      "mpLink": "https://mpago.la/2nVbBi5",
       "sesiones": [
         {
           "fecha": "Viernes 26 de junio",
-          "moderador": { "nombre": "Gonzalo", "foto": "moderadores/gonzalo.jpg" },
-          "lugar": "Punto & Café, Arlegui 269, Viña del Mar",
+          "moderador": {
+            "nombre": "Gonzalo",
+            "foto": "moderadores/gonzalo.jpg"
+          },
+          "lugar": "Punto & Café, Viña del Mar",
           "cuposTotal": 10,
           "cuposTomados": 0
         },
         {
           "fecha": "Martes 30 de junio",
-          "moderador": { "nombre": "Gonzalo", "foto": "moderadores/gonzalo.jpg" },
-          "lugar": "Between Coffee & Bar, Av. Vitacura 2727, Santiago",
+          "moderador": {
+            "nombre": "Gonzalo",
+            "foto": "moderadores/gonzalo.jpg"
+          },
+          "lugar": "Between Coffee, Santiago",
           "cuposTotal": 10,
           "cuposTomados": 0
         }
-      ]
+      ],
+      "club": "Books Up",
+      "curaduria": "Lecturas de desarrollo personal y profesional con instancias de networking. Los OKRs de Doerr transformaron Google y la Fundación Gates.",
+      "titulo": "Mide lo que importa",
+      "mpLink": "https://mpago.la/2nVbBi5",
+      "portada": "portadas/mide.jpg"
     },
     {
-      "club": "El Viaje del Héroe",
-      "color": "#5E7A52",
-      "titulo": "Martín Rivas",
       "autor": "Alberto Blest Gana",
-      "curaduria": "Literatura clásica analizada y disfrutada desde el esquema del viaje del héroe de Joseph Campbell. ¿Qué arquetipo encarna Martín Rivas?",
+      "color": "#5E7A52",
       "precio": 8000,
-      "portada": "portadas/martin-rivas.jpg",
-      "mpLink": "https://mpago.la/2nVbBi5",
       "sesiones": [
         {
           "fecha": "Sábado 27 de junio",
-          "moderador": { "nombre": "Gonzalo", "foto": "moderadores/gonzalo.jpg" },
-          "lugar": "Between Coffee & Bar, Av. Vitacura 2727, Santiago",
+          "moderador": {
+            "nombre": "Gonzalo",
+            "foto": "moderadores/gonzalo.jpg"
+          },
+          "lugar": "Between Coffee, Santiago",
           "cuposTotal": 10,
           "cuposTomados": 0
         },
         {
           "fecha": "Domingo 28 de junio",
-          "moderador": { "nombre": "Gonzalo", "foto": "moderadores/gonzalo.jpg" },
-          "lugar": "Between Coffee & Bar, Av. Vitacura 2727, Santiago",
+          "moderador": {
+            "nombre": "Gonzalo",
+            "foto": "moderadores/gonzalo.jpg"
+          },
+          "lugar": "Between Coffee, Santiago",
           "cuposTotal": 10,
           "cuposTomados": 0
         }
-      ]
+      ],
+      "club": "El Viaje del Héroe",
+      "curaduria": "Literatura clásica analizada y disfrutada desde el esquema del viaje del héroe de Joseph Campbell. ¿Qué arquetipo encarna Martín Rivas?",
+      "titulo": "Martín Rivas",
+      "mpLink": "https://mpago.la/2nVbBi5",
+      "portada": "portadas/martin-rivas.jpg"
     }
   ],
   "testimonios": [
