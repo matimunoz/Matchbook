@@ -187,6 +187,12 @@
   .sesion .s-lugar{font-family:var(--serif);font-size:.84rem;color:var(--tinta-suave);display:block;max-width:24ch}
   .s-cupos{text-align:right;flex-shrink:0}
   .s-cupos .cupos-label{font-size:.8rem;display:block}
+  .agotado-tag{
+    display:inline-block;font-family:var(--sans);font-weight:800;
+    font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;
+    color:#B0492E;background:rgba(176,73,46,.12);
+    padding:5px 14px;border-radius:999px;
+  }
   .matches.mini{padding-top:6px;gap:4px;justify-content:flex-end}
   .matches.mini .match{width:4px;height:16px}
   .matches.mini .match::before{width:6px;height:7px;top:-5px}
@@ -496,7 +502,7 @@
     <div class="sec-head">
       <span class="sec-eyebrow"><svg><use href="#hoja"/></svg> cosecha de este mes</span>
       <h2>Los libros del mes</h2>
-      <p>Cada fósforo encendido es una silla disponible en la mesa. Cuando se apagan todos, la mesa está completa.</p>
+      <p>Cada fósforo encendido es un lector por conocer: se van prendiendo a medida que se reservan las sillas. Cuando se agotan, la mesa está completa.</p>
     </div>
     <div class="clubs-grid" id="clubsGrid"></div>
   </div>
@@ -688,9 +694,10 @@
     document.getElementById("clubsGrid").innerHTML = CLUBS.map(c=>{
       const dispTotal=c.sesiones.reduce((a,s)=>a+(s.cuposTotal-s.cuposTomados),0), agotado=dispTotal<=0;
       const sesiones=c.sesiones.map(s=>{
-        const d=s.cuposTotal-s.cuposTomados, full=d<=0;
+        const tomados=Math.min(s.cuposTomados,s.cuposTotal);
+        const d=s.cuposTotal-tomados, full=d<=0;
         const matches=Array.from({length:s.cuposTotal},(_,i)=>
-          `<span class="match ${i<d?"lit":"burnt"}"></span>`).join("");
+          `<span class="match ${i<tomados?"lit":""}"></span>`).join("");
         return `
           <div class="sesion">
             <div>
@@ -698,8 +705,10 @@
               <span class="s-lugar">${esc(s.lugar)}</span>
             </div>
             <div class="cupos s-cupos ${full?"agotado":""}">
-              <span class="cupos-label">${full?"completa":d+" sillas"}</span>
-              <div class="matches mini" aria-hidden="true">${matches}</div>
+              ${full
+                ? `<span class="agotado-tag">Agotado</span>`
+                : `<span class="cupos-label">${d} ${d===1?"silla":"sillas"}</span>
+                   <div class="matches mini" aria-hidden="true">${matches}</div>`}
             </div>
           </div>`;
       }).join("");
