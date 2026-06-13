@@ -13,6 +13,7 @@
   "clubs": [
     {
       "club": "Exploración Literaria",
+      "color": "#2F8CC4",
       "titulo": "Sadako y las mil grullas de papel",
       "autor": "Eleanor Coerr",
       "curaduria": "Cada mes votamos por un libro de temática distinta y exploramos nuevos mundos. Este mes: el Japón de posguerra, donde el origami se vuelve una pregunta urgente sobre la vida.",
@@ -26,6 +27,7 @@
     },
     {
       "club": "Books Up",
+      "color": "#C9821F",
       "titulo": "Mide lo que importa",
       "autor": "John Doerr",
       "curaduria": "Lecturas de desarrollo personal y profesional con instancias de networking. Los OKRs de Doerr transformaron Google y la Fundación Gates.",
@@ -39,6 +41,7 @@
     },
     {
       "club": "El Viaje del Héroe",
+      "color": "#5E7A52",
       "titulo": "Martín Rivas",
       "autor": "Alberto Blest Gana",
       "curaduria": "Literatura clásica analizada y disfrutada desde el esquema del viaje del héroe de Joseph Campbell. ¿Qué arquetipo encarna Martín Rivas?",

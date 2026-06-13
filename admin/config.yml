@@ -47,6 +47,7 @@ collections:
             summary: "{{fields.club}} · {{fields.titulo}}"
             fields:
               - { label: "Nombre del club", name: "club", widget: "string", hint: "Ej: Exploración Literaria, Books Up, El Viaje del Héroe" }
+              - { label: "Color del club", name: "color", widget: "color", enableAlpha: false, hint: "Color que identifica al club en su tarjeta (cabecera, nombre y borde)." }
               - { label: "Título del libro", name: "titulo", widget: "string" }
               - { label: "Autor", name: "autor", widget: "string" }
               - { label: "Descripción / Curaduría", name: "curaduria", widget: "text" }
