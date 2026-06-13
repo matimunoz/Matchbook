@@ -1,0 +1,10 @@
+# Sistema
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Dependencias (por si en el futuro se usan)
+node_modules/
+
+# Configuración local del editor
+.claude/

@@ -1,0 +1,84 @@
+backend:
+  name: git-gateway
+  branch: main
+
+# Idioma del panel
+locale: es
+
+# Carpeta donde se guardan las imágenes que subas (portadas)
+media_folder: "portadas"
+public_folder: "/portadas"
+
+# Mensaje de los cambios guardados
+site_url: https://www.matchbook.cl
+display_url: https://www.matchbook.cl
+
+collections:
+  - name: "contenido"
+    label: "Contenido del sitio"
+    description: "Edita todo lo que se ve en la página principal."
+    files:
+      - name: "datos"
+        label: "Página principal"
+        file: "content/datos.json"
+        fields:
+          - label: "Portada (sección de bienvenida)"
+            name: "hero"
+            widget: "object"
+            fields:
+              - { label: "Texto pequeño superior", name: "eyebrow", widget: "string" }
+              - { label: "Título principal", name: "titulo", widget: "string", hint: "Primera parte del título, en color oscuro." }
+              - { label: "Título resaltado (en color)", name: "tituloResaltado", widget: "string", hint: "Segunda parte del título, en azul." }
+              - { label: "Párrafo de bienvenida", name: "lead", widget: "text" }
+
+          - label: "Estadísticas (los 3 números)"
+            name: "stats"
+            widget: "list"
+            label_singular: "Estadística"
+            summary: "{{fields.numero}} — {{fields.etiqueta}}"
+            fields:
+              - { label: "Número", name: "numero", widget: "string" }
+              - { label: "Etiqueta", name: "etiqueta", widget: "string" }
+
+          - label: "Clubes de lectura"
+            name: "clubs"
+            widget: "list"
+            label_singular: "Club"
+            summary: "{{fields.club}} · {{fields.titulo}}"
+            fields:
+              - { label: "Nombre del club", name: "club", widget: "string", hint: "Ej: Exploración Literaria, Books Up, El Viaje del Héroe" }
+              - { label: "Título del libro", name: "titulo", widget: "string" }
+              - { label: "Autor", name: "autor", widget: "string" }
+              - { label: "Descripción / Curaduría", name: "curaduria", widget: "text" }
+              - { label: "Precio en pesos (CLP)", name: "precio", widget: "number", value_type: "int", min: 0 }
+              - { label: "Portada del libro", name: "portada", widget: "image", hint: "Sube una imagen vertical (proporción 2:3)." }
+              - { label: "Link de pago (Mercado Pago)", name: "mpLink", widget: "string" }
+              - label: "Fechas disponibles"
+                name: "sesiones"
+                widget: "list"
+                label_singular: "Fecha"
+                summary: "{{fields.fecha}} · {{fields.lugar}}"
+                fields:
+                  - { label: "Fecha y hora", name: "fecha", widget: "string", hint: "Ej: Sábado 27 de junio, 11:30 hrs" }
+                  - { label: "Lugar", name: "lugar", widget: "string" }
+                  - { label: "Cupos totales", name: "cuposTotal", widget: "number", value_type: "int", min: 1, default: 10 }
+                  - { label: "Cupos ya tomados", name: "cuposTomados", widget: "number", value_type: "int", min: 0, default: 0 }
+
+          - label: "Testimonios"
+            name: "testimonios"
+            widget: "list"
+            label_singular: "Testimonio"
+            summary: "{{fields.autor}}"
+            fields:
+              - { label: "Cita", name: "cita", widget: "text" }
+              - { label: "Nombre", name: "autor", widget: "string" }
+              - { label: "Detalle", name: "detalle", widget: "string", hint: "Ej: lectora desde 2022" }
+
+          - label: "Preguntas frecuentes"
+            name: "faq"
+            widget: "list"
+            label_singular: "Pregunta"
+            summary: "{{fields.pregunta}}"
+            fields:
+              - { label: "Pregunta", name: "pregunta", widget: "string" }
+              - { label: "Respuesta", name: "respuesta", widget: "text" }

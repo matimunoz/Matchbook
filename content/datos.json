@@ -1,0 +1,65 @@
+{
+  "hero": {
+    "eyebrow": "experiencias literarias desde 2021",
+    "titulo": "Enciende tu",
+    "tituloResaltado": "pasión literaria",
+    "lead": "Clubes de lectura con mediación profesional en Santiago, Valparaíso y Viña del Mar. Un libro al mes, una mesa compartida y una chispa que se pasa de mano en mano."
+  },
+  "stats": [
+    { "numero": "+70", "etiqueta": "libros conversados" },
+    { "numero": "+850", "etiqueta": "lectores en comunidad" },
+    { "numero": "10", "etiqueta": "sillas por mesa, para que todos hablen" }
+  ],
+  "clubs": [
+    {
+      "club": "Exploración Literaria",
+      "titulo": "Sadako y las mil grullas de papel",
+      "autor": "Eleanor Coerr",
+      "curaduria": "Cada mes votamos por un libro de temática distinta y exploramos nuevos mundos. Este mes: el Japón de posguerra, donde el origami se vuelve una pregunta urgente sobre la vida.",
+      "precio": 5000,
+      "portada": "portadas/sadako.jpg",
+      "mpLink": "https://mpago.la/2nVbBi5",
+      "sesiones": [
+        { "fecha": "Sábado 27 de junio, 11:30 hrs", "lugar": "Punto & Café, Arlegui 269, Viña del Mar", "cuposTotal": 10, "cuposTomados": 2 },
+        { "fecha": "Domingo 28 de junio, 14:00 hrs", "lugar": "La Florería", "cuposTotal": 10, "cuposTomados": 3 }
+      ]
+    },
+    {
+      "club": "Books Up",
+      "titulo": "Mide lo que importa",
+      "autor": "John Doerr",
+      "curaduria": "Lecturas de desarrollo personal y profesional con instancias de networking. Los OKRs de Doerr transformaron Google y la Fundación Gates.",
+      "precio": 10000,
+      "portada": "portadas/mide.jpg",
+      "mpLink": "https://mpago.la/2nVbBi5",
+      "sesiones": [
+        { "fecha": "Viernes 26 de junio", "lugar": "Punto & Café, Arlegui 269, Viña del Mar", "cuposTotal": 10, "cuposTomados": 6 },
+        { "fecha": "Martes 30 de junio", "lugar": "Between Coffee & Bar, Av. Vitacura 2727, Santiago", "cuposTotal": 10, "cuposTomados": 5 }
+      ]
+    },
+    {
+      "club": "El Viaje del Héroe",
+      "titulo": "Martín Rivas",
+      "autor": "Alberto Blest Gana",
+      "curaduria": "Literatura clásica analizada y disfrutada desde el esquema del viaje del héroe de Joseph Campbell. ¿Qué arquetipo encarna Martín Rivas?",
+      "precio": 8000,
+      "portada": "portadas/martin-rivas.jpg",
+      "mpLink": "https://mpago.la/2nVbBi5",
+      "sesiones": [
+        { "fecha": "Sábado 27 de junio", "lugar": "Between Coffee & Bar, Av. Vitacura 2727, Santiago", "cuposTotal": 10, "cuposTomados": 0 },
+        { "fecha": "Domingo 28 de junio", "lugar": "Between Coffee & Bar, Av. Vitacura 2727, Santiago", "cuposTotal": 10, "cuposTomados": 0 }
+      ]
+    }
+  ],
+  "testimonios": [
+    { "cita": "Llegué por un libro y me quedé por las personas. Volví a leer todos los meses.", "autor": "Camila R.", "detalle": "lectora desde 2022" },
+    { "cita": "Salgo de cada sesión viendo el libro —y un poco la vida— de otra forma.", "autor": "Felipe M.", "detalle": "círculo de Viña del Mar" },
+    { "cita": "Participo desde regiones, online, y la cercanía es la misma. Mi panorama favorito del mes.", "autor": "Josefa T.", "detalle": "círculo online" }
+  ],
+  "faq": [
+    { "pregunta": "¿Qué incluye mi lugar?", "respuesta": "La sesión de conversación del club (presencial u online), guía de lectura con hitos semanales, material complementario y la comunidad de lectores del mes. El libro va por tu cuenta, con descuentos en librerías amigas." },
+    { "pregunta": "¿Cómo se paga?", "respuesta": "Con Mercado Pago: tarjeta de crédito, débito o saldo. Al reservar serás dirigido al pago seguro; tu lugar queda confirmado al completarlo." },
+    { "pregunta": "¿Y si no alcanzo a terminar el libro?", "respuesta": "Ven igual. Preferimos un círculo completo con lecturas a medias que una silla vacía. Eso sí: habrá spoilers, quedas advertido." },
+    { "pregunta": "¿Puedo cambiar de fecha o pedir reembolso?", "respuesta": "Cambios a otro círculo del mismo mes hasta 7 días antes, sujeto a disponibilidad. Reembolso del 100% avisando con 10 días de anticipación." }
+  ]
+}

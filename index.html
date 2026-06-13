@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matchbook · Clubes de Lectura — Invernadero de historias</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;0,7..72,600;0,7..72,700;1,7..72,400;1,7..72,500&family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,700;6..12,800;6..12,900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --crema:#FBF2E2;
+    --crema-2:#F4E8D0;
+    --ambar:#F5A93B;
+    --ambar-suave:#FBD08A;
+    --celeste:#41ABE6;
+    --hoja:#5E7A52;
+    --hoja-clara:#8CA67D;
+    --noche:#13293F;
+    --noche-2:#1B3A57;
+    --tinta:#2C2A20;
+    --tinta-suave:#6E6450;
+    --serif:'Literata',Georgia,serif;
+    --sans:'Nunito Sans',sans-serif;
+    --maxw:1060px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:var(--sans);background:var(--crema);color:var(--tinta);
+    line-height:1.65;-webkit-font-smoothing:antialiased;position:relative;
+  }
+  /* grano sutil de papel */
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:1;opacity:.5;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='0.85' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.025 0'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  body>*{position:relative;z-index:2}
+  img,svg{max-width:100%;display:block}
+  a{color:inherit}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 22px}
+  .serif{font-family:var(--serif)}
+
+  /* ---------- NAV ---------- */
+  nav{position:sticky;top:0;z-index:50;background:rgba(251,242,226,.92);backdrop-filter:blur(8px);border-bottom:1px solid rgba(94,122,82,.25)}
+  .nav-inner{max-width:var(--maxw);margin:0 auto;padding:12px 22px;display:flex;align-items:center;justify-content:space-between;gap:14px}
+  .logo{display:flex;align-items:center;gap:10px;text-decoration:none;font-family:var(--serif);font-weight:600;font-size:1.25rem;color:#000}
+  .logo svg{height:34px;width:34px}
+  .nav-links{display:none;gap:26px;font-weight:800;font-size:.93rem}
+  .nav-links a{text-decoration:none;opacity:.8}
+  .nav-links a:hover{opacity:1;color:var(--hoja)}
+  .nav-cta{
+    font-family:var(--sans);font-weight:800;font-size:.9rem;
+    background:var(--ambar);color:var(--noche);border:none;cursor:pointer;
+    padding:10px 20px;border-radius:999px;transition:background .2s,box-shadow .2s;
+  }
+  .nav-cta:hover{background:var(--ambar-suave);box-shadow:0 0 0 4px rgba(245,169,59,.25)}
+  @media(min-width:780px){.nav-links{display:flex}}
+
+  /* ---------- HERO amanecer ---------- */
+  .hero{
+    position:relative;overflow:hidden;
+    background:linear-gradient(180deg, var(--celeste) 0%, #8CCBEF 34%, var(--ambar-suave) 72%, var(--crema) 100%);
+    padding:84px 0 30px;
+  }
+  .sol{
+    position:absolute;left:50%;top:54%;transform:translateX(-50%);
+    width:520px;height:520px;border-radius:50%;
+    background:radial-gradient(circle, #FFE9B8 0%, var(--ambar) 38%, rgba(245,169,59,.35) 62%, transparent 72%);
+    animation:amanecer 14s ease-in-out infinite alternate;
+  }
+  @keyframes amanecer{from{transform:translateX(-50%) translateY(0)}to{transform:translateX(-50%) translateY(-26px)}}
+  .hero-inner{position:relative;z-index:2;display:grid;gap:46px;align-items:center;max-width:var(--maxw);margin:0 auto;padding:0 22px}
+  @media(min-width:880px){.hero-inner{grid-template-columns:1.05fr .95fr}}
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:8px;
+    font-family:var(--serif);font-style:italic;font-size:.98rem;color:var(--noche);
+    background:rgba(251,242,226,.78);border-radius:999px;padding:6px 16px;margin-bottom:18px;
+  }
+  h1{
+    font-family:var(--serif);font-weight:600;
+    font-size:clamp(2.4rem,5.6vw,3.9rem);line-height:1.08;letter-spacing:-.015em;
+    color:var(--noche);margin-bottom:20px;text-wrap:balance;
+  }
+  h1 em{font-style:italic;color:#0E5FA8}
+  .hero p.lead{font-family:var(--serif);font-size:1.12rem;color:#2E4257;max-width:46ch;margin-bottom:30px}
+  .hero-actions{display:flex;gap:14px;flex-wrap:wrap}
+  .btn{
+    display:inline-block;font-family:var(--sans);font-weight:800;font-size:1rem;cursor:pointer;
+    text-decoration:none;text-align:center;border:none;padding:14px 30px;border-radius:999px;
+    transition:transform .15s,background .2s,box-shadow .25s;
+  }
+  .btn:active{transform:scale(.97)}
+  .btn-sol{background:var(--noche);color:var(--crema)}
+  .btn-sol:hover{background:var(--ambar);color:var(--noche);box-shadow:0 0 28px rgba(245,169,59,.55)}
+  .btn-aire{background:rgba(251,242,226,.7);color:var(--noche);border:2px solid rgba(19,41,63,.3)}
+  .btn-aire:hover{border-color:var(--noche)}
+  .hero-stats{display:flex;gap:30px;margin-top:38px;flex-wrap:wrap}
+  .stat .n{font-family:var(--serif);font-weight:700;font-size:1.8rem;color:var(--noche)}
+  .stat .l{font-family:var(--serif);font-style:italic;font-size:.9rem;color:#3D5268}
+
+  .hero-ilus{justify-self:center;max-width:520px;width:100%;position:relative}
+  .hero-ilus svg.escena{width:100%;height:auto;filter:drop-shadow(0 16px 32px rgba(19,41,63,.28))}
+  .vapor{animation:vapor 3.4s ease-in-out infinite}
+  .vapor.v2{animation-delay:1.2s}
+  .vapor.v3{animation-delay:2.1s}
+  @keyframes vapor{0%,100%{opacity:.15;transform:translateY(0)}50%{opacity:.75;transform:translateY(-7px)}}
+  .flama-h{transform-box:fill-box;transform-origin:50% 100%;animation:flamear 1.9s ease-in-out infinite}
+  @keyframes flamear{0%,100%{transform:scale(1) rotate(-2deg)}30%{transform:scale(1.07,1.15) rotate(2deg)}60%{transform:scale(.94,.97) rotate(-1deg)}}
+  .nod-izq{transform-box:fill-box;transform-origin:50% 100%;animation:nodA 6s ease-in-out infinite}
+  .nod-der{transform-box:fill-box;transform-origin:50% 100%;animation:nodB 7s ease-in-out infinite}
+  @keyframes nodA{0%,100%{transform:rotate(3.5deg)}50%{transform:rotate(2deg)}}
+  @keyframes nodB{0%,100%{transform:rotate(-3.5deg)}50%{transform:rotate(-1.8deg)}}
+
+  /* horizonte de vegetación al pie del hero */
+  .pradera{display:block;width:100%;margin-top:36px;color:var(--hoja)}
+
+  /* ---------- enredadera divisoria ---------- */
+  .vid{display:block;width:min(420px,72%);margin:0 auto;color:var(--hoja-clara)}
+
+  /* ---------- SECCIONES ---------- */
+  section{padding:78px 0}
+  .sec-head{margin-bottom:46px;max-width:62ch}
+  .sec-eyebrow{
+    display:inline-flex;align-items:center;gap:8px;font-family:var(--serif);font-style:italic;
+    font-size:.95rem;color:var(--hoja);margin-bottom:8px;
+  }
+  .sec-eyebrow svg{width:18px;height:18px}
+  h2{font-family:var(--serif);font-weight:600;font-size:clamp(1.75rem,4vw,2.4rem);line-height:1.12;margin-bottom:10px;letter-spacing:-.01em}
+  .sec-head p{font-family:var(--serif);color:var(--tinta-suave);font-size:1.05rem}
+
+  /* ---------- CLUBES: bancales del invernadero ---------- */
+  #clubes{background:var(--crema)}
+  .clubs-grid{display:grid;gap:28px}
+  @media(min-width:780px){.clubs-grid{grid-template-columns:repeat(3,1fr)}}
+  .club-card{
+    background:#FFFDF7;border:1px solid rgba(94,122,82,.28);
+    border-radius:26px 26px 22px 22px;overflow:hidden;
+    display:flex;flex-direction:column;
+    box-shadow:0 6px 20px rgba(94,122,82,.12);
+    transition:transform .2s, box-shadow .2s;
+  }
+  .club-card:hover{transform:translateY(-5px);box-shadow:0 18px 40px rgba(94,122,82,.2)}
+  .club-card:hover .portada{transform:rotate(0) translateY(-3px)}
+  .cover{
+    padding:26px 18px 0;display:flex;flex-direction:column;align-items:center;position:relative;
+    background:linear-gradient(180deg, rgba(140,203,239,.35), rgba(251,208,138,.3) 80%, transparent);
+  }
+  .cover .badge{
+    position:absolute;top:14px;left:14px;
+    font-family:var(--serif);font-style:italic;font-size:.84rem;
+    background:rgba(94,122,82,.9);color:var(--crema);
+    padding:3px 14px;border-radius:999px;
+  }
+  .portada{
+    width:126px;aspect-ratio:2/3;object-fit:cover;
+    border-radius:4px 10px 10px 4px;
+    box-shadow:-6px 12px 26px rgba(19,41,63,.28);
+    transform:rotate(-2.5deg);transition:transform .25s;
+    margin-bottom:-24px;position:relative;z-index:2;
+  }
+  .cover-title{
+    background:#FFFDF7;color:var(--noche);
+    font-family:var(--serif);font-weight:700;font-size:1.05rem;line-height:1.2;text-align:center;
+    border-radius:999px;padding:9px 20px;
+    box-shadow:0 6px 16px rgba(19,41,63,.14);
+    border:1px solid rgba(94,122,82,.2);
+    position:relative;z-index:3;top:38px;max-width:92%;
+  }
+  .club-body{padding:56px 22px 22px;display:flex;flex-direction:column;gap:13px;flex:1}
+  .club-body .autor{font-family:var(--serif);font-style:italic;color:var(--tinta-suave);text-align:center;margin-top:-4px}
+  .curaduria{
+    font-family:var(--serif);font-size:.93rem;color:var(--tinta-suave);line-height:1.55;
+    border-left:3px solid var(--ambar);padding-left:12px;
+  }
+  .club-nombre{font-family:var(--serif);font-weight:700;font-size:.78rem;letter-spacing:.12em;color:var(--hoja);text-align:center;text-transform:uppercase;margin-bottom:2px}
+  .sesion{display:flex;justify-content:space-between;align-items:center;gap:10px;border-top:1px dashed rgba(94,122,82,.35);padding:11px 0 6px}
+  .sesion .s-fecha{font-family:var(--serif);font-weight:700;font-size:.92rem;color:var(--noche);display:block}
+  .sesion .s-lugar{font-family:var(--serif);font-size:.84rem;color:var(--tinta-suave);display:block;max-width:24ch}
+  .s-cupos{text-align:right;flex-shrink:0}
+  .s-cupos .cupos-label{font-size:.8rem;display:block}
+  .matches.mini{padding-top:6px;gap:4px;justify-content:flex-end}
+  .matches.mini .match{width:4px;height:16px}
+  .matches.mini .match::before{width:6px;height:7px;top:-5px}
+  .matches.mini .match.lit::after{width:7px;height:9px;top:-10px}
+  .meta{display:flex;flex-direction:column;gap:6px;font-size:.93rem;border-top:1px dashed rgba(94,122,82,.35);padding-top:13px}
+  .meta div{display:flex;gap:10px;align-items:baseline}
+  .meta .k{font-family:var(--serif);font-variant-caps:all-small-caps;letter-spacing:.14em;color:var(--hoja);min-width:62px;font-size:.88rem}
+  .meta .v{font-family:var(--serif)}
+  .precio-row{display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:13px;border-top:1px dashed rgba(94,122,82,.35)}
+  .precio{font-family:var(--serif);font-weight:700;font-size:1.3rem;color:var(--noche)}
+  .precio small{font-weight:400;font-style:italic;font-size:.78rem;color:var(--tinta-suave);display:block}
+  .cupos-label{font-family:var(--serif);font-variant-caps:all-small-caps;letter-spacing:.13em;font-size:.9rem;color:var(--tinta-suave)}
+  .cupos.agotado .cupos-label{color:#B0492E;font-weight:600}
+  .matches{display:flex;gap:5px;align-items:flex-end;padding-top:16px}
+  .match{width:6px;height:25px;position:relative;border-radius:2px;background:#E0CDA4}
+  .match::before{content:"";position:absolute;top:-7px;left:50%;transform:translateX(-50%);width:8px;height:9px;border-radius:50% 50% 45% 45%;background:#A6402B}
+  .match.lit::after{content:"";position:absolute;top:-13px;left:50%;transform:translateX(-50%);width:10px;height:12px;border-radius:50% 50% 50% 50%/62% 62% 38% 38%;background:radial-gradient(circle at 50% 75%,#FFE9B0,var(--ambar) 70%);animation:flicker 2.2s infinite ease-in-out}
+  .match.burnt{background:#A8A18F;transform:rotate(4deg);opacity:.5}
+  .match.burnt::before{background:#4A4138}
+  @keyframes flicker{0%,100%{transform:translateX(-50%) scale(1) rotate(-1.5deg)}50%{transform:translateX(-49%) scale(.96,1.08) rotate(1deg)}}
+  .btn-card{width:100%;background:var(--hoja);color:var(--crema)}
+  .btn-card:hover{background:var(--ambar);color:var(--noche);box-shadow:0 0 22px rgba(245,169,59,.5)}
+  .btn-card[disabled]{background:#DDD6C4;color:#9A917C;cursor:not-allowed;box-shadow:none}
+
+  /* ---------- MANIFIESTO ---------- */
+  #manifiesto{background:var(--crema-2);position:relative;overflow:hidden}
+  #manifiesto .hoja-bg{position:absolute;width:200px;color:rgba(94,122,82,.14)}
+  #manifiesto .hb1{top:-30px;left:-40px;transform:rotate(-25deg)}
+  #manifiesto .hb2{bottom:-46px;right:-36px;transform:rotate(140deg)}
+  .manif{
+    position:relative;z-index:2;
+    font-family:var(--serif);font-weight:400;
+    font-size:clamp(1.3rem,2.8vw,1.85rem);line-height:1.55;
+    max-width:32ch;margin:0 auto;text-align:center;color:var(--tinta);
+  }
+  .manif::first-letter{font-size:2.1em;font-weight:600;color:var(--hoja);float:left;line-height:.85;padding-right:10px;padding-top:5px}
+  .manif em{font-style:italic;color:#0E5FA8}
+  .manif strong{color:var(--hoja);font-weight:600}
+  .manif-firma{position:relative;z-index:2;text-align:center;margin-top:28px;font-family:var(--serif);font-style:italic;color:var(--tinta-suave)}
+
+  /* ---------- RITUAL: estaciones del día ---------- */
+  .pasos{display:grid;gap:24px}
+  @media(min-width:780px){.pasos{grid-template-columns:repeat(4,1fr)}}
+  .paso{
+    background:#FFFDF7;border:1px solid rgba(94,122,82,.25);
+    border-radius:22px;padding:26px 22px;position:relative;overflow:hidden;
+  }
+  .paso::before{content:"";position:absolute;top:0;left:0;right:0;height:5px}
+  .paso:nth-child(1)::before{background:linear-gradient(90deg,#8CCBEF,var(--celeste))}
+  .paso:nth-child(2)::before{background:linear-gradient(90deg,var(--ambar-suave),var(--ambar))}
+  .paso:nth-child(3)::before{background:linear-gradient(90deg,var(--hoja-clara),var(--hoja))}
+  .paso:nth-child(4)::before{background:linear-gradient(90deg,#3D5A78,var(--noche))}
+  .paso .momento{font-family:var(--serif);font-style:italic;font-size:.9rem;color:var(--tinta-suave);margin-bottom:10px}
+  .paso h3{font-family:var(--serif);font-weight:700;font-size:1.1rem;margin-bottom:8px;color:var(--noche)}
+  .paso p{font-family:var(--serif);font-size:.93rem;color:var(--tinta-suave);line-height:1.55}
+
+  /* ---------- TESTIMONIOS: la fogata nocturna ---------- */
+  #comunidad{
+    background:
+      radial-gradient(ellipse 60% 46% at 50% 108%, rgba(245,169,59,.4), transparent 70%),
+      linear-gradient(180deg, var(--noche) 0%, var(--noche-2) 100%);
+    color:var(--crema);position:relative;overflow:hidden;
+  }
+  #comunidad .estrella{position:absolute;width:3px;height:3px;border-radius:50%;background:#FFF;opacity:.7;animation:titilar 3.4s infinite ease-in-out}
+  @keyframes titilar{0%,100%{opacity:.25}50%{opacity:.85}}
+  #comunidad h2{color:var(--crema)}
+  #comunidad .sec-eyebrow{color:var(--ambar-suave)}
+  #comunidad .sec-head p{color:#A8C2DC}
+  .testi-grid{display:grid;gap:22px;position:relative;z-index:2}
+  @media(min-width:780px){.testi-grid{grid-template-columns:repeat(3,1fr)}}
+  .testi{
+    background:rgba(251,242,226,.07);border:1px solid rgba(245,169,59,.3);
+    border-radius:22px;padding:28px 26px;display:flex;flex-direction:column;gap:16px;
+    backdrop-filter:blur(2px);
+  }
+  .testi blockquote{font-family:var(--serif);font-style:italic;font-size:1.05rem;line-height:1.6;color:#F3E8D4}
+  .testi blockquote::before{content:"“";color:var(--ambar);font-size:1.9rem;font-style:normal;line-height:0;margin-right:3px}
+  .testi .who{font-size:.85rem;color:#A8C2DC;font-weight:700}
+  .testi .who span{color:var(--ambar-suave)}
+
+  /* ---------- FAQ ---------- */
+  #faq{background:var(--crema)}
+  details{
+    background:#FFFDF7;border:1px solid rgba(94,122,82,.25);border-radius:18px;
+    margin-bottom:12px;overflow:hidden;
+  }
+  summary{cursor:pointer;list-style:none;padding:18px 22px;font-weight:800;display:flex;justify-content:space-between;align-items:center;gap:12px}
+  summary::-webkit-details-marker{display:none}
+  summary::after{content:"❧";color:var(--hoja);font-size:1.1rem;transition:transform .25s}
+  details[open] summary::after{transform:rotate(90deg);color:var(--ambar)}
+  details .answer{font-family:var(--serif);padding:0 22px 20px;color:var(--tinta-suave);font-size:.97rem;line-height:1.65;max-width:62ch}
+
+  /* ---------- CIERRE ---------- */
+  #cierre{
+    background:linear-gradient(180deg, var(--crema) 0%, var(--ambar-suave) 130%);
+    text-align:center;
+  }
+  #cierre h2{margin-bottom:8px}
+  #cierre p{font-family:var(--serif);font-style:italic;color:var(--tinta-suave);margin-bottom:30px}
+
+  /* ---------- FOOTER ---------- */
+  footer{background:var(--crema-2);border-top:1px solid rgba(94,122,82,.25);padding:46px 0 30px;font-size:.92rem;color:var(--tinta-suave)}
+  .foot{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;align-items:center}
+  footer .logo{font-size:1.15rem}
+  footer a{font-weight:800;text-decoration:none}
+  footer a:hover{color:var(--hoja)}
+  footer .eco{font-family:var(--serif);font-style:italic;font-size:.84rem;width:100%;text-align:center;margin-top:22px;color:#8C8164}
+
+  /* ---------- WHATSAPP ---------- */
+  .wsp{position:fixed;bottom:22px;right:22px;z-index:60;width:56px;height:56px;border-radius:50%;background:#25D366;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(19,41,63,.3);text-decoration:none}
+  .wsp svg{width:30px;height:30px;fill:#fff}
+
+  /* ---------- MODAL ---------- */
+  .modal-overlay{position:fixed;inset:0;background:rgba(19,41,63,.72);backdrop-filter:blur(3px);display:none;align-items:flex-end;justify-content:center;z-index:100}
+  @media(min-width:600px){.modal-overlay{align-items:center;padding:24px}}
+  .modal-overlay.open{display:flex}
+  .modal{background:var(--crema);width:100%;max-width:480px;border-radius:24px 24px 0 0;padding:32px 28px;max-height:92vh;overflow-y:auto;border:1px solid rgba(94,122,82,.3)}
+  @media(min-width:600px){.modal{border-radius:24px}}
+  .modal h3{font-family:var(--serif);font-weight:700;font-size:1.55rem;margin-bottom:4px}
+  .modal .sub{font-family:var(--serif);font-style:italic;color:var(--tinta-suave);font-size:.95rem;margin-bottom:22px}
+  .modal-close{float:right;background:none;border:none;font-size:1.5rem;cursor:pointer;color:var(--tinta-suave)}
+  .field{margin-bottom:16px}
+  .field label{display:block;font-weight:800;font-size:.88rem;margin-bottom:6px}
+  .field input,.field select{
+    width:100%;padding:12px 14px;border:1.5px solid rgba(94,122,82,.4);border-radius:14px;
+    background:#FFFDF7;font-family:var(--sans);font-size:1rem;
+  }
+  .field input:focus,.field select:focus{outline:3px solid rgba(245,169,59,.5);border-color:var(--ambar)}
+  .field .err{color:#B0492E;font-size:.8rem;margin-top:4px;display:none;font-weight:700}
+  .field.invalid input,.field.invalid select{border-color:#B0492E}
+  .field.invalid .err{display:block}
+  .pago-nota{font-family:var(--serif);background:rgba(140,203,239,.2);border-radius:14px;padding:14px;font-size:.9rem;color:var(--tinta-suave);margin-bottom:18px}
+  .modal .btn{width:100%}
+  .confirm{text-align:center;padding:10px 0}
+  .confirm svg{margin:0 auto 14px;width:62px;height:62px}
+  .confirm h3{margin-bottom:10px}
+  .confirm p{font-family:var(--serif);color:var(--tinta-suave);font-size:.96rem;margin-bottom:6px}
+  .confirm .codigo{font-family:var(--serif);font-weight:700;font-size:1.25rem;background:#FFFDF7;border:1px solid rgba(94,122,82,.3);border-radius:12px;padding:10px 20px;display:inline-block;margin:12px 0;color:var(--noche);letter-spacing:.06em}
+  .spinner{width:20px;height:20px;border:3px solid rgba(251,242,226,.4);border-top-color:var(--crema);border-radius:50%;animation:spin .7s linear infinite;display:inline-block;vertical-align:middle}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  :focus-visible{outline:3px solid var(--ambar);outline-offset:2px}
+  @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <symbol id="mb-icon" viewBox="0 0 250.2 250.2">
+      <circle cx="125.1" cy="125.1" r="125.1" fill="#FFFFFF"/>
+      <path fill="#41ABE6" d="M125.1,0C56,0,0,56,0,125.1s56,125.1,125.1,125.1s125.1-56,125.1-125.1C250.2,56,194.2,0,125.1,0z M116.1,195.3c-5.1-5-23.8-19.9-76.1-27.7V79.9c52.3,7.8,71,22.8,76.1,27.7V195.3z M210.2,167.6c-52.3,7.8-70.9,22.8-76.1,27.7v-87.7c5.1-4.9,23.8-19.9,76.1-27.7V167.6z"/>
+    </symbol>
+    <symbol id="hoja" viewBox="0 0 100 100">
+      <path fill="currentColor" d="M50 8C28 22 14 44 16 70c1 12 8 20 18 22 16 3 32-8 42-26C86 48 88 26 82 10 70 14 58 12 50 8zM50 14c6 3 14 5 24 3-8 22-18 38-36 60C30 56 36 32 50 14z"/>
+    </symbol>
+    <symbol id="ramita" viewBox="0 0 420 60">
+      <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <path d="M10 38 Q110 18 210 32 T410 30"/>
+      </g>
+      <g fill="currentColor">
+        <ellipse cx="78" cy="24" rx="11" ry="5" transform="rotate(-28 78 24)"/>
+        <ellipse cx="148" cy="34" rx="11" ry="5" transform="rotate(22 148 34)"/>
+        <ellipse cx="232" cy="26" rx="11" ry="5" transform="rotate(-24 232 26)"/>
+        <ellipse cx="312" cy="34" rx="11" ry="5" transform="rotate(20 312 34)"/>
+        <circle cx="210" cy="31" r="4" fill="#F5A93B"/>
+      </g>
+    </symbol>
+  </defs>
+</svg>
+
+<nav>
+  <div class="nav-inner">
+    <a class="logo" href="#"><svg><use href="#mb-icon"/></svg>Matchbook</a>
+    <div class="nav-links">
+      <a href="#clubes">Los libros</a>
+      <a href="#ritual">El ritual</a>
+      <a href="#comunidad">La fogata</a>
+      <a href="#faq">Preguntas</a>
+    </div>
+    <button class="nav-cta" onclick="openModal()">Reservar silla</button>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div>
+      <span class="eyebrow" id="heroEyebrow">experiencias literarias desde 2021</span>
+      <h1 id="heroTitulo">Enciende tu <em>pasión literaria</em>.</h1>
+      <p class="lead" id="heroLead">Clubes de lectura con mediación profesional en Santiago, Valparaíso y Viña del Mar. Un libro al mes, una mesa compartida y una chispa que se pasa de mano en mano.</p>
+      <div class="hero-actions">
+        <a class="btn btn-sol" href="#clubes">Ver los libros del mes</a>
+        <button class="btn btn-aire" onclick="openModal()">Reservar mi silla</button>
+      </div>
+      <div class="hero-stats" id="heroStats"></div>
+    </div>
+    <div class="hero-ilus">
+      <svg class="escena" viewBox="0 0 560 480" role="img" aria-label="Ilustración original: dos libros con brazos conversan tomando café en una mesa con libros">
+        <defs>
+          <g id="mano">
+            <circle r="11" fill="#E8B48C"/>
+            <ellipse cx="-7" cy="-7" rx="5.5" ry="7" fill="#E8B48C" transform="rotate(-35)"/>
+          </g>
+        </defs>
+
+        <!-- sombra de piso -->
+        <ellipse cx="278" cy="442" rx="226" ry="24" fill="rgba(19,41,63,.13)"/>
+
+        <!-- ================= MESA (antes que los personajes, para que los brazos se apoyen encima) ================= -->
+        <rect x="270" y="356" width="16" height="68" rx="6" fill="#8A6444"/>
+        <ellipse cx="278" cy="430" rx="52" ry="11" fill="#8A6444"/>
+        <ellipse cx="278" cy="356" rx="98" ry="21" fill="#A87752"/>
+        <ellipse cx="278" cy="351" rx="98" ry="21" fill="#C29066"/>
+
+        <!-- libros sobre la mesa -->
+        <g transform="rotate(-2 268 338)">
+          <rect x="228" y="332" width="82" height="13" rx="3.5" fill="#0E5FA8"/>
+          <rect x="232" y="334" width="74" height="4" fill="#F3E6C8"/>
+        </g>
+        <g transform="rotate(2 266 326)">
+          <rect x="236" y="320" width="66" height="12" rx="3.5" fill="#C26A45"/>
+          <rect x="240" y="322" width="58" height="4" fill="#F3E6C8"/>
+        </g>
+        <g transform="translate(269 318) rotate(-3)">
+          <path d="M0 0 L-26 -8 L-26 4 L0 12 Z" fill="#FFFDF7" stroke="#B9AE93" stroke-width="1.6" stroke-linejoin="round"/>
+          <path d="M0 0 L26 -8 L26 4 L0 12 Z" fill="#F3E6C8" stroke="#B9AE93" stroke-width="1.6" stroke-linejoin="round"/>
+        </g>
+
+        <!-- ================= LIBRO VERDE (izquierda) ================= -->
+        <g class="nod-izq">
+          <rect x="176" y="128" width="20" height="220" rx="5" fill="#F3E6C8"/>
+          <g stroke="#D9C69C" stroke-width="1.5">
+            <line x1="181" y1="135" x2="181" y2="348"/><line x1="186" y1="133" x2="186" y2="350"/><line x1="191" y1="135" x2="191" y2="348"/>
+          </g>
+          <rect x="58" y="118" width="122" height="240" rx="11" fill="#5E7A52"/>
+          <rect x="58" y="118" width="20" height="240" rx="9" fill="#46603C"/>
+          <g fill="#F3E6C8" opacity=".55"><rect x="62" y="146" width="12" height="5" rx="2.5"/><rect x="62" y="322" width="12" height="5" rx="2.5"/></g>
+          <rect x="92" y="146" width="72" height="178" rx="7" fill="none" stroke="#F3E6C8" stroke-width="2" opacity=".4"/>
+
+          <!-- brazo que brinda con la taza -->
+          <path d="M150 236 Q196 246 224 226" fill="none" stroke="#1B3A57" stroke-width="23" stroke-linecap="round"/>
+          <path d="M218 230 Q222 227 227 224" fill="none" stroke="#FBF2E2" stroke-width="23" stroke-linecap="round"/>
+          <circle cx="236" cy="220" r="10.5" fill="#E8B48C"/>
+          <g>
+            <path class="vapor v2" d="M246 188 q4 -8 -1 -15" stroke="#FBF2E2" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+            <path class="vapor v3" d="M236 190 q5 -9 -1 -17" stroke="#FBF2E2" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+            <path d="M226 198 h32 v13 a16 13 0 0 1 -32 0 Z" fill="#C26A45"/>
+            <ellipse cx="242" cy="198" rx="16" ry="5" fill="#8F4A2E"/>
+            <path d="M226 202 q-12 3 0 11" fill="none" stroke="#C26A45" stroke-width="4"/>
+            <g fill="#E8B48C"><rect x="245" y="204" width="13" height="6" rx="3"/><rect x="246" y="212" width="12" height="6" rx="3"/><rect x="247" y="220" width="10" height="6" rx="3"/></g>
+          </g>
+        </g>
+
+        <!-- ================= LIBRO CELESTE (derecha) ================= -->
+        <g class="nod-der">
+          <rect x="364" y="140" width="20" height="210" rx="5" fill="#F3E6C8"/>
+          <g stroke="#D9C69C" stroke-width="1.5">
+            <line x1="369" y1="147" x2="369" y2="348"/><line x1="374" y1="145" x2="374" y2="350"/><line x1="379" y1="147" x2="379" y2="348"/>
+          </g>
+          <rect x="380" y="130" width="122" height="230" rx="11" fill="#41ABE6"/>
+          <rect x="482" y="130" width="20" height="230" rx="9" fill="#2F8CC4"/>
+          <g fill="#F3E6C8" opacity=".6"><rect x="488" y="158" width="12" height="5" rx="2.5"/><rect x="488" y="326" width="12" height="5" rx="2.5"/></g>
+          <rect x="398" y="158" width="72" height="164" rx="7" fill="none" stroke="#FBF2E2" stroke-width="2" opacity=".45"/>
+
+          <!-- brazo que sostiene la taza en alto -->
+          <path d="M408 240 Q362 252 338 232" fill="none" stroke="#1B3A57" stroke-width="23" stroke-linecap="round"/>
+          <path d="M344 236 Q340 233 335 229" fill="none" stroke="#FBF2E2" stroke-width="23" stroke-linecap="round"/>
+          <circle cx="322" cy="222" r="10.5" fill="#E8B48C"/>
+          <g>
+            <path class="vapor" d="M310 192 q4 -8 -1 -15" stroke="#FBF2E2" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+            <path class="vapor v2" d="M320 194 q5 -9 -1 -17" stroke="#FBF2E2" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+            <path d="M300 202 h32 v13 a16 13 0 0 1 -32 0 Z" fill="#C26A45"/>
+            <ellipse cx="316" cy="202" rx="16" ry="5" fill="#8F4A2E"/>
+            <path d="M332 206 q12 3 0 11" fill="none" stroke="#C26A45" stroke-width="4"/>
+            <g fill="#E8B48C"><rect x="300" y="208" width="13" height="6" rx="3"/><rect x="300" y="216" width="12" height="6" rx="3"/><rect x="301" y="224" width="10" height="6" rx="3"/></g>
+          </g>
+        </g>
+
+        <!-- pila de libros en el piso -->
+        <g>
+          <rect x="446" y="420" width="88" height="15" rx="4" fill="#C26A45"/>
+          <rect x="450" y="423" width="80" height="5" fill="#F3E6C8"/>
+          <rect x="454" y="406" width="74" height="14" rx="4" fill="#5E7A52"/>
+          <rect x="458" y="409" width="66" height="4" fill="#F3E6C8"/>
+          <rect x="460" y="392" width="62" height="14" rx="4" fill="#0E5FA8"/>
+          <rect x="464" y="395" width="54" height="4" fill="#F3E6C8"/>
+        </g>
+
+        <!-- plantita en macetero -->
+        <g>
+          <path d="M40 420 q-5 -28 14 -42 q-1 26 -7 44 Z" fill="#8CA67D"/>
+          <path d="M48 422 q11 -22 30 -24 q-11 19 -24 26 Z" fill="#8CA67D"/>
+          <path d="M36 424 q-14 -14 -30 -12 q10 14 24 16 Z" fill="#5E7A52"/>
+          <path d="M30 436 h32 l-4 -14 h-24 Z" fill="#C26A45"/>
+        </g>
+      </svg>
+    </div>
+  </div>
+  <svg class="pradera" viewBox="0 0 1440 90" preserveAspectRatio="none" aria-hidden="true">
+    <path fill="currentColor" opacity=".35" d="M0 70 Q180 30 360 56 T720 50 T1080 58 T1440 44 V90 H0 Z"/>
+    <path fill="currentColor" opacity=".7" d="M0 82 Q200 52 420 70 T840 66 T1260 72 T1440 62 V90 H0 Z"/>
+  </svg>
+</header>
+
+<section id="clubes">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-eyebrow"><svg><use href="#hoja"/></svg> cosecha de este mes</span>
+      <h2>Los libros del mes</h2>
+      <p>Cada fósforo encendido es una silla disponible en la mesa. Cuando se apagan todos, la mesa está completa.</p>
+    </div>
+    <div class="clubs-grid" id="clubsGrid"></div>
+  </div>
+</section>
+
+<svg class="vid" viewBox="0 0 420 60" aria-hidden="true"><use href="#ramita"/></svg>
+
+<section id="manifiesto">
+  <svg class="hoja-bg hb1" aria-hidden="true"><use href="#hoja"/></svg>
+  <svg class="hoja-bg hb2" aria-hidden="true"><use href="#hoja"/></svg>
+  <div class="wrap">
+    <p class="manif">Creemos que un libro no termina en su última página: termina cuando alguien lo conversa. Leer juntos es nuestra forma de <strong>cultivar futuro</strong> — despacio, en círculo y <em>con la silla de al lado ocupada</em>.</p>
+    <p class="manif-firma">— Matchbook, experiencias literarias desde 2021</p>
+  </div>
+</section>
+
+<section id="ritual">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-eyebrow"><svg><use href="#hoja"/></svg> de la semilla a la sobremesa</span>
+      <h2>El ritual del mes</h2>
+      <p>Un ciclo completo, como el del día.</p>
+    </div>
+    <div class="pasos">
+      <div class="paso"><div class="momento">amanece ·</div><h3>Eliges el libro</h3><p>Mira la cosecha del mes y quédate con el que te llame. Confía en tu instinto lector.</p></div>
+      <div class="paso"><div class="momento">mediodía ·</div><h3>Reservas tu lugar</h3><p>Mesas pequeñas a propósito: en un círculo de doce, todas las voces alcanzan a brotar.</p></div>
+      <div class="paso"><div class="momento">atardece ·</div><h3>Lees a tu ritmo</h3><p>Tienes el mes entero. Te acompañamos con hitos de lectura y apuntes para mirar el libro de cerca.</p></div>
+      <div class="paso"><div class="momento">anochece ·</div><h3>Enciendes la fogata</h3><p>Café de por medio, mediación profesional y la mejor parte: lo que cada persona trae consigo.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="comunidad">
+  <span class="estrella" style="top:14%;left:12%"></span>
+  <span class="estrella" style="top:22%;left:78%;animation-delay:.8s"></span>
+  <span class="estrella" style="top:10%;left:46%;animation-delay:1.6s"></span>
+  <span class="estrella" style="top:30%;left:30%;animation-delay:2.2s"></span>
+  <span class="estrella" style="top:18%;left:62%;animation-delay:.4s"></span>
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-eyebrow">🔥 voces alrededor de la fogata</span>
+      <h2>Lo que queda después de la última página</h2>
+    </div>
+    <div class="testi-grid" id="testiGrid"></div>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-eyebrow"><svg><use href="#hoja"/></svg> antes de acercar la silla</span>
+      <h2>Preguntas frecuentes</h2>
+    </div>
+    <div id="faqList"></div>
+  </div>
+</section>
+
+<section id="cierre">
+  <div class="wrap">
+    <h2>Hay una silla esperándote al sol.</h2>
+    <p>Los fósforos del mes se apagan rápido.</p>
+    <button class="btn btn-sol" onclick="openModal()">Reservar mi silla</button>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot">
+    <a class="logo" href="#"><svg><use href="#mb-icon"/></svg>Matchbook</a>
+    <span>Experiencias literarias desde 2021 · Chile</span>
+    <span><a href="https://www.instagram.com/matchbook.cl/" target="_blank" rel="noopener">@matchbook.cl</a> · pagos con Mercado Pago</span>
+    <span class="eco">❧ apoyamos librerías locales y cafés de barrio — leer también es una forma de cuidar el ecosistema cultural</span>
+  </div>
+</footer>
+
+<a class="wsp" href="https://wa.me/56900000000?text=Hola%20Matchbook,%20quiero%20saber%20m%C3%A1s%20de%20los%20clubes%20de%20lectura" target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp">
+  <svg viewBox="0 0 24 24"><path d="M12 .5C5.7.5.7 5.5.7 11.8c0 2 .5 3.9 1.5 5.6L.6 23.4l6.2-1.6c1.6.9 3.4 1.4 5.2 1.4 6.3 0 11.3-5 11.3-11.3S18.3.5 12 .5zm0 20.6c-1.7 0-3.3-.5-4.7-1.3l-.3-.2-3.7 1 1-3.6-.2-.4c-.9-1.5-1.4-3.2-1.4-4.9C2.7 6.6 6.9 2.4 12 2.4s9.3 4.2 9.3 9.3-4.2 9.4-9.3 9.4zm5.1-7c-.3-.1-1.7-.8-1.9-.9-.3-.1-.5-.1-.7.1-.2.3-.8.9-.9 1.1-.2.2-.3.2-.6.1-.3-.1-1.2-.4-2.3-1.4-.8-.7-1.4-1.6-1.5-1.9-.2-.3 0-.4.1-.6l.4-.5c.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5l-.9-2.1c-.2-.5-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1 2.9 1.2 3.1c.1.2 2.1 3.2 5.1 4.5.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.7-.7 2-1.4.2-.7.2-1.3.2-1.4-.1-.1-.3-.2-.6-.3z"/></svg>
+</a>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="overlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()" aria-label="Cerrar">×</button>
+    <div id="formView">
+      <h3 id="modalTitle">Reserva tu silla</h3>
+      <p class="sub">Completa tus datos y luego paga seguro con Mercado Pago.</p>
+      <div class="field" id="f-club">
+        <label for="selClub">Club y fecha</label>
+        <select id="selClub"></select>
+        <div class="err">Selecciona una fecha con sillas disponibles.</div>
+      </div>
+      <div class="field" id="f-nombre">
+        <label for="inNombre">Nombre completo</label>
+        <input id="inNombre" type="text" autocomplete="name" placeholder="Tu nombre">
+        <div class="err">Ingresa tu nombre.</div>
+      </div>
+      <div class="field" id="f-email">
+        <label for="inEmail">Correo electrónico</label>
+        <input id="inEmail" type="email" autocomplete="email" placeholder="tu@correo.cl">
+        <div class="err">Ingresa un correo válido.</div>
+      </div>
+      <div class="field" id="f-fono">
+        <label for="inFono">Teléfono (WhatsApp)</label>
+        <input id="inFono" type="tel" autocomplete="tel" placeholder="+56 9 ...">
+        <div class="err">Ingresa un teléfono de contacto.</div>
+      </div>
+      <div class="pago-nota">💳 Al continuar serás dirigido al checkout seguro de Mercado Pago (crédito, débito o saldo). Tu silla queda confirmada al completar el pago.</div>
+      <button class="btn btn-sol" id="btnSubmit" onclick="submitReserva()">Continuar al pago →</button>
+    </div>
+    <div id="confirmView" class="confirm" style="display:none">
+      <svg><use href="#mb-icon"/></svg>
+      <h3>¡Tu silla está apartada!</h3>
+      <p id="confirmDetail"></p>
+      <div class="codigo" id="confirmCode"></div>
+      <p>Guarda tu código y completa el pago para encender tu fósforo:</p>
+      <a class="btn btn-sol" id="btnPagar" href="#" target="_blank" rel="noopener" style="display:inline-block;margin-top:12px;text-decoration:none">Pagar con Mercado Pago</a>
+      <p style="font-size:.84rem;margin-top:12px;font-style:italic">Si el pago no se completa en 24 horas, la silla vuelve a abrirse para otra persona.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  // El contenido se carga desde content/datos.json (editable en /admin)
+  let CLUBS = [];
+  let CONTENT = {};
+
+  const esc = s => String(s==null?"":s)
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+
+  async function loadData(){
+    try {
+      const r = await fetch("content/datos.json", {cache:"no-store"});
+      CONTENT = await r.json();
+    } catch(e){
+      console.error("No se pudo cargar el contenido:", e);
+      return;
+    }
+    // Asigna ids automáticos a clubes y sesiones (el admin no los maneja)
+    CLUBS = (CONTENT.clubs||[]).map((c,ci)=>({
+      ...c, id:"c"+ci,
+      sesiones:(c.sesiones||[]).map((s,si)=>({...s, id:ci+"-"+si}))
+    }));
+    applyTextos();
+    renderStats();
+    renderClubs();
+    renderTestimonios();
+    renderFaq();
+  }
+
+  function applyTextos(){
+    const h = CONTENT.hero||{};
+    if(h.eyebrow!=null) document.getElementById("heroEyebrow").textContent = h.eyebrow;
+    if(h.titulo!=null) document.getElementById("heroTitulo").innerHTML =
+      esc(h.titulo)+" <em>"+esc(h.tituloResaltado||"")+"</em>.";
+    if(h.lead!=null) document.getElementById("heroLead").textContent = h.lead;
+  }
+
+  function renderStats(){
+    document.getElementById("heroStats").innerHTML = (CONTENT.stats||[]).map(s=>
+      `<div class="stat"><div class="n">${esc(s.numero)}</div><div class="l">${esc(s.etiqueta)}</div></div>`
+    ).join("");
+  }
+
+  function renderTestimonios(){
+    document.getElementById("testiGrid").innerHTML = (CONTENT.testimonios||[]).map(t=>
+      `<div class="testi">
+        <blockquote>${esc(t.cita)}</blockquote>
+        <div class="who">${esc(t.autor)} <span>· ${esc(t.detalle)}</span></div>
+      </div>`
+    ).join("");
+  }
+
+  function renderFaq(){
+    document.getElementById("faqList").innerHTML = (CONTENT.faq||[]).map(f=>
+      `<details>
+        <summary>${esc(f.pregunta)}</summary>
+        <div class="answer">${esc(f.respuesta)}</div>
+      </details>`
+    ).join("");
+  }
+
+  const findSesion = sid => {
+    for(const c of CLUBS){const s=c.sesiones.find(x=>x.id===sid);if(s)return{c,s}}
+    return null;
+  };
+
+  const clp = n => "$" + Number(n).toLocaleString("es-CL");
+
+  function renderClubs(){
+    document.getElementById("clubsGrid").innerHTML = CLUBS.map(c=>{
+      const dispTotal=c.sesiones.reduce((a,s)=>a+(s.cuposTotal-s.cuposTomados),0), agotado=dispTotal<=0;
+      const sesiones=c.sesiones.map(s=>{
+        const d=s.cuposTotal-s.cuposTomados, full=d<=0;
+        const matches=Array.from({length:s.cuposTotal},(_,i)=>
+          `<span class="match ${i<d?"lit":"burnt"}"></span>`).join("");
+        return `
+          <div class="sesion">
+            <div>
+              <span class="s-fecha">${esc(s.fecha)}</span>
+              <span class="s-lugar">${esc(s.lugar)}</span>
+            </div>
+            <div class="cupos s-cupos ${full?"agotado":""}">
+              <span class="cupos-label">${full?"completa":d+" sillas"}</span>
+              <div class="matches mini" aria-hidden="true">${matches}</div>
+            </div>
+          </div>`;
+      }).join("");
+      return `
+      <article class="club-card">
+        <div class="cover">
+          <span class="badge">presencial</span>
+          <img class="portada" src="${esc(c.portada)}" alt="Portada de ${esc(c.titulo)}">
+          <div class="cover-title">${esc(c.titulo)}</div>
+        </div>
+        <div class="club-body">
+          <div class="club-nombre">${esc(c.club)}</div>
+          <div class="autor">de ${esc(c.autor)}</div>
+          <p class="curaduria">${esc(c.curaduria)}</p>
+          <div class="sesiones">${sesiones}</div>
+          <div class="precio-row">
+            <div class="precio">${clp(c.precio)}<small>por persona, CLP</small></div>
+          </div>
+          <button class="btn btn-card" ${agotado?"disabled":""} onclick="openModal('${c.id}')">${agotado?"Mesas completas":"Reservar silla"}</button>
+        </div>
+      </article>`;
+    }).join("");
+  }
+
+  function fillSelect(p){
+    document.getElementById("selClub").innerHTML =
+      '<option value="">— Elige club y fecha —</option>'+CLUBS.map(c=>
+        `<optgroup label="${esc(c.club)} · ${esc(c.titulo)}">`+c.sesiones.map(s=>{
+          const d=s.cuposTotal-s.cuposTomados;
+          return `<option value="${s.id}" ${d<=0?"disabled":""}>${esc(s.fecha)} · ${esc(s.lugar)}${d<=0?" (completo)":""}</option>`;
+        }).join("")+`</optgroup>`).join("");
+    if(p){
+      const c=CLUBS.find(x=>x.id===p);
+      const s=c&&c.sesiones.find(x=>x.cuposTotal-x.cuposTomados>0);
+      if(s)document.getElementById("selClub").value=s.id;
+    }
+  }
+  function openModal(id){
+    fillSelect(id);
+    formView.style.display="block";confirmView.style.display="none";
+    overlay.classList.add("open");document.body.style.overflow="hidden";
+    document.getElementById(id?"inNombre":"selClub").focus();
+  }
+  function closeModal(){overlay.classList.remove("open");document.body.style.overflow=""}
+  overlay.addEventListener("click",e=>{if(e.target.id==="overlay")closeModal()});
+  document.addEventListener("keydown",e=>{if(e.key==="Escape")closeModal()});
+  const setInvalid=(id,bad)=>{document.getElementById(id).classList.toggle("invalid",bad);return !bad};
+
+  async function submitReserva(){
+    const club=selClub.value,nombre=inNombre.value.trim(),
+          email=inEmail.value.trim(),fono=inFono.value.trim();
+    let ok=true;
+    ok=setInvalid("f-club",!club)&&ok;
+    ok=setInvalid("f-nombre",nombre.length<2)&&ok;
+    ok=setInvalid("f-email",!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))&&ok;
+    ok=setInvalid("f-fono",fono.length<8)&&ok;
+    if(!ok)return;
+    const btn=document.getElementById("btnSubmit");
+    btn.disabled=true;btn.innerHTML='<span class="spinner"></span>&nbsp; Apartando…';
+    const {c,s}=findSesion(club);
+    const code="MB-"+Math.random().toString(36).slice(2,7).toUpperCase();
+    try {
+      await fetch("https://script.google.com/macros/s/AKfycbx2rj_n2EqFClmhlniEyGW9epy30nrI6xZVsEVw9aKEf23iC3hja4tm2U4xTL-rD70v0w/exec",{
+        method:"POST",
+        mode:"no-cors",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({nombre,email,telefono:fono,club:c.club,libro:c.titulo,fecha:s.fecha,lugar:s.lugar,codigo:code,precio:clp(c.precio)})
+      });
+    } catch(e){ console.warn("Formspree:",e) }
+    s.cuposTomados++;renderClubs();
+    confirmDetail.textContent=`${nombre.split(" ")[0]}, apartamos tu silla en ${c.club} para "${c.titulo}" (${s.fecha}).`;
+    confirmCode.textContent=code;
+    btnPagar.href=c.mpLink;
+    formView.style.display="none";confirmView.style.display="block";
+    btn.disabled=false;btn.textContent="Continuar al pago →";
+    ["inNombre","inEmail","inFono"].forEach(i=>document.getElementById(i).value="");
+  }
+  loadData();
+</script>
+
+<!-- Login de administración (redirige al panel tras aceptar la invitación) -->
+<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+<script>
+  if (window.netlifyIdentity) {
+    window.netlifyIdentity.on("init", user => {
+      if (!user) {
+        window.netlifyIdentity.on("login", () => { document.location.href = "/admin/"; });
+      }
+    });
+  }
+</script>
+</body>
+</html>
