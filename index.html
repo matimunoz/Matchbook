@@ -618,8 +618,7 @@
       <svg><use href="#mb-icon"/></svg>
       <h3>¡Tu silla está apartada!</h3>
       <p id="confirmDetail"></p>
-      <div class="codigo" id="confirmCode"></div>
-      <p>Guarda tu código y completa el pago para encender tu fósforo:</p>
+      <p>Completa el pago para encender tu fósforo:</p>
       <a class="btn btn-sol" id="btnPagar" href="#" target="_blank" rel="noopener" style="display:inline-block;margin-top:12px;text-decoration:none">Pagar con Mercado Pago</a>
       <p style="font-size:.84rem;margin-top:12px;font-style:italic">Si el pago no se completa en 24 horas, la silla vuelve a abrirse para otra persona.</p>
     </div>
@@ -796,7 +795,6 @@
     } catch(e){ console.warn("Formspree:",e) }
     s.cuposTomados++;renderClubs();
     confirmDetail.textContent=`${nombre.split(" ")[0]}, apartamos tu silla en ${c.club} para "${c.titulo}" (${s.fecha}).`;
-    confirmCode.textContent=code;
     btnPagar.href=c.mpLink;
     formView.style.display="none";confirmView.style.display="block";
     btn.disabled=false;btn.textContent="Continuar al pago →";
