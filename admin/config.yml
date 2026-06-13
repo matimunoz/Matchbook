@@ -62,6 +62,13 @@ collections:
                 fields:
                   - { label: "Fecha y hora", name: "fecha", widget: "string", hint: "Ej: Sábado 27 de junio, 11:30 hrs" }
                   - { label: "Lugar", name: "lugar", widget: "string" }
+                  - label: "Moderador/a"
+                    name: "moderador"
+                    widget: "object"
+                    required: false
+                    fields:
+                      - { label: "Nombre", name: "nombre", widget: "string" }
+                      - { label: "Foto", name: "foto", widget: "image", required: false, hint: "Foto cuadrada del moderador (se muestra redonda). Si no hay foto, aparece la inicial." }
                   - { label: "Cupos totales", name: "cuposTotal", widget: "number", value_type: "int", min: 1, default: 10 }
                   - { label: "Cupos ya tomados", name: "cuposTomados", widget: "number", value_type: "int", min: 0, default: 0 }
 

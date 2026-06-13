@@ -32,12 +32,14 @@
       "sesiones": [
         {
           "fecha": "Sábado 27 de junio, 11:30 hrs",
+          "moderador": { "nombre": "Matías", "foto": "moderadores/matias.jpg" },
           "lugar": "Punto & Café, Arlegui 269, Viña del Mar",
           "cuposTotal": 10,
           "cuposTomados": 2
         },
         {
           "fecha": "Domingo 28 de junio, 14:00 hrs",
+          "moderador": { "nombre": "Paulette", "foto": "moderadores/paulette.jpg" },
           "lugar": "La Florería",
           "cuposTotal": 10,
           "cuposTomados": 3
@@ -56,12 +58,14 @@
       "sesiones": [
         {
           "fecha": "Viernes 26 de junio",
+          "moderador": { "nombre": "Gonzalo", "foto": "moderadores/gonzalo.jpg" },
           "lugar": "Punto & Café, Arlegui 269, Viña del Mar",
           "cuposTotal": 10,
           "cuposTomados": 6
         },
         {
           "fecha": "Martes 30 de junio",
+          "moderador": { "nombre": "Gonzalo", "foto": "moderadores/gonzalo.jpg" },
           "lugar": "Between Coffee & Bar, Av. Vitacura 2727, Santiago",
           "cuposTotal": 10,
           "cuposTomados": 5
@@ -80,12 +84,14 @@
       "sesiones": [
         {
           "fecha": "Sábado 27 de junio",
+          "moderador": { "nombre": "Gonzalo", "foto": "moderadores/gonzalo.jpg" },
           "lugar": "Between Coffee & Bar, Av. Vitacura 2727, Santiago",
           "cuposTotal": 10,
           "cuposTomados": 0
         },
         {
           "fecha": "Domingo 28 de junio",
+          "moderador": { "nombre": "Gonzalo", "foto": "moderadores/gonzalo.jpg" },
           "lugar": "Between Coffee & Bar, Av. Vitacura 2727, Santiago",
           "cuposTotal": 10,
           "cuposTomados": 0

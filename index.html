@@ -185,6 +185,12 @@
   .sesion{display:flex;justify-content:space-between;align-items:center;gap:10px;border-top:1px dashed rgba(94,122,82,.35);padding:11px 0 6px}
   .sesion .s-fecha{font-family:var(--serif);font-weight:700;font-size:.92rem;color:var(--noche);display:block}
   .sesion .s-lugar{font-family:var(--serif);font-size:.84rem;color:var(--tinta-suave);display:block;max-width:24ch}
+  .moderador{display:flex;align-items:center;gap:8px;margin-top:9px}
+  .mod-av{position:relative;width:30px;height:30px;flex-shrink:0}
+  .mod-av .mod-ini{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;border-radius:50%;font-family:var(--sans);font-weight:800;font-size:.82rem;color:#fff;background:var(--club)}
+  .mod-av img{position:absolute;inset:0;width:100%;height:100%;border-radius:50%;object-fit:cover;border:2px solid var(--club)}
+  .mod-nombre{font-family:var(--serif);font-size:.82rem;color:var(--tinta-suave)}
+  .mod-nombre b{color:var(--noche);font-weight:600}
   .s-cupos{text-align:right;flex-shrink:0}
   .s-cupos .cupos-label{font-size:.8rem;display:block}
   .agotado-tag{
@@ -690,6 +696,18 @@
 
   const clp = n => "$" + Number(n).toLocaleString("es-CL");
 
+  function modAvatar(m){
+    if(!m || !m.nombre) return "";
+    const ini = esc(m.nombre.trim().charAt(0).toUpperCase());
+    const img = m.foto
+      ? `<img src="${esc(m.foto)}" alt="${esc(m.nombre)}" onerror="this.style.display='none'">`
+      : "";
+    return `<div class="moderador">
+      <span class="mod-av"><span class="mod-ini">${ini}</span>${img}</span>
+      <span class="mod-nombre">Modera <b>${esc(m.nombre)}</b></span>
+    </div>`;
+  }
+
   function renderClubs(){
     document.getElementById("clubsGrid").innerHTML = CLUBS.map(c=>{
       const dispTotal=c.sesiones.reduce((a,s)=>a+(s.cuposTotal-s.cuposTomados),0), agotado=dispTotal<=0;
@@ -703,6 +721,7 @@
             <div>
               <span class="s-fecha">${esc(s.fecha)}</span>
               <span class="s-lugar">${esc(s.lugar)}</span>
+              ${modAvatar(s.moderador)}
             </div>
             <div class="cupos s-cupos ${full?"agotado":""}">
               ${full
