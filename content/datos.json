@@ -39,7 +39,7 @@
         },
         {
           "fecha": "Domingo 28 de junio, 14:00 hrs",
-          "moderador": { "nombre": "Matías", "foto": "moderadores/matias.jpg" },
+          "moderador": { "nombre": "Matías", "foto": "moderadores/matias.png" },
           "lugar": "La Florería",
           "cuposTotal": 10,
           "cuposTomados": 3
