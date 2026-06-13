@@ -32,14 +32,14 @@
       "sesiones": [
         {
           "fecha": "Sábado 27 de junio, 11:30 hrs",
-          "moderador": { "nombre": "Matías", "foto": "moderadores/matias.jpg" },
+          "moderador": { "nombre": "Paulette", "foto": "moderadores/paulette.jpg" },
           "lugar": "Punto & Café, Arlegui 269, Viña del Mar",
           "cuposTotal": 10,
           "cuposTomados": 2
         },
         {
           "fecha": "Domingo 28 de junio, 14:00 hrs",
-          "moderador": { "nombre": "Paulette", "foto": "moderadores/paulette.jpg" },
+          "moderador": { "nombre": "Matías", "foto": "moderadores/matias.jpg" },
           "lugar": "La Florería",
           "cuposTotal": 10,
           "cuposTomados": 3
