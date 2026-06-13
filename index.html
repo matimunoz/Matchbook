@@ -8,6 +8,7 @@
 <meta name="description" content="Clubes de lectura con mediación profesional en Santiago, Viña del Mar y Valparaíso. Un libro al mes, una mesa compartida y conversaciones que encienden. Reserva tu silla.">
 <link rel="canonical" href="https://matchbook.cl/">
 <meta name="robots" content="index, follow">
+<meta name="google-site-verification" content="HHvHwY1BcESPjPgYC0WjxvmfkHHtFI-lS3qN2TyYyjM" />
 <meta name="theme-color" content="#F5A93B">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 
@@ -672,6 +673,34 @@
   let CLUBS = [];
   let CONTENT = {};
 
+  // Reservas en vivo desde Google Sheets (Apps Script)
+  const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx2rj_n2EqFClmhlniEyGW9epy30nrI6xZVsEVw9aKEf23iC3hja4tm2U4xTL-rD70v0w/exec";
+
+  // Lee los conteos por sesión vía JSONP (evita problemas de CORS con Apps Script)
+  function fetchCuposEnVivo(){
+    return new Promise(resolve=>{
+      const cb = "mbCupos_" + Math.random().toString(36).slice(2);
+      const sc = document.createElement("script");
+      let listo = false;
+      const limpiar = ()=>{ try{ delete window[cb]; }catch(e){ window[cb]=undefined; } sc.remove(); };
+      window[cb] = data => { listo=true; resolve(data); limpiar(); };
+      sc.onerror = ()=>{ if(!listo){ resolve(null); limpiar(); } };
+      sc.src = APPS_SCRIPT_URL + "?callback=" + cb + "&_=" + Date.now();
+      document.head.appendChild(sc);
+      setTimeout(()=>{ if(!listo){ resolve(null); limpiar(); } }, 6000);
+    });
+  }
+
+  async function aplicarCuposEnVivo(){
+    const counts = await fetchCuposEnVivo();
+    if(!counts) return; // sin conexión: se mantienen los valores de respaldo de datos.json
+    CLUBS.forEach(c => c.sesiones.forEach(s => {
+      s.cuposTomados = counts[c.club + "||" + s.fecha] || 0;
+    }));
+    renderClubs();
+    if(overlay.classList.contains("open")){ const cur = selClub.value; fillSelect(); if(cur) selClub.value = cur; }
+  }
+
   const esc = s => String(s==null?"":s)
     .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 
@@ -693,6 +722,7 @@
     renderClubs();
     renderTestimonios();
     renderFaq();
+    aplicarCuposEnVivo();
   }
 
   function applyTextos(){
@@ -828,7 +858,7 @@
     const {c,s}=findSesion(club);
     const code="MB-"+Math.random().toString(36).slice(2,7).toUpperCase();
     try {
-      await fetch("https://script.google.com/macros/s/AKfycbx2rj_n2EqFClmhlniEyGW9epy30nrI6xZVsEVw9aKEf23iC3hja4tm2U4xTL-rD70v0w/exec",{
+      await fetch(APPS_SCRIPT_URL,{
         method:"POST",
         mode:"no-cors",
         headers:{"Content-Type":"application/json"},
