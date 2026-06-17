@@ -58,24 +58,24 @@
       "precio": 10000,
       "sesiones": [
         {
-          "fecha": "Viernes 26 de junio",
+          "fecha": "Viernes 26 de junio, 19:00 hrs",
           "moderador": {
             "nombre": "Gonzalo",
             "foto": "moderadores/gonzalo.jpg"
           },
           "lugar": "Punto & Café, Viña del Mar",
           "cuposTotal": 10,
-          "cuposTomados": 0
+          "cuposTomados": 8
         },
         {
-          "fecha": "Martes 30 de junio",
+          "fecha": "Martes 30 de junio, 19:00 hrs",
           "moderador": {
             "nombre": "Gonzalo",
             "foto": "moderadores/gonzalo.jpg"
           },
           "lugar": "Between Coffee, Santiago",
           "cuposTotal": 10,
-          "cuposTomados": 0
+          "cuposTomados": 4
         }
       ],
       "club": "Books Up",
