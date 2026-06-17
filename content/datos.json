@@ -33,7 +33,7 @@
           },
           "lugar": "Punto & Café, Viña del Mar",
           "cuposTotal": 10,
-          "cuposTomados": 0
+          "cuposTomados": 4
         },
         {
           "fecha": "Domingo 28 de junio, 14:00 hrs",
@@ -43,7 +43,7 @@
           },
           "lugar": "La Florería, Viña del Mar",
           "cuposTotal": 10,
-          "cuposTomados": 0
+          "cuposTomados": 4
         }
       ],
       "club": "Exploración Literaria",
@@ -90,17 +90,7 @@
       "precio": 8000,
       "sesiones": [
         {
-          "fecha": "Sábado 27 de junio",
-          "moderador": {
-            "nombre": "Gonzalo",
-            "foto": "moderadores/gonzalo.jpg"
-          },
-          "lugar": "Between Coffee, Santiago",
-          "cuposTotal": 10,
-          "cuposTomados": 0
-        },
-        {
-          "fecha": "Domingo 28 de junio",
+          "fecha": "Jueves 3 de Julio, 19:00 hrs",
           "moderador": {
             "nombre": "Gonzalo",
             "foto": "moderadores/gonzalo.jpg"
