@@ -213,6 +213,7 @@
     position:relative;z-index:3;top:38px;max-width:92%;
   }
   .club-body{padding:56px 22px 22px;display:flex;flex-direction:column;gap:13px;flex:1}
+  .club-top{flex:1;display:flex;flex-direction:column;gap:13px}
   .club-body .autor{font-family:var(--serif);font-style:italic;color:var(--tinta-suave);text-align:center;margin-top:-4px}
   .curaduria{
     font-family:var(--serif);font-size:.93rem;color:var(--tinta-suave);line-height:1.55;
@@ -794,7 +795,7 @@
             <div class="cupos s-cupos ${full?"agotado":""}">
               ${full
                 ? `<span class="agotado-tag">Agotado</span>`
-                : `<span class="cupos-label">${d} ${d===1?"silla":"sillas"}</span>
+                : `<span class="cupos-label">${d} ${d===1?"disponible":"disponibles"}</span>
                    <div class="matches mini" aria-hidden="true">${matches}</div>`}
             </div>
           </div>`;
@@ -807,9 +808,11 @@
           <div class="cover-title">${esc(c.titulo)}</div>
         </div>
         <div class="club-body">
-          <div class="club-nombre">${esc(c.club)}</div>
-          <div class="autor">de ${esc(c.autor)}</div>
-          <p class="curaduria">${esc(c.curaduria)}</p>
+          <div class="club-top">
+            <div class="club-nombre">${esc(c.club)}</div>
+            <div class="autor">de ${esc(c.autor)}</div>
+            <p class="curaduria">${esc(c.curaduria)}</p>
+          </div>
           <div class="sesiones">${sesiones}</div>
           <div class="precio-row">
             <div class="precio">${clp(c.precio)}<small>por persona, CLP</small></div>
