@@ -829,7 +829,7 @@
         </div>
       </article>`;
     }).join("");
-    requestAnimationFrame(equalizeDescriptions);
+    document.fonts.ready.then(() => requestAnimationFrame(equalizeDescriptions));
   }
 
   function fillSelect(p){
