@@ -29,7 +29,7 @@
           "fecha": "Sábado 27 de junio, 11:30 hrs",
           "moderador": {
             "nombre": "Paulette",
-            "foto": "moderadores/paulette.jpg"
+            "foto": "moderadores/paulette.jpeg"
           },
           "lugar": "Punto & Café, Viña del Mar",
           "cuposTotal": 10,
@@ -61,7 +61,7 @@
           "fecha": "Viernes 26 de junio, 19:00 hrs",
           "moderador": {
             "nombre": "Gonzalo",
-            "foto": "moderadores/gonzalo.jpg"
+            "foto": "moderadores/gonzalo.png"
           },
           "lugar": "Punto & Café, Viña del Mar",
           "cuposTotal": 10,
@@ -71,7 +71,7 @@
           "fecha": "Martes 30 de junio, 19:00 hrs",
           "moderador": {
             "nombre": "Gonzalo",
-            "foto": "moderadores/gonzalo.jpg"
+            "foto": "moderadores/gonzalo.png"
           },
           "lugar": "Between Coffee, Santiago",
           "cuposTotal": 10,
@@ -93,7 +93,7 @@
           "fecha": "Jueves 3 de Julio, 19:00 hrs",
           "moderador": {
             "nombre": "Gonzalo",
-            "foto": "moderadores/gonzalo.jpg"
+            "foto": "moderadores/gonzalo.png"
           },
           "lugar": "Between Coffee, Santiago",
           "cuposTotal": 10,

@@ -217,7 +217,7 @@
   .club-body .autor{font-family:var(--serif);font-style:italic;color:var(--tinta-suave);text-align:center;margin-top:-4px}
   .curaduria{
     font-family:var(--serif);font-size:.93rem;color:var(--tinta-suave);line-height:1.55;
-    border-left:3px solid var(--club);padding-left:12px;min-height:7em;
+    border-left:3px solid var(--club);padding-left:12px;
   }
   .club-nombre{
     align-self:center;
@@ -777,6 +777,14 @@
     </div>`;
   }
 
+  function equalizeDescriptions(){
+    const ds = document.querySelectorAll('.curaduria');
+    ds.forEach(d => d.style.minHeight = '');
+    let max = 0;
+    ds.forEach(d => { max = Math.max(max, d.offsetHeight); });
+    ds.forEach(d => { d.style.minHeight = max + 'px'; });
+  }
+
   function renderClubs(){
     document.getElementById("clubsGrid").innerHTML = CLUBS.map(c=>{
       const dispTotal=c.sesiones.reduce((a,s)=>a+(s.cuposTotal-s.cuposTomados),0), agotado=dispTotal<=0;
@@ -821,6 +829,7 @@
         </div>
       </article>`;
     }).join("");
+    requestAnimationFrame(equalizeDescriptions);
   }
 
   function fillSelect(p){
