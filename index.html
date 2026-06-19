@@ -150,6 +150,8 @@
   .hero-stats{display:flex;gap:30px;margin-top:38px;flex-wrap:wrap}
   .stat .n{font-family:var(--serif);font-weight:700;font-size:1.8rem;color:var(--noche)}
   .stat .l{font-family:var(--serif);font-style:italic;font-size:.9rem;color:#3D5268}
+  .hero-proof{margin-top:26px;font-family:var(--serif);font-size:1rem;color:#2E4257;max-width:48ch}
+  .hero-proof span{color:#0E5FA8;font-weight:600}
 
   .hero-ilus{justify-self:center;max-width:520px;width:100%;position:relative}
   .hero-ilus svg.escena{width:100%;height:auto;filter:drop-shadow(0 16px 32px rgba(19,41,63,.28))}
@@ -358,6 +360,34 @@
   details[open] summary::after{transform:rotate(90deg);color:var(--ambar)}
   details .answer{font-family:var(--serif);padding:0 22px 20px;color:var(--tinta-suave);font-size:.97rem;line-height:1.65;max-width:62ch}
 
+  /* ---------- CAPTURA DE LEAD (boletín) ---------- */
+  #lead{background:linear-gradient(180deg,var(--crema-2),var(--crema));text-align:center;padding:62px 0}
+  .lead-box{max-width:600px;margin:0 auto}
+  #lead h2{margin-bottom:8px}
+  #lead p.lead-sub{font-family:var(--serif);color:var(--tinta-suave);font-size:1.08rem;margin-bottom:24px}
+  .lead-form{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+  .lead-form input{
+    flex:1;min-width:220px;max-width:340px;padding:14px 18px;
+    border:1.5px solid rgba(94,122,82,.4);border-radius:999px;
+    background:#FFFDF7;font-family:var(--sans);font-size:1rem;
+  }
+  .lead-form input:focus{outline:3px solid rgba(245,169,59,.5);border-color:var(--ambar)}
+  .lead-form .btn{padding:14px 26px}
+  .lead-ok{font-family:var(--serif);color:var(--hoja);font-size:1.1rem;font-weight:600}
+  .lead-nota{font-family:var(--serif);font-style:italic;font-size:.84rem;color:var(--tinta-suave);margin-top:14px}
+
+  /* ---------- APOYO INSTITUCIONAL ---------- */
+  #apoyo{background:var(--crema);text-align:center;padding:58px 0 64px}
+  #apoyo .apoyo-titulo{font-family:var(--serif);font-style:italic;color:var(--tinta-suave);font-size:1.05rem;margin-bottom:28px}
+  .apoyo-logos{display:flex;flex-wrap:wrap;gap:24px;justify-content:center;align-items:stretch}
+  .apoyo-logos .acard{
+    background:#FFFDF7;border:1px solid rgba(94,122,82,.22);border-radius:18px;
+    padding:20px 28px;display:flex;align-items:center;justify-content:center;
+    box-shadow:0 4px 14px rgba(94,122,82,.1);
+  }
+  .apoyo-logos img{display:block;width:auto;height:80px}
+  .apoyo-logos .chile img{border-radius:8px}
+
   /* ---------- CIERRE ---------- */
   #cierre{
     background:linear-gradient(180deg, var(--crema) 0%, var(--ambar-suave) 130%);
@@ -376,8 +406,10 @@
   footer .eco{font-family:var(--serif);font-style:italic;font-size:.84rem;width:100%;text-align:center;margin-top:22px;color:#8C8164}
 
   /* ---------- WHATSAPP ---------- */
-  .wsp{position:fixed;bottom:22px;right:22px;z-index:60;width:56px;height:56px;border-radius:50%;background:#25D366;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(19,41,63,.3);text-decoration:none}
-  .wsp svg{width:30px;height:30px;fill:#fff}
+  .wsp{position:fixed;bottom:22px;right:22px;z-index:60;height:56px;border-radius:999px;background:#25D366;display:flex;align-items:center;gap:10px;padding:0 22px 0 15px;box-shadow:0 8px 24px rgba(19,41,63,.3);text-decoration:none;color:#fff;font-family:var(--sans);font-weight:800;font-size:.95rem}
+  .wsp svg{width:30px;height:30px;fill:#fff;flex-shrink:0}
+  .wsp .wsp-label{white-space:nowrap}
+  @media(max-width:520px){.wsp{padding:0;width:56px;justify-content:center}.wsp .wsp-label{display:none}}
 
   /* ---------- MODAL ---------- */
   .modal-overlay{position:fixed;inset:0;background:rgba(19,41,63,.72);backdrop-filter:blur(3px);display:none;align-items:flex-end;justify-content:center;z-index:100}
@@ -454,14 +486,14 @@
 <header class="hero">
   <div class="hero-inner">
     <div>
-      <span class="eyebrow" id="heroEyebrow">experiencias literarias desde 2021</span>
+      <span class="eyebrow" id="heroEyebrow">Club de lectura presencial · Santiago · Valparaíso · Viña</span>
       <h1 id="heroTitulo">Enciende tu <em>pasión literaria</em>.</h1>
       <p class="lead" id="heroLead">Clubes de lectura con mediación profesional en Santiago, Valparaíso y Viña del Mar. Un libro al mes, una mesa compartida y una chispa que se pasa de mano en mano.</p>
       <div class="hero-actions">
         <a class="btn btn-sol" href="#clubes">Ver los libros del mes</a>
         <button class="btn btn-aire" onclick="openModal()">Reservar mi silla</button>
       </div>
-      <div class="hero-stats" id="heroStats"></div>
+      <p class="hero-proof">+850 lectores · +70 libros · desde 2021 · <span>respaldado por Corfo y Marca Chile</span></p>
     </div>
     <div class="hero-ilus">
       <svg class="escena" viewBox="0 0 560 480" role="img" aria-label="Ilustración original: dos libros con brazos conversan tomando café en una mesa con libros">
@@ -581,6 +613,19 @@
   </div>
 </section>
 
+<section id="lead">
+  <div class="wrap lead-box">
+    <h2>¿Aún no te decides?</h2>
+    <p class="lead-sub">Recibe el libro del próximo mes en tu correo, sin compromiso.</p>
+    <form class="lead-form" id="leadForm">
+      <input type="email" id="leadEmail" placeholder="tu@correo.cl" autocomplete="email" aria-label="Tu correo electrónico" required>
+      <button type="submit" class="btn btn-sol">Quiero enterarme</button>
+    </form>
+    <p class="lead-ok" id="leadOk" style="display:none">¡Listo! Te avisaremos cuando anunciemos el próximo libro. 📚</p>
+    <p class="lead-nota">Sin spam. Solo el libro del mes y las fechas. Puedes salir cuando quieras.</p>
+  </div>
+</section>
+
 <svg class="vid" viewBox="0 0 420 60" aria-hidden="true"><use href="#ramita"/></svg>
 
 <section id="manifiesto">
@@ -635,6 +680,16 @@
   </div>
 </section>
 
+<section id="apoyo">
+  <div class="wrap">
+    <p class="apoyo-titulo">Con el apoyo de</p>
+    <div class="apoyo-logos">
+      <div class="acard chile"><img src="logos/Chile.png" alt="Marca Chile"></div>
+      <div class="acard corfo"><img src="logos/CORFO.png" alt="Proyecto apoyado por CORFO — Gobierno de Chile"></div>
+    </div>
+  </div>
+</section>
+
 <section id="cierre">
   <div class="wrap">
     <h2>Hay una silla esperándote al sol.</h2>
@@ -652,8 +707,9 @@
   </div>
 </footer>
 
-<a class="wsp" href="https://chat.whatsapp.com/CfdyweSEb7P9eF1NxIePWf" target="_blank" rel="noopener" aria-label="Únete a nuestro grupo de WhatsApp">
+<a class="wsp" href="https://chat.whatsapp.com/CfdyweSEb7P9eF1NxIePWf" target="_blank" rel="noopener" aria-label="Únete a la comunidad de WhatsApp">
   <svg viewBox="0 0 24 24"><path d="M12 .5C5.7.5.7 5.5.7 11.8c0 2 .5 3.9 1.5 5.6L.6 23.4l6.2-1.6c1.6.9 3.4 1.4 5.2 1.4 6.3 0 11.3-5 11.3-11.3S18.3.5 12 .5zm0 20.6c-1.7 0-3.3-.5-4.7-1.3l-.3-.2-3.7 1 1-3.6-.2-.4c-.9-1.5-1.4-3.2-1.4-4.9C2.7 6.6 6.9 2.4 12 2.4s9.3 4.2 9.3 9.3-4.2 9.4-9.3 9.4zm5.1-7c-.3-.1-1.7-.8-1.9-.9-.3-.1-.5-.1-.7.1-.2.3-.8.9-.9 1.1-.2.2-.3.2-.6.1-.3-.1-1.2-.4-2.3-1.4-.8-.7-1.4-1.6-1.5-1.9-.2-.3 0-.4.1-.6l.4-.5c.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5l-.9-2.1c-.2-.5-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1 2.9 1.2 3.1c.1.2 2.1 3.2 5.1 4.5.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.7-.7 2-1.4.2-.7.2-1.3.2-1.4-.1-.1-.3-.2-.6-.3z"/></svg>
+  <span class="wsp-label">Únete a la comunidad</span>
 </a>
 
 <!-- MODAL -->
@@ -763,7 +819,8 @@
   }
 
   function renderStats(){
-    document.getElementById("heroStats").innerHTML = (CONTENT.stats||[]).map(s=>
+    const el = document.getElementById("heroStats"); if(!el) return;
+    el.innerHTML = (CONTENT.stats||[]).map(s=>
       `<div class="stat"><div class="n">${esc(s.numero)}</div><div class="l">${esc(s.etiqueta)}</div></div>`
     ).join("");
   }
@@ -924,6 +981,24 @@
     btn.disabled=false;btn.textContent="Continuar al pago →";
     ["inNombre","inEmail","inFono"].forEach(i=>document.getElementById(i).value="");
   }
+  // Captura de correo (boletín)
+  document.getElementById("leadForm").addEventListener("submit", async (e)=>{
+    e.preventDefault();
+    const email = document.getElementById("leadEmail").value.trim();
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return;
+    const btn = e.target.querySelector("button");
+    btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>&nbsp; Enviando…';
+    try {
+      await fetch(APPS_SCRIPT_URL,{
+        method:"POST", mode:"no-cors", headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({tipo:"newsletter", email})
+      });
+    } catch(err){ console.warn("Newsletter:", err); }
+    document.getElementById("leadForm").style.display = "none";
+    document.querySelector("#lead .lead-nota").style.display = "none";
+    document.getElementById("leadOk").style.display = "block";
+  });
+
   loadData();
 </script>
 
