@@ -319,17 +319,31 @@
   #comunidad h2{color:var(--crema)}
   #comunidad .sec-eyebrow{color:var(--ambar-suave)}
   #comunidad .sec-head p{color:#A8C2DC}
-  .testi-grid{display:grid;gap:22px;position:relative;z-index:2}
-  @media(min-width:780px){.testi-grid{grid-template-columns:repeat(3,1fr)}}
+  .testi-grid{
+    display:flex;gap:22px;position:relative;z-index:2;
+    overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;
+    -ms-overflow-style:none;scrollbar-width:none;
+  }
+  .testi-grid::-webkit-scrollbar{display:none}
   .testi{
+    flex:0 0 calc((100% - 44px) / 3);scroll-snap-align:start;
     background:rgba(251,242,226,.07);border:1px solid rgba(245,169,59,.3);
     border-radius:22px;padding:28px 26px;display:flex;flex-direction:column;gap:16px;
     backdrop-filter:blur(2px);
   }
+  @media(max-width:779px){.testi{flex:0 0 88%}}
   .testi blockquote{font-family:var(--serif);font-style:italic;font-size:1.05rem;line-height:1.6;color:#F3E8D4}
-  .testi blockquote::before{content:"“";color:var(--ambar);font-size:1.9rem;font-style:normal;line-height:0;margin-right:3px}
+  .testi blockquote::before{content:”””;color:var(--ambar);font-size:1.9rem;font-style:normal;line-height:0;margin-right:3px}
   .testi .who{font-size:.85rem;color:#A8C2DC;font-weight:700}
   .testi .who span{color:var(--ambar-suave)}
+  .testi-nav{display:flex;gap:12px;justify-content:center;margin-top:26px;position:relative;z-index:2}
+  .testi-btn{
+    background:rgba(251,242,226,.1);border:1px solid rgba(245,169,59,.4);
+    color:var(--ambar-suave);width:42px;height:42px;border-radius:50%;
+    cursor:pointer;font-size:1.1rem;display:flex;align-items:center;justify-content:center;
+    transition:background .2s;
+  }
+  .testi-btn:hover{background:rgba(245,169,59,.25)}
 
   /* ---------- FAQ ---------- */
   #faq{background:var(--crema)}
@@ -603,6 +617,10 @@
       <h2>Lo que queda después de la última página</h2>
     </div>
     <div class="testi-grid" id="testiGrid"></div>
+    <div class="testi-nav">
+      <button class="testi-btn" id="testiPrev" aria-label="Anterior">&#8592;</button>
+      <button class="testi-btn" id="testiNext" aria-label="Siguiente">&#8594;</button>
+    </div>
   </div>
 </section>
 
@@ -749,13 +767,25 @@
   }
 
   function renderTestimonios(){
-    document.getElementById("testiGrid").innerHTML = (CONTENT.testimonios||[]).map(t=>
+    const all = [...(CONTENT.testimonios||[])];
+    for(let i=all.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[all[i],all[j]]=[all[j],all[i]];}
+    document.getElementById("testiGrid").innerHTML = all.map(t=>
       `<div class="testi">
         <blockquote>${esc(t.cita)}</blockquote>
         <div class="who">${esc(t.autor)} <span>· ${esc(t.detalle)}</span></div>
       </div>`
     ).join("");
   }
+
+  function testiScroll(dir){
+    const g=document.getElementById("testiGrid");
+    const card=g.querySelector(".testi");
+    if(!card)return;
+    const step=card.offsetWidth+22;
+    g.scrollBy({left:dir*step,behavior:"smooth"});
+  }
+  document.getElementById("testiPrev").addEventListener("click",()=>testiScroll(-1));
+  document.getElementById("testiNext").addEventListener("click",()=>testiScroll(1));
 
   function renderFaq(){
     document.getElementById("faqList").innerHTML = (CONTENT.faq||[]).map(f=>
