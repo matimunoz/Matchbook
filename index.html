@@ -150,8 +150,6 @@
   .hero-stats{display:flex;gap:30px;margin-top:38px;flex-wrap:wrap}
   .stat .n{font-family:var(--serif);font-weight:700;font-size:1.8rem;color:var(--noche)}
   .stat .l{font-family:var(--serif);font-style:italic;font-size:.9rem;color:#3D5268}
-  .hero-proof{margin-top:26px;font-family:var(--serif);font-size:1rem;color:#2E4257;max-width:48ch}
-  .hero-proof span{color:#0E5FA8;font-weight:600}
 
   .hero-ilus{justify-self:center;max-width:520px;width:100%;position:relative}
   .hero-ilus svg.escena{width:100%;height:auto;filter:drop-shadow(0 16px 32px rgba(19,41,63,.28))}
@@ -185,6 +183,7 @@
 
   /* ---------- CLUBES: bancales del invernadero ---------- */
   #clubes{background:var(--crema)}
+  #clubes .clubs-sub{font-family:var(--serif);font-style:italic;font-weight:600;color:var(--hoja);font-size:1.02rem;margin-top:6px}
   .clubs-grid{display:grid;gap:28px}
   @media(min-width:780px){.clubs-grid{grid-template-columns:repeat(3,1fr)}}
   .club-card{
@@ -493,7 +492,7 @@
         <a class="btn btn-sol" href="#clubes">Ver los libros del mes</a>
         <button class="btn btn-aire" onclick="openModal()">Reservar mi silla</button>
       </div>
-      <p class="hero-proof">+850 lectores · +70 libros · desde 2021 · <span>respaldado por Corfo y Marca Chile</span></p>
+      <div class="hero-stats" id="heroStats"></div>
     </div>
     <div class="hero-ilus">
       <svg class="escena" viewBox="0 0 560 480" role="img" aria-label="Ilustración original: dos libros con brazos conversan tomando café en una mesa con libros">
@@ -608,6 +607,7 @@
     <div class="sec-head">
       <h2>Los libros del mes</h2>
       <p>Cada fósforo encendido es un lector por conocer: se van prendiendo a medida que se reservan las sillas. Cuando se agotan, la mesa está completa.</p>
+      <p class="clubs-sub">10 sillas por sesión</p>
     </div>
     <div class="clubs-grid" id="clubsGrid"></div>
   </div>
@@ -686,6 +686,8 @@
     <div class="apoyo-logos">
       <div class="acard chile"><img src="logos/Chile.png" alt="Marca Chile"></div>
       <div class="acard corfo"><img src="logos/CORFO.png" alt="Proyecto apoyado por CORFO — Gobierno de Chile"></div>
+      <div class="acard pucv"><img src="logos/pucv.jpg" alt="Pontificia Universidad Católica de Valparaíso"></div>
+      <div class="acard santander"><img src="logos/santander.svg" alt="Banco Santander"></div>
     </div>
   </div>
 </section>
@@ -890,10 +892,13 @@
         const d=s.cuposTotal-tomados, full=d<=0;
         const matches=Array.from({length:s.cuposTotal},(_,i)=>
           `<span class="match ${i<tomados?"lit":""}"></span>`).join("");
+        const [diaTxt,...restoFecha]=String(s.fecha).split(",");
+        const horaTxt=restoFecha.join(",").trim();
+        const fechaHtml=esc(diaTxt.trim())+(horaTxt?`<br>${esc(horaTxt)}`:"");
         return `
           <div class="sesion">
             <div>
-              <span class="s-fecha">${esc(s.fecha)}</span>
+              <span class="s-fecha">${fechaHtml}</span>
               <span class="s-lugar">${esc(s.lugar)}</span>
               ${modAvatar(s.moderador)}
             </div>
