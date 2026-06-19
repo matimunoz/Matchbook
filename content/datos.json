@@ -109,19 +109,59 @@
   ],
   "testimonios": [
     {
-      "cita": "Llegué por un libro y me quedé por las personas. Volví a leer todos los meses.",
-      "autor": "Camila R.",
-      "detalle": "lectora desde 2022"
+      "cita": "Encontrar un entorno donde puedas debatir, reír y reflexionar de los libros, eso es Matchbook, un espacio donde te sientes acompañado de más lectores cuyos puntos de vista se complementan en un mundo donde los libros forman parte del camino de la vida. Gracias por existir! Gracias Matchbook! ",
+      "autor": "Araceli Serrano",
+      "detalle": "Lectora de Exploración Literaria desde 2025"
     },
     {
-      "cita": "Salgo de cada sesión viendo el libro —y un poco la vida— de otra forma.",
-      "autor": "Felipe M.",
-      "detalle": "círculo de Viña del Mar"
+      "cita": "Books Up es un espacio de aprendizaje donde la conversación es la base de toda la experiencia. Puedes llegar sin haber leído el libro y aprender harto igual. Mucha gente consolida su hábito de lectura simplemente participando y casi sin darse cuenta. Eso es lo que te atrapa.",
+      "autor": "Angel Grimalt",
+      "detalle": "Lector de Books Up desde 2023"
     },
     {
-      "cita": "Participo desde regiones, online, y la cercanía es la misma. Mi panorama favorito del mes.",
-      "autor": "Josefa T.",
-      "detalle": "círculo online"
+      "cita": "Poder disfrutar de la lectura es para mí la máxima expresión de recorrer mundos posibles, más aún en este original formato colectivo, embelleciendo el ritmo de la lectura. Sin duda han enriquecido este acto de recorrer relatos, cuentos, novelas de una manera entretenida y alegre. El poder conocer personas, charlas amenas ha sido muy valioso. Que sigan por muchos años más!!!!! Abrazos y cariños para ustedes!!!",
+      "autor": "Carmen Gloria Valdebenito ",
+      "detalle": "Lectora de Viaje del Héroe desde 2021"
+    },
+    {
+      "cita": "Entré a matchbook buscando compartir intereses afines de lectura, encontré un club con multiplicidad de gustos literarios, que se atreve a lo nuevo y a sorprenderse, donde Mati, Gonza o Pau nos entregan un poco de sí y guían una conversación con un libro de base y muchas aristas que nacen de ello, nunca somos las mismas personas participando, y aunque un día lo fuesemos, aun así logran una experiencia distinta y enriquecedora. Muchas gracias por tanto🫶",
+      "autor": "Victoria Quezada",
+      "detalle": "Lectora de Exploración Literaria desde 2024"
+    },
+    {
+      "cita": "Tremenda experiencia! Fue muy nutritivo conversar sobre la temática del libro en profundidad y llevarla a la vida de cada uno en una conversación dinámica y entretenida.",
+      "autor": "Agustín Ariztía",
+      "detalle": "Lector de Books Up desde 2026"
+    },
+    {
+      "cita": "Empecé en los clubes con escepticismo, superando la inconsistencia de mis hábitos pasados de lectura. Descubrí que aprender colectivamente transforma la experiencia solitaria del libro en un intercambio humano increíble. Salir de mi zona de confort me permitió enriquecerme con perspectivas diversas, convirtiendo cada encuentro en una necesaria fuente de inspiración.",
+      "detalle": "Lector de Books Up desde 2025",
+      "autor": "Brian Matamoros"
+    },
+    {
+      "autor": "Sandra Hernandez",
+      "cita": "Ha sido un regalo para mi. Encontré un espacio personal donde compartir, donde escuchar a los demás y también escuchar mi voz.  Está experiencia ha sido solo crecer y agradecer",
+      "detalle": "Lectora de Books Up desde 2025"
+    },
+    {
+      "cita": "Me ha gustado el club de lectura porque me ha permitido explorar intereses, conocer gente, reflexionar sobre nuevas ideas y compartir un buen rato. Siempre aprendo algo nuevo, y ahora me motiva leer nuevos libros, y terminarlos también! Además quienes moderan son secos y muy buena onda! Gracias por todo",
+      "autor": "Jairo González",
+      "detalle": "Lector de Books Up desde 2024"
+    },
+    {
+      "cita": "Es el mejor plan de 3 pasos para convertir a un lector solitario en un lector sociable. ",
+      "autor": "Gala Bernal Abarca ",
+      "detalle": "Lectora de Exploración Literaria desde 2025"
+    },
+    {
+      "cita": "Exploración literaria, un espacio de encuentro mediante la lectura, donde puedo sentir y expesar sin temor a ser imcomprendida. Un lugar donde coinciden  personas maravillosas, sensibles, profundas, calidas y amables. Se vive, se siente, se reflexiona, se comprende, se analiza, se escucha, todo, a través de la lectura. Gracias!!",
+      "autor": "Geralidna Flores ",
+      "detalle": "Lectora de Exploración Literaria desde 2026"
+    },
+    {
+      "cita": "Tremenda comunidad para compartir distintos puntos de vistas sobre libros comunes, incluso te hacen un súper resumen si no alcanzas a leerlo. Todo con respeto, análisis crítico y buenas conversas. Muy recomendable!",
+      "autor": "Andrés Martínez",
+      "detalle": "Lector de Books Up desde 2025"
     }
   ],
   "faq": [
