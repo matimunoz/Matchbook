@@ -774,6 +774,7 @@
   // El contenido se carga desde content/datos.json (editable en /admin)
   let CLUBS = [];
   let CONTENT = {};
+  let activeModalClubId = null;
 
   // Reservas en vivo desde Google Sheets (Apps Script)
   const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx2rj_n2EqFClmhlniEyGW9epy30nrI6xZVsEVw9aKEf23iC3hja4tm2U4xTL-rD70v0w/exec";
@@ -802,8 +803,7 @@
     renderClubs();
     if(overlay.classList.contains("open")){
       const cur = document.getElementById("selClub").value;
-      const activeClub = cur ? CLUBS.find(c=>c.sesiones.some(s=>s.id===cur)) : null;
-      fillSesionCards(activeClub?activeClub.id:null);
+      fillSesionCards(activeModalClubId);
       if(cur){ const card=document.querySelector(`.ses-card[data-id="${cur}"]`); if(card&&!card.classList.contains("full")) card.click(); }
     }
   }
@@ -986,13 +986,15 @@
     });
   }
   function openModal(id){
-    fillSesionCards(id||null);
+    if(!id){ document.getElementById("clubes").scrollIntoView({behavior:"smooth"}); return; }
+    activeModalClubId = id;
+    fillSesionCards(id);
     formView.style.display="block";confirmView.style.display="none";
     overlay.classList.add("open");document.body.style.overflow="hidden";
     const firstCard = document.querySelector("#sesionCards .ses-card:not(.full)");
     (firstCard||document.getElementById("inNombre")).focus();
   }
-  function closeModal(){overlay.classList.remove("open");document.body.style.overflow=""}
+  function closeModal(){overlay.classList.remove("open");document.body.style.overflow="";activeModalClubId=null;}
   overlay.addEventListener("click",e=>{if(e.target.id==="overlay")closeModal()});
   document.addEventListener("keydown",e=>{if(e.key==="Escape")closeModal()});
   const setInvalid=(id,bad)=>{document.getElementById(id).classList.toggle("invalid",bad);return !bad};
