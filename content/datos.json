@@ -49,13 +49,13 @@
       "club": "Exploración Literaria",
       "curaduria": "Cada mes votamos por un libro distinto y exploramos nuevos mundos. Este mes: el Japón de posguerra, donde el origami se vuelve una pregunta sobre la vida.",
       "titulo": "Sadako y las mil grullas",
-      "mpLink": "https://mpago.la/2nVbBi5",
+      "mpLink": "https://mpago.la/2R9WruX",
       "portada": "portadas/sadako.jpg"
     },
     {
       "autor": "John Doerr",
       "color": "#C9821F",
-      "precio": 10000,
+      "precio": 15000,
       "sesiones": [
         {
           "fecha": "Viernes 26 de junio, 19:00 hrs",
@@ -81,16 +81,16 @@
       "club": "Books Up",
       "curaduria": "Lecturas de desarrollo personal y profesional con instancias de networking. Los OKRs de Doerr transformaron Google y la Fundación Gates.",
       "titulo": "Mide lo que importa",
-      "mpLink": "https://mpago.la/2nVbBi5",
+      "mpLink": "https://mpago.la/1K2s4DZ",
       "portada": "portadas/mide.jpg"
     },
     {
       "autor": "Alberto Blest Gana",
       "color": "#5E7A52",
-      "precio": 8000,
+      "precio": 10000,
       "sesiones": [
         {
-          "fecha": "Jueves 3 de Julio, 19:00 hrs",
+          "fecha": "Jueves 2 de Julio, 19:00 hrs",
           "moderador": {
             "nombre": "Gonzalo",
             "foto": "moderadores/gonzalo.png"
@@ -103,7 +103,7 @@
       "club": "El Viaje del Héroe",
       "curaduria": "Literatura clásica analizada y disfrutada desde el esquema del viaje del héroe de Joseph Campbell. ¿Qué arquetipo encarna Martín Rivas?",
       "titulo": "Martín Rivas",
-      "mpLink": "https://mpago.la/2nVbBi5",
+      "mpLink": "https://mpago.la/22dyQTC",
       "portada": "portadas/martin-rivas.jpg"
     }
   ],
