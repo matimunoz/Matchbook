@@ -421,14 +421,28 @@
   .modal-close{float:right;background:none;border:none;font-size:1.5rem;cursor:pointer;color:var(--tinta-suave)}
   .field{margin-bottom:16px}
   .field label{display:block;font-weight:800;font-size:.88rem;margin-bottom:6px}
-  .field input,.field select{
+  .field input:not([type="hidden"]){
     width:100%;padding:12px 14px;border:1.5px solid rgba(94,122,82,.4);border-radius:14px;
     background:#FFFDF7;font-family:var(--sans);font-size:1rem;
   }
-  .field input:focus,.field select:focus{outline:3px solid rgba(245,169,59,.5);border-color:var(--ambar)}
+  .field input:not([type="hidden"]):focus{outline:3px solid rgba(245,169,59,.5);border-color:var(--ambar)}
   .field .err{color:#B0492E;font-size:.8rem;margin-top:4px;display:none;font-weight:700}
-  .field.invalid input,.field.invalid select{border-color:#B0492E}
+  .field.invalid input:not([type="hidden"]){border-color:#B0492E}
   .field.invalid .err{display:block}
+  /* ---------- Session picker cards ---------- */
+  .ses-club-head{font-family:var(--serif);font-weight:700;font-size:.8rem;color:var(--tinta-suave);text-transform:uppercase;letter-spacing:.05em;margin:14px 0 5px}
+  .ses-club-head:first-child{margin-top:0}
+  .ses-card{border:1.5px solid rgba(94,122,82,.3);border-radius:14px;padding:11px 14px;cursor:pointer;background:#FFFDF7;transition:border-color .15s,box-shadow .15s;margin-bottom:8px}
+  .ses-card:last-child{margin-bottom:0}
+  .ses-card:hover:not(.full){border-color:var(--hoja)}
+  .ses-card.selected{border-color:var(--ambar);box-shadow:0 0 0 3px rgba(245,169,59,.22)}
+  .ses-card.full{opacity:.5;cursor:not-allowed}
+  .ses-card-fecha{font-family:var(--serif);font-weight:700;font-size:.93rem;color:var(--noche);display:block;line-height:1.35}
+  .ses-card-lugar{font-family:var(--serif);font-size:.82rem;color:var(--tinta-suave);display:block;margin-top:2px}
+  .ses-card-cupos{font-size:.78rem;font-weight:700;display:block;margin-top:5px}
+  .ses-card:not(.full) .ses-card-cupos{color:var(--hoja)}
+  .ses-card.full .ses-card-cupos{color:#B0492E}
+  .field.invalid #sesionCards{outline:1.5px solid #B0492E;border-radius:14px}
   .pago-nota{font-family:var(--serif);background:rgba(140,203,239,.2);border-radius:14px;padding:14px;font-size:.9rem;color:var(--tinta-suave);margin-bottom:18px}
   .modal .btn{width:100%}
   .confirm{text-align:center;padding:10px 0}
@@ -722,9 +736,10 @@
       <h3 id="modalTitle">Reserva tu silla</h3>
       <p class="sub">Completa tus datos y luego paga seguro con Mercado Pago.</p>
       <div class="field" id="f-club">
-        <label for="selClub">Club y fecha</label>
-        <select id="selClub"></select>
-        <div class="err">Selecciona una fecha con sillas disponibles.</div>
+        <label id="lbl-sesion">Elige tu sesión</label>
+        <input type="hidden" id="selClub">
+        <div id="sesionCards" role="radiogroup" aria-labelledby="lbl-sesion"></div>
+        <div class="err">Selecciona una sesión con sillas disponibles.</div>
       </div>
       <div class="field" id="f-nombre">
         <label for="inNombre">Nombre completo</label>
@@ -785,7 +800,12 @@
       s.cuposTomados = counts[c.club + "||" + s.fecha] || 0;
     }));
     renderClubs();
-    if(overlay.classList.contains("open")){ const cur = selClub.value; fillSelect(); if(cur) selClub.value = cur; }
+    if(overlay.classList.contains("open")){
+      const cur = document.getElementById("selClub").value;
+      const activeClub = cur ? CLUBS.find(c=>c.sesiones.some(s=>s.id===cur)) : null;
+      fillSesionCards(activeClub?activeClub.id:null);
+      if(cur){ const card=document.querySelector(`.ses-card[data-id="${cur}"]`); if(card&&!card.classList.contains("full")) card.click(); }
+    }
   }
 
   const esc = s => String(s==null?"":s)
@@ -934,24 +954,43 @@
     document.fonts.ready.then(() => requestAnimationFrame(equalizeDescriptions));
   }
 
-  function fillSelect(p){
-    document.getElementById("selClub").innerHTML =
-      '<option value="">— Elige club y fecha —</option>'+CLUBS.map(c=>
-        `<optgroup label="${esc(c.club)} · ${esc(c.titulo)}">`+c.sesiones.map(s=>{
-          const d=s.cuposTotal-s.cuposTomados;
-          return `<option value="${s.id}" ${d<=0?"disabled":""}>${esc(s.fecha)} · ${esc(s.lugar)}${d<=0?" (completo)":""}</option>`;
-        }).join("")+`</optgroup>`).join("");
-    if(p){
-      const c=CLUBS.find(x=>x.id===p);
-      const s=c&&c.sesiones.find(x=>x.cuposTotal-x.cuposTomados>0);
-      if(s)document.getElementById("selClub").value=s.id;
-    }
+  function fillSesionCards(clubId){
+    const container = document.getElementById("sesionCards");
+    document.getElementById("selClub").value = "";
+    const clubs = clubId ? CLUBS.filter(c=>c.id===clubId) : CLUBS;
+    container.innerHTML = clubs.map(c=>{
+      const head = clubs.length > 1
+        ? `<p class="ses-club-head">${esc(c.club)} · ${esc(c.titulo)}</p>` : "";
+      const cards = c.sesiones.map(s=>{
+        const d = s.cuposTotal - s.cuposTomados;
+        const full = d <= 0;
+        const [diaTxt,...resto] = String(s.fecha).split(",");
+        const horaTxt = resto.join(",").trim();
+        return `<div class="ses-card${full?" full":""}" data-id="${esc(s.id)}" role="radio" aria-checked="false" tabindex="${full?-1:0}">
+          <span class="ses-card-fecha">${esc(diaTxt.trim())}${horaTxt?`<br>${esc(horaTxt)}`:""}</span>
+          <span class="ses-card-lugar">${esc(s.lugar)}</span>
+          <span class="ses-card-cupos">${full?"Sin cupos disponibles":`${d} disponible${d===1?"":"s"}`}</span>
+        </div>`;
+      }).join("");
+      return head + cards;
+    }).join("");
+    container.querySelectorAll(".ses-card:not(.full)").forEach(card=>{
+      card.addEventListener("click",()=>{
+        container.querySelectorAll(".ses-card").forEach(c=>{c.classList.remove("selected");c.setAttribute("aria-checked","false");});
+        card.classList.add("selected");
+        card.setAttribute("aria-checked","true");
+        document.getElementById("selClub").value = card.dataset.id;
+        document.getElementById("f-club").classList.remove("invalid");
+      });
+      card.addEventListener("keydown",e=>{if(e.key===" "||e.key==="Enter"){e.preventDefault();card.click();}});
+    });
   }
   function openModal(id){
-    fillSelect(id);
+    fillSesionCards(id||null);
     formView.style.display="block";confirmView.style.display="none";
     overlay.classList.add("open");document.body.style.overflow="hidden";
-    document.getElementById(id?"inNombre":"selClub").focus();
+    const firstCard = document.querySelector("#sesionCards .ses-card:not(.full)");
+    (firstCard||document.getElementById("inNombre")).focus();
   }
   function closeModal(){overlay.classList.remove("open");document.body.style.overflow=""}
   overlay.addEventListener("click",e=>{if(e.target.id==="overlay")closeModal()});
