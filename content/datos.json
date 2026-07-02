@@ -26,30 +26,40 @@
       "precio": 5000,
       "sesiones": [
         {
-          "fecha": "Sábado 27 de junio, 11:30 hrs",
+          "fecha": "Sábado 1 de Agosto, 11:30 hrs",
           "moderador": {
             "nombre": "Paulette",
             "foto": "moderadores/paulette.jpeg"
           },
           "lugar": "Punto & Café, Viña del Mar",
           "cuposTotal": 10,
-          "cuposTomados": 4
+          "cuposTomados": 0
         },
         {
-          "fecha": "Domingo 28 de junio, 14:00 hrs",
+          "cuposTotal": 10,
+          "cuposTomados": 0,
+          "fecha": "Domingo 2 de Agosto, 11:30 hrs",
+          "lugar": "La Florería, Viña del Mar",
+          "moderador": {
+            "nombre": "Brianna ",
+            "foto": "/portadas/2ec11045-1460-49c6-865a-a2af3f66d437.jpg"
+          }
+        },
+        {
+          "fecha": "Domingo 2 de Agosto, 14:30 hrs",
           "moderador": {
             "nombre": "Matías",
             "foto": "moderadores/matias.jpg"
           },
           "lugar": "La Florería, Viña del Mar",
           "cuposTotal": 10,
-          "cuposTomados": 4
+          "cuposTomados": 0
         }
       ],
       "club": "Exploración Literaria",
       "curaduria": "Cada mes votamos por un libro distinto y exploramos nuevos mundos. Este mes: el Japón de posguerra, donde el origami se vuelve una pregunta sobre la vida.",
-      "titulo": "Sadako y las mil grullas",
-      "mpLink": "https://mpago.la/2R9WruX",
+      "titulo": "Por confirmar",
+      "mpLink": " https://mpago.la/2R9WruX",
       "portada": "portadas/sadako.jpg"
     },
     {
