@@ -63,7 +63,7 @@
       "portada": "/portadas/images.jpg"
     },
     {
-      "autor": "John Doerr",
+      "autor": "Rick Rubin",
       "color": "#C9821F",
       "precio": 15000,
       "sesiones": [
@@ -89,8 +89,8 @@
         }
       ],
       "club": "Books Up",
-      "curaduria": "Lecturas de desarrollo personal y profesional con instancias de networking. Los OKRs de Doerr transformaron Google y la Fundación Gates.",
-      "titulo": "Mide lo que importa",
+      "curaduria": "Lecturas de no ficción sobre desarrollo personal y profesional. Todos los meses no reunimos en Santiago y en Viña del Mar. En julio estamos leyendo sobre creatividad con Rick Rubin. ",
+      "titulo": "El acto de crear",
       "mpLink": "https://mpago.la/1K2s4DZ",
       "portada": "portadas/mide.jpg"
     },
