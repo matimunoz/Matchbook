@@ -68,17 +68,17 @@
       "precio": 15000,
       "sesiones": [
         {
-          "fecha": "Viernes 26 de junio, 19:00 hrs",
+          "fecha": "Viernes 31 de julio, 19:00 hrs | Viña del Mar",
           "moderador": {
             "nombre": "Gonzalo",
             "foto": "moderadores/gonzalo.png"
           },
           "lugar": "Punto & Café, Viña del Mar",
           "cuposTotal": 10,
-          "cuposTomados": 8
+          "cuposTomados": 5
         },
         {
-          "fecha": "Martes 30 de junio, 19:00 hrs",
+          "fecha": "Martes 28 de julio, 19:00 hrs | Santiago",
           "moderador": {
             "nombre": "Gonzalo",
             "foto": "moderadores/gonzalo.png"
