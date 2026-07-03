@@ -21,7 +21,7 @@
   ],
   "clubs": [
     {
-      "autor": "Eleanor Coerr",
+      "autor": "Javier Cercas",
       "color": "#2F8CC4",
       "precio": 5000,
       "sesiones": [
@@ -57,10 +57,10 @@
         }
       ],
       "club": "Exploración Literaria",
-      "curaduria": "Cada mes votamos por un libro distinto y exploramos nuevos mundos. Este mes: el Japón de posguerra, donde el origami se vuelve una pregunta sobre la vida.",
-      "titulo": "Por confirmar",
+      "curaduria": "Cada mes votamos por un libro distinto y exploramos nuevos mundos. Este mes: Una novela que cruza memoria, investigación y ficción para explorar la Guerra Civil Española.",
+      "titulo": "Soldados de Salamina",
       "mpLink": " https://mpago.la/2R9WruX",
-      "portada": "portadas/sadako.jpg"
+      "portada": "/portadas/images.jpg"
     },
     {
       "autor": "John Doerr",
