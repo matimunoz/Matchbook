@@ -70,7 +70,6 @@ collections:
                       - { label: "Nombre", name: "nombre", widget: "string" }
                       - { label: "Foto", name: "foto", widget: "image", required: false, hint: "Foto cuadrada del moderador (se muestra redonda). Si no hay foto, aparece la inicial." }
                   - { label: "Cupos totales", name: "cuposTotal", widget: "number", value_type: "int", min: 1, default: 10 }
-                  - { label: "Cupos ya tomados", name: "cuposTomados", widget: "number", value_type: "int", min: 0, default: 0 }
 
           - label: "Testimonios"
             name: "testimonios"
