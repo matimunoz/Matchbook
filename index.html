@@ -785,7 +785,7 @@
       const cb = "mbCupos_" + Math.random().toString(36).slice(2);
       const sc = document.createElement("script");
       let listo = false;
-      const limpiar = ()=>{ try{ delete window[cb]; }catch(e){ window[cb]=undefined; } sc.remove(); };
+      const limpiar = ()=>{ window[cb]=()=>{}; sc.remove(); };
       window[cb] = data => { listo=true; resolve(data); limpiar(); };
       sc.onerror = ()=>{ if(!listo){ resolve(null); limpiar(); } };
       sc.src = APPS_SCRIPT_URL + "?callback=" + cb + "&_=" + Date.now();
