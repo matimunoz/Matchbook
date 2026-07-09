@@ -779,19 +779,35 @@
   // Reservas en vivo desde Google Sheets (Apps Script)
   const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx2rj_n2EqFClmhlniEyGW9epy30nrI6xZVsEVw9aKEf23iC3hja4tm2U4xTL-rD70v0w/exec";
 
-  // Lee los conteos por sesión vía JSONP (evita problemas de CORS con Apps Script)
-  function fetchCuposEnVivo(){
-    return new Promise(resolve=>{
-      const cb = "mbCupos_" + Math.random().toString(36).slice(2);
-      const sc = document.createElement("script");
-      let listo = false;
-      const limpiar = ()=>{ window[cb]=()=>{}; sc.remove(); };
-      window[cb] = data => { listo=true; resolve(data); limpiar(); };
-      sc.onerror = ()=>{ if(!listo){ resolve(null); limpiar(); } };
-      sc.src = APPS_SCRIPT_URL + "?callback=" + cb + "&_=" + Date.now();
-      document.head.appendChild(sc);
-      setTimeout(()=>{ if(!listo){ resolve(null); limpiar(); } }, 6000);
-    });
+  const SHEET_CSV = "https://docs.google.com/spreadsheets/d/1Y9rDM3GFXzZ88b8IIchdBPpFYaPVFFVq8E8vEtSXNbw/export?format=csv&gid=0";
+
+  function parseCSV(str){
+    const rows = []; let row = [], cur = '', inQ = false;
+    for(let i = 0; i < str.length; i++){
+      const c = str[i];
+      if(c === '"'){ if(inQ && str[i+1]==='"'){cur+='"';i++;}else inQ=!inQ; }
+      else if(c === ',' && !inQ){ row.push(cur); cur=''; }
+      else if((c==='\n'||c==='\r') && !inQ){ if(c==='\r'&&str[i+1]==='\n')i++; row.push(cur); if(row.some(x=>x))rows.push(row); row=[]; cur=''; }
+      else cur+=c;
+    }
+    if(cur||row.length){row.push(cur);if(row.some(x=>x))rows.push(row);}
+    return rows;
+  }
+
+  // Lee los conteos directamente desde el CSV público del Sheet (~200ms, sin cold start)
+  async function fetchCuposEnVivo(){
+    try {
+      const r = await fetch(SHEET_CSV, {cache:"no-store"});
+      if(!r.ok) return null;
+      const rows = parseCSV(await r.text());
+      const counts = {};
+      for(let i = 1; i < rows.length; i++){
+        const club = rows[i][4], fecha = rows[i][6];
+        if(!club || !fecha) continue;
+        counts[club + "||" + fecha] = (counts[club + "||" + fecha] || 0) + 1;
+      }
+      return counts;
+    } catch(e){ return null; }
   }
 
   function aplicarCounts(counts){
