@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nuestra Cita 🌿</title>
+<meta name="robots" content="noindex">
+
+<!--
+  ╔══════════════════════════════════════════════════════╗
+  ║  CONFIGURACIÓN EMAILJS — completa estos 3 valores   ║
+  ╠══════════════════════════════════════════════════════╣
+  ║  1. Ve a https://emailjs.com y crea cuenta gratis   ║
+  ║  2. Conecta tu Gmail en Email Services              ║
+  ║  3. Crea una plantilla con las variables:           ║
+  ║     {{fecha}}, {{hora}}, {{plan}}, {{nombre}}       ║
+  ║  4. Pega los IDs abajo                              ║
+  ╚══════════════════════════════════════════════════════╝
+-->
+<script>
+  const EMAILJS_PUBLIC_KEY  = 'JXALjvHACKd5EL19V';
+  const EMAILJS_SERVICE_ID  = 'service_3igg9ke';
+  const EMAILJS_TEMPLATE_ID = 'template_r9zfy8n';
+  const EMAIL_MATIAS        = 'matias.imz19@gmail.com';
+  const EMAIL_ALYN          = 'a.gabellini.h@gmail.com';
+</script>
+
+<style>
+  :root {
+    --bg: #EBF5ED;
+    --card: #FFFFFF;
+    --g1: #2A5040;
+    --g2: #45856A;
+    --g3: #78B896;
+    --g4: #C0DECA;
+    --g5: #EAF5EE;
+    --t1: #1C3A2C;
+    --t2: #507260;
+    --t3: #8AADA0;
+    --shadow: 0 6px 32px rgba(42,80,64,0.12);
+    --r: 18px;
+    --rsm: 12px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #182E22; --card: #1F3828;
+      --g1: #9FD4B5; --g2: #78B896; --g3: #507260;
+      --g4: #2A4B38; --g5: #1A3025;
+      --t1: #CCE9D8; --t2: #88B89E; --t3: #507260;
+      --shadow: 0 6px 32px rgba(0,0,0,0.35);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #182E22; --card: #1F3828;
+    --g1: #9FD4B5; --g2: #78B896; --g3: #507260;
+    --g4: #2A4B38; --g5: #1A3025;
+    --t1: #CCE9D8; --t2: #88B89E; --t3: #507260;
+    --shadow: 0 6px 32px rgba(0,0,0,0.35);
+  }
+  :root[data-theme="light"] {
+    --bg: #EBF5ED; --card: #FFFFFF;
+    --g1: #2A5040; --g2: #45856A; --g3: #78B896;
+    --g4: #C0DECA; --g5: #EAF5EE;
+    --t1: #1C3A2C; --t2: #507260; --t3: #8AADA0;
+    --shadow: 0 6px 32px rgba(42,80,64,0.12);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .app { width: 100%; max-width: 380px; }
+
+  .screen {
+    background: var(--card);
+    border-radius: var(--r);
+    padding: 36px 28px 32px;
+    box-shadow: var(--shadow);
+    display: none;
+  }
+  .screen.active {
+    display: block;
+    animation: arrive 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  }
+  @keyframes arrive {
+    from { opacity: 0; transform: translateY(18px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  @media (prefers-reduced-motion: reduce) { .screen.active { animation: none; } }
+
+  .dots { display: flex; gap: 6px; justify-content: center; margin-bottom: 28px; }
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--g4); transition: all 0.3s ease; }
+  .dot.active { background: var(--g2); width: 22px; border-radius: 3px; }
+
+  .deco { font-size: 2.4rem; display: block; margin-bottom: 12px; }
+
+  h1 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1.85rem;
+    font-weight: normal;
+    line-height: 1.25;
+    color: var(--g1);
+    text-wrap: balance;
+    margin-bottom: 6px;
+  }
+  .sub { font-size: 0.82rem; color: var(--t3); letter-spacing: 0.03em; margin-bottom: 28px; }
+  .label {
+    font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--t2); margin-bottom: 10px;
+  }
+
+  .btn {
+    width: 100%; border: none; border-radius: 50px; padding: 15px 20px;
+    font-size: 0.95rem; font-weight: 600; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    transition: background 0.2s, transform 0.12s, opacity 0.2s;
+    letter-spacing: 0.01em;
+  }
+  .btn:focus-visible { outline: 3px solid var(--g3); outline-offset: 2px; }
+  .btn-primary { background: var(--g2); color: #fff; }
+  .btn-primary:hover { background: var(--g1); }
+  .btn-primary:active { transform: scale(0.98); }
+  .btn-primary:disabled { opacity: 0.45; pointer-events: none; }
+  .btn-ghost {
+    width: 100%; background: none; border: none; color: var(--t3);
+    font-size: 0.8rem; cursor: pointer; padding: 10px; margin-top: 6px;
+    transition: color 0.2s;
+  }
+  .btn-ghost:hover { color: var(--t2); }
+
+  /* Screen 1 */
+  .no-area { position: relative; height: 48px; margin-top: 10px; }
+  .btn-no {
+    position: absolute; background: none; border: 1.5px solid var(--g4);
+    color: var(--t3); border-radius: 50px; padding: 9px 22px;
+    font-size: 0.82rem; cursor: pointer; white-space: nowrap;
+    left: 50%; top: 50%; transform: translate(-50%, -50%);
+    transition: left 0.15s, top 0.15s;
+  }
+
+  /* Calendar */
+  .cal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+  .cal-month { font-family: Georgia, serif; font-size: 0.95rem; color: var(--g1); }
+  .cal-nav {
+    background: none; border: none; color: var(--t2); cursor: pointer;
+    padding: 4px 10px; border-radius: 8px; font-size: 1.1rem; line-height: 1;
+    transition: background 0.15s;
+  }
+  .cal-nav:hover { background: var(--g5); }
+
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; margin-bottom: 20px; }
+  .cal-dow {
+    text-align: center; font-size: 0.62rem; font-weight: 700;
+    letter-spacing: 0.06em; color: var(--t3); padding: 5px 0; text-transform: uppercase;
+  }
+  .cal-day {
+    text-align: center; padding: 7px 2px; font-size: 0.82rem;
+    border-radius: 9px; color: var(--t1); cursor: pointer;
+    transition: background 0.15s, color 0.15s; user-select: none;
+  }
+  .cal-day:hover:not(.empty):not(.past) { background: var(--g5); color: var(--g1); }
+  .cal-day.empty { cursor: default; }
+  .cal-day.past { color: var(--t3); cursor: default; opacity: 0.5; }
+  .cal-day.today { border: 1.5px solid var(--g3); font-weight: 700; }
+  .cal-day.sel { background: var(--g2); color: #fff; font-weight: 700; }
+
+  /* Time slots */
+  .time-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; margin-bottom: 24px; }
+  .t-slot {
+    background: var(--g5); border: 1.5px solid transparent;
+    border-radius: var(--rsm); padding: 8px 2px; text-align: center;
+    font-size: 0.72rem; color: var(--t2); cursor: pointer;
+    transition: all 0.15s; user-select: none;
+  }
+  .t-slot:hover { border-color: var(--g3); color: var(--g1); }
+  .t-slot.sel { background: var(--g2); color: #fff; border-color: var(--g2); font-weight: 600; }
+
+  /* Plan grid */
+  .plan-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 11px; margin-bottom: 24px; }
+  .plan-card {
+    background: var(--g5); border: 2px solid transparent;
+    border-radius: var(--r); padding: 18px 10px; text-align: center;
+    cursor: pointer; transition: all 0.18s; user-select: none;
+  }
+  .plan-card:hover { border-color: var(--g3); }
+  .plan-card.sel { border-color: var(--g2); background: var(--card); box-shadow: 0 2px 14px rgba(69,133,106,0.2); }
+  .plan-emoji { font-size: 1.9rem; display: block; margin-bottom: 7px; }
+  .plan-name { font-size: 0.82rem; color: var(--t1); font-weight: 500; }
+
+  /* Confirmation */
+  .confirm-wrap { text-align: center; }
+  .big-icon {
+    font-size: 3.2rem; display: block; margin-bottom: 12px;
+    animation: pop 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) 0.15s both;
+  }
+  @keyframes pop { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  @media (prefers-reduced-motion: reduce) { .big-icon { animation: none; } }
+
+  .summary-box { background: var(--g5); border-radius: var(--rsm); padding: 14px 16px; margin: 20px 0 16px; text-align: left; }
+  .s-row { display: flex; align-items: center; gap: 11px; padding: 8px 0; font-size: 0.875rem; color: var(--t1); }
+  .s-row + .s-row { border-top: 1px solid var(--g4); }
+  .s-icon { font-size: 1.05rem; width: 20px; text-align: center; flex-shrink: 0; }
+
+  /* Email status */
+  .email-status {
+    font-size: 0.78rem;
+    text-align: center;
+    padding: 8px 12px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    min-height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+  .email-status.sending { background: var(--g5); color: var(--t2); }
+  .email-status.ok  { background: #e6f4ea; color: #2d6a4f; }
+  .email-status.err { background: #fce8e8; color: #a33; }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- PASO 1 -->
+  <div class="screen active" id="s1">
+    <span class="deco">🌿</span>
+    <h1>Querida Alyn Gabellini, ¿tengamos una cita? 🌸</h1>
+    <p class="sub">una pequeña pregunta importante</p>
+    <div class="dots">
+      <div class="dot active"></div><div class="dot"></div>
+      <div class="dot"></div><div class="dot"></div>
+    </div>
+    <button class="btn btn-primary" onclick="goTo('s2')">
+      Definitivamente sí 💚
+    </button>
+    <div class="no-area">
+      <button class="btn-no" onmouseover="runAway(this)" onfocus="runAway(this)">No, gracias</button>
+    </div>
+  </div>
+
+  <!-- PASO 2 -->
+  <div class="screen" id="s2">
+    <span class="deco">🗓️</span>
+    <h1>¿Cuándo estás libre?</h1>
+    <p class="sub">elige el día perfecto 🌿</p>
+    <div class="dots">
+      <div class="dot"></div><div class="dot active"></div>
+      <div class="dot"></div><div class="dot"></div>
+    </div>
+    <p class="label">Elige un día</p>
+    <div id="cal"></div>
+    <p class="label">¿A qué hora?</p>
+    <div class="time-grid" id="timeGrid"></div>
+    <button class="btn btn-primary" id="btnDate" onclick="goTo('s3')" disabled>Siguiente →</button>
+    <button class="btn-ghost" onclick="goTo('s1')">← Volver</button>
+  </div>
+
+  <!-- PASO 3 -->
+  <div class="screen" id="s3">
+    <span class="deco">✨</span>
+    <h1>¿Qué tipo de cita prefieres?</h1>
+    <p class="sub">elige el plan perfecto</p>
+    <div class="dots">
+      <div class="dot"></div><div class="dot"></div>
+      <div class="dot active"></div><div class="dot"></div>
+    </div>
+    <div class="plan-grid" id="planGrid"></div>
+    <button class="btn btn-primary" id="btnPlan" onclick="goTo('s4')" disabled>Siguiente →</button>
+    <button class="btn-ghost" onclick="goTo('s2')">← Volver</button>
+  </div>
+
+  <!-- PASO 4 -->
+  <div class="screen" id="s4">
+    <div class="confirm-wrap">
+      <span class="big-icon">🌱</span>
+      <h1>¡Todo listo!</h1>
+      <p class="sub">la cita está confirmada 💚</p>
+      <div class="dots">
+        <div class="dot"></div><div class="dot"></div>
+        <div class="dot"></div><div class="dot active"></div>
+      </div>
+      <div class="summary-box" id="summary"></div>
+      <div class="email-status" id="emailStatus" style="display:none"></div>
+      <button class="btn btn-primary" onclick="resetApp()">Planear otra cita 🌿</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- EmailJS SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>
+  // Inicializar EmailJS
+  if (typeof emailjs !== 'undefined') {
+    emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+  }
+
+  // ── Estado ────────────────────────────────────────────────────
+  const state = { day: null, time: null, plan: null, month: 6, year: 2026 };
+
+  // ── Navegación ────────────────────────────────────────────────
+  function goTo(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    if (id === 's2') renderCal();
+    if (id === 's4') { buildSummary(); sendEmails(); }
+  }
+
+  function resetApp() {
+    Object.assign(state, { day: null, time: null, plan: null });
+    document.getElementById('btnDate').disabled = true;
+    document.getElementById('btnPlan').disabled = true;
+    document.querySelectorAll('.plan-card').forEach(c => c.classList.remove('sel'));
+    goTo('s1');
+  }
+
+  // ── Botón "No" que escapa ─────────────────────────────────────
+  function runAway(btn) {
+    const wrap = btn.parentElement;
+    const bw = btn.offsetWidth, pw = wrap.offsetWidth;
+    const bh = btn.offsetHeight, ph = wrap.offsetHeight;
+    btn.style.left      = Math.random() * (pw - bw) + 'px';
+    btn.style.top       = Math.random() * (ph - bh) + 'px';
+    btn.style.transform = 'none';
+  }
+
+  // ── Calendario ────────────────────────────────────────────────
+  const MN  = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  const DOW = ['Do','Lu','Ma','Mi','Ju','Vi','Sa'];
+  const TODAY = new Date(); TODAY.setHours(0,0,0,0);
+
+  function renderCal() {
+    const { month: m, year: y } = state;
+    const first = new Date(y, m, 1).getDay();
+    const total = new Date(y, m + 1, 0).getDate();
+    let html = `
+      <div class="cal-head">
+        <button class="cal-nav" onclick="shiftMonth(-1)" aria-label="Mes anterior">‹</button>
+        <span class="cal-month">${MN[m]} ${y}</span>
+        <button class="cal-nav" onclick="shiftMonth(1)"  aria-label="Mes siguiente">›</button>
+      </div>
+      <div class="cal-grid">
+        ${DOW.map(d => `<div class="cal-dow">${d}</div>`).join('')}
+        ${Array(first).fill('<div class="cal-day empty"></div>').join('')}`;
+    for (let d = 1; d <= total; d++) {
+      const date  = new Date(y, m, d);
+      const isPast = date < TODAY;
+      const isTod  = date.getTime() === TODAY.getTime();
+      const isSel  = state.day && state.day.d === d && state.day.m === m && state.day.y === y;
+      const cls = ['cal-day', isPast?'past':'', isTod?'today':'', isSel?'sel':''].filter(Boolean).join(' ');
+      const clk = isPast ? '' : `onclick="pickDay(${d})"`;
+      html += `<div class="${cls}" ${clk}>${d}</div>`;
+    }
+    html += '</div>';
+    document.getElementById('cal').innerHTML = html;
+    renderTimes();
+  }
+
+  function shiftMonth(dir) {
+    state.month += dir;
+    if (state.month > 11) { state.month = 0; state.year++; }
+    if (state.month < 0)  { state.month = 11; state.year--; }
+    renderCal();
+  }
+
+  function pickDay(d) {
+    state.day = { d, m: state.month, y: state.year };
+    renderCal(); checkDate();
+  }
+
+  // ── Horarios ──────────────────────────────────────────────────
+  const TIMES = ['12:00 PM','1:00 PM','2:00 PM','3:00 PM','4:00 PM','5:00 PM','6:00 PM','6:30 PM','7:00 PM','7:30 PM','8:00 PM','8:30 PM'];
+
+  function renderTimes() {
+    document.getElementById('timeGrid').innerHTML = TIMES.map(t => {
+      const s = state.time === t ? 'sel' : '';
+      return `<div class="t-slot ${s}" onclick="pickTime('${t}')" tabindex="0" role="button">${t}</div>`;
+    }).join('');
+  }
+
+  function pickTime(t) { state.time = t; renderTimes(); checkDate(); }
+
+  function checkDate() {
+    document.getElementById('btnDate').disabled = !(state.day && state.time);
+  }
+
+  // ── Planes ────────────────────────────────────────────────────
+  const PLANS = [
+    { name: 'Sushi',              emoji: '🍱' },
+    { name: 'Salida Cultural',    emoji: '🎨' },
+    { name: 'Paseo fotográfico',  emoji: '📸' },
+    { name: 'Cafecito',           emoji: '☕' },
+    { name: 'Películas',          emoji: '🎬' },
+    { name: 'Descansar juntos',   emoji: '🛋️' },
+  ];
+
+  document.getElementById('planGrid').innerHTML = PLANS.map(p => `
+    <div class="plan-card" onclick="pickPlan('${p.name}', this)" tabindex="0" role="button">
+      <span class="plan-emoji">${p.emoji}</span>
+      <span class="plan-name">${p.name}</span>
+    </div>`).join('');
+
+  function pickPlan(name, el) {
+    state.plan = name;
+    document.querySelectorAll('.plan-card').forEach(c => c.classList.remove('sel'));
+    el.classList.add('sel');
+    document.getElementById('btnPlan').disabled = false;
+  }
+
+  // ── Resumen ───────────────────────────────────────────────────
+  function buildSummary() {
+    const { day, time, plan } = state;
+    const dayStr = day ? `${day.d} de ${MN[day.m]} de ${day.y}` : '—';
+    const planEmoji = PLANS.find(p => p.name === plan)?.emoji || '';
+    document.getElementById('summary').innerHTML = `
+      <div class="s-row"><span class="s-icon">📅</span>${dayStr}</div>
+      <div class="s-row"><span class="s-icon">🕐</span>${time || '—'}</div>
+      <div class="s-row"><span class="s-icon">${planEmoji}</span>${plan || '—'}</div>`;
+  }
+
+  // ── Emails ────────────────────────────────────────────────────
+  function setStatus(type, msg) {
+    const el = document.getElementById('emailStatus');
+    el.style.display = 'flex';
+    el.className = 'email-status ' + type;
+    el.textContent = msg;
+  }
+
+  async function sendEmails() {
+    if (EMAILJS_PUBLIC_KEY === 'TU_PUBLIC_KEY') {
+      setStatus('err', '⚠️ Configura EmailJS en el HTML para enviar correos');
+      return;
+    }
+    const { day, time, plan } = state;
+    const fecha = day ? `${day.d} de ${MN[day.m]} de ${day.y}` : '—';
+    const params = { fecha, hora: time || '—', plan: plan || '—', nombre: 'Alyn' };
+    setStatus('sending', '📨 Enviando confirmación…');
+    try {
+      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, { ...params, to_email: EMAIL_ALYN });
+      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, { ...params, to_email: EMAIL_MATIAS, nombre: 'Matías' });
+      setStatus('ok', '✅ ¡Confirmación enviada a los dos!');
+    } catch (err) {
+      console.error(err);
+      setStatus('err', '❌ No se pudo enviar el correo. Revisa la config de EmailJS.');
+    }
+  }
+
+  // ── Teclado ───────────────────────────────────────────────────
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    const t = e.target;
+    if (t.classList.contains('cal-day') && !t.classList.contains('past') && !t.classList.contains('empty')) { t.click(); e.preventDefault(); }
+    if (t.classList.contains('t-slot') || t.classList.contains('plan-card')) { t.click(); e.preventDefault(); }
+  });
+
+  renderCal();
+</script>
+</body>
+</html>
