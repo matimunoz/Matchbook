@@ -93,6 +93,36 @@
       "titulo": "El acto de crear",
       "mpLink": "https://mpago.la/333XMjN",
       "portada": "/portadas/el-acto-de-crear-rick-rubin-portada.jpeg"
+    },
+    {
+      "autor": "Homero",
+      "color": "#f90cd3",
+      "precio": 10000,
+      "sesiones": [
+        {
+          "cuposTotal": 10,
+          "fecha": "Santiago | Sábado 12 de septiembre, 11:30 hrs",
+          "lugar": "Between Coffee & Bar ",
+          "moderador": {
+            "nombre": "Bárbara y Gonzalo",
+            "foto": "/portadas/bárbara-y-gonzalo.png"
+          }
+        },
+        {
+          "cuposTotal": 10,
+          "fecha": "Viña del Mar | Sábado 12 de septiembre 19:00hrs",
+          "lugar": "Punto y Café",
+          "moderador": {
+            "nombre": "Bárbara y Gonzalo",
+            "foto": "/portadas/bárbara-y-gonzalo.png"
+          }
+        }
+      ],
+      "club": "El Viaje del Héroe",
+      "curaduria": "Analizamos literatura clásica desde la estructura de \"el viaje del héroe\" o Monomito. Nos reunimos cada dos sábados en sesiones online y la última reunión es presencial.",
+      "titulo": "La Odisea ",
+      "mpLink": "https://mpago.la/2bR9GNW",
+      "portada": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTNgOFBhv9xqrth-6abF9P8AYjU7W4Yt3-8OqPtjdHHHI5szjtVdK7R_34&s=10"
     }
   ],
   "testimonios": [
