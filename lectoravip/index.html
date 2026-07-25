@@ -449,7 +449,8 @@
       setStatus('ok', '✅ ¡Correo enviado!');
     } catch (err) {
       console.error(err);
-      setStatus('err', '❌ No se pudo enviar el correo. Revisa la config de EmailJS.');
+      const msg = err?.text || err?.message || JSON.stringify(err);
+      setStatus('err', '❌ Error: ' + msg);
     }
   }
 
