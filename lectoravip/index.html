@@ -445,9 +445,8 @@
     const params = { fecha, hora: time || '—', plan: plan || '—', nombre: 'Alyn' };
     setStatus('sending', '📨 Enviando confirmación…');
     try {
-      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, { ...params, to_email: EMAIL_ALYN });
-      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, { ...params, to_email: EMAIL_MATIAS, nombre: 'Matías' });
-      setStatus('ok', '✅ ¡Confirmación enviada a los dos!');
+      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, { ...params, to_email: 'maat14s@gmail.com' });
+      setStatus('ok', '✅ ¡Correo enviado!');
     } catch (err) {
       console.error(err);
       setStatus('err', '❌ No se pudo enviar el correo. Revisa la config de EmailJS.');
