@@ -96,13 +96,13 @@
     },
     {
       "autor": "Homero",
-      "color": "#f90cd3",
+      "color": "#d50c13",
       "precio": 10000,
       "sesiones": [
         {
           "cuposTotal": 10,
-          "fecha": "Santiago | Sábado 12 de septiembre, 11:30 hrs",
-          "lugar": "Between Coffee & Bar ",
+          "fecha": "Sábado 12 de septiembre, 11:30 hrs | Santiago",
+          "lugar": "Between Coffee & Bar, Las Condes",
           "moderador": {
             "nombre": "Bárbara y Gonzalo",
             "foto": "/portadas/bárbara-y-gonzalo.png"
@@ -110,7 +110,7 @@
         },
         {
           "cuposTotal": 10,
-          "fecha": "Viña del Mar | Sábado 12 de septiembre 19:00hrs",
+          "fecha": "Sábado 12 de septiembre 19:00hrs | Viña del Mar",
           "lugar": "Punto y Café",
           "moderador": {
             "nombre": "Bárbara y Gonzalo",
