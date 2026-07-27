@@ -97,7 +97,7 @@
     {
       "autor": "Homero",
       "color": "#d50c13",
-      "precio": 10000,
+      "precio": 20000,
       "sesiones": [
         {
           "cuposTotal": 10,
@@ -121,7 +121,7 @@
       "club": "El Viaje del Héroe",
       "curaduria": "Analizamos literatura clásica desde la estructura de \"el viaje del héroe\" o Monomito. Nos reunimos cada dos sábados en sesiones online y la última reunión es presencial.",
       "titulo": "La Odisea ",
-      "mpLink": "https://mpago.la/2bR9GNW",
+      "mpLink": "https://mpago.la/2vRJZV2",
       "portada": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTNgOFBhv9xqrth-6abF9P8AYjU7W4Yt3-8OqPtjdHHHI5szjtVdK7R_34&s=10"
     }
   ],
