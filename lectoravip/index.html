@@ -318,7 +318,7 @@
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById(id).classList.add('active');
     if (id === 's2') renderCal();
-    if (id === 's4') { buildSummary(); sendEmails(); }
+    if (id === 's4') { markPlanAsUsed(state.plan); buildSummary(); sendEmails(); renderPlanGrid(); }
   }
 
   function resetApp() {
@@ -400,8 +400,23 @@
   }
 
   // ── Planes ────────────────────────────────────────────────────
-  // Agrega aquí los planes ya realizados para que queden inactivos
-  const USED_PLANS = ['Sushi'];
+  // Planes que siempre quedan inactivos (actualizá manualmente si es necesario)
+  const FIXED_USED = ['Sushi'];
+
+  function getUsedPlans() {
+    const saved = JSON.parse(localStorage.getItem('usedPlans') || '[]');
+    return [...new Set([...FIXED_USED, ...saved])];
+  }
+
+  function markPlanAsUsed(name) {
+    const saved = JSON.parse(localStorage.getItem('usedPlans') || '[]');
+    if (!saved.includes(name)) {
+      saved.push(name);
+      localStorage.setItem('usedPlans', JSON.stringify(saved));
+    }
+  }
+
+  const USED_PLANS = getUsedPlans();
 
   const PLANS = [
     { name: 'Sushi',              emoji: '🍱', img: null },
@@ -412,17 +427,22 @@
     { name: 'Descansar juntos',   emoji: '🛋️', img: 'img/descansar-juntos.jpg' },
   ];
 
-  document.getElementById('planGrid').innerHTML = PLANS.map(p => {
-    const used = USED_PLANS.includes(p.name);
-    return `
-    <div class="plan-card ${used ? 'used' : ''}"
-         ${used ? '' : `onclick="pickPlan('${p.name}', this)" tabindex="0" role="button"`}
-         aria-disabled="${used}">
-      <span class="plan-emoji">${p.emoji}</span>
-      <span class="plan-name">${p.name}</span>
-      ${used ? '<span class="plan-badge">✓ Ya lo hicimos</span>' : ''}
-    </div>`;
-  }).join('');
+  function renderPlanGrid() {
+    const used = getUsedPlans();
+    document.getElementById('planGrid').innerHTML = PLANS.map(p => {
+      const isUsed = used.includes(p.name);
+      return `
+      <div class="plan-card ${isUsed ? 'used' : ''}"
+           ${isUsed ? '' : `onclick="pickPlan('${p.name}', this)" tabindex="0" role="button"`}
+           aria-disabled="${isUsed}">
+        <span class="plan-emoji">${p.emoji}</span>
+        <span class="plan-name">${p.name}</span>
+        ${isUsed ? '<span class="plan-badge">✓ Ya lo hicimos</span>' : ''}
+      </div>`;
+    }).join('');
+  }
+
+  renderPlanGrid();
 
   function pickPlan(name, el) {
     state.plan = name;
