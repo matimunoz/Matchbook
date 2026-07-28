@@ -293,6 +293,7 @@
         <div class="dot"></div><div class="dot"></div>
         <div class="dot"></div><div class="dot active"></div>
       </div>
+      <img id="planImg" src="" alt="" style="display:none;width:100%;border-radius:var(--r);margin-bottom:16px;object-fit:cover;max-height:220px;" />
       <div class="summary-box" id="summary"></div>
       <div class="email-status" id="emailStatus" style="display:none"></div>
       <button class="btn btn-primary" onclick="resetApp()">Planear otra cita 🌿</button>
@@ -403,12 +404,12 @@
   const USED_PLANS = ['Sushi', 'Descansar juntos'];
 
   const PLANS = [
-    { name: 'Sushi',              emoji: '🍱' },
-    { name: 'Salida Cultural',    emoji: '🎨' },
-    { name: 'Paseo fotográfico',  emoji: '📸' },
-    { name: 'Cafecito',           emoji: '☕' },
-    { name: 'Películas',          emoji: '🎬' },
-    { name: 'Descansar juntos',   emoji: '🛋️' },
+    { name: 'Sushi',              emoji: '🍱', img: null },
+    { name: 'Salida Cultural',    emoji: '🎨', img: null },
+    { name: 'Paseo fotográfico',  emoji: '📸', img: null },
+    { name: 'Cafecito',           emoji: '☕', img: null },
+    { name: 'Películas',          emoji: '🎬', img: null },
+    { name: 'Descansar juntos',   emoji: '🛋️', img: 'img/descansar-juntos.jpg' },
   ];
 
   document.getElementById('planGrid').innerHTML = PLANS.map(p => {
@@ -434,7 +435,16 @@
   function buildSummary() {
     const { day, time, plan } = state;
     const dayStr = day ? `${day.d} de ${MN[day.m]} de ${day.y}` : '—';
-    const planEmoji = PLANS.find(p => p.name === plan)?.emoji || '';
+    const planData = PLANS.find(p => p.name === plan);
+    const planEmoji = planData?.emoji || '';
+    const img = document.getElementById('planImg');
+    if (planData?.img) {
+      img.src = planData.img;
+      img.alt = plan;
+      img.style.display = 'block';
+    } else {
+      img.style.display = 'none';
+    }
     document.getElementById('summary').innerHTML = `
       <div class="s-row"><span class="s-icon">📅</span>${dayStr}</div>
       <div class="s-row"><span class="s-icon">🕐</span>${time || '—'}</div>
@@ -456,10 +466,9 @@
     }
     const { day, time, plan } = state;
     const fecha = day ? `${day.d} de ${MN[day.m]} de ${day.y}` : '—';
-    const params = { fecha, hora: time || '—', plan: plan || '—', nombre: 'Alyn' };
+    const params = { fecha, hora: time || '—', plan: plan || '—' };
     setStatus('sending', '📨 Enviando confirmación…');
     try {
-      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, { ...params, to_email: EMAIL_ALYN,   nombre: 'Alyn' });
       await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, { ...params, to_email: EMAIL_MATIAS, nombre: 'Matías' });
       setStatus('ok', '✅ ¡Confirmación enviada a los dos!');
     } catch (err) {
