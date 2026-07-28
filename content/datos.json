@@ -68,6 +68,16 @@
       "precio": 12000,
       "sesiones": [
         {
+          "fecha": "Martes 25 de agosto, 19:00 hrs | Santiago",
+          "moderador": {
+            "nombre": "Gonzalo",
+            "foto": "moderadores/gonzalo.png"
+          },
+          "lugar": "Between Coffee, Santiago",
+          "cuposTotal": 12,
+          "cuposTomados": 4
+        },
+        {
           "fecha": "Viernes 28 de agosto, 19:00 hrs | Viña del Mar",
           "moderador": {
             "nombre": "Gonzalo",
@@ -76,16 +86,6 @@
           "lugar": "Punto & Café, Viña del Mar",
           "cuposTotal": 10,
           "cuposTomados": 5
-        },
-        {
-          "fecha": "Martes 25 de julio, 19:00 hrs | Santiago",
-          "moderador": {
-            "nombre": "Gonzalo",
-            "foto": "moderadores/gonzalo.png"
-          },
-          "lugar": "Between Coffee, Santiago",
-          "cuposTotal": 12,
-          "cuposTomados": 4
         }
       ],
       "club": "Books Up",
