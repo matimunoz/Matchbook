@@ -63,12 +63,22 @@
       "portada": "/portadas/soldados-de-salamina.jpg"
     },
     {
-      "autor": "Rick Rubin",
+      "autor": "Papa León XIV",
       "color": "#C9821F",
-      "precio": 15000,
+      "precio": 12000,
       "sesiones": [
         {
-          "fecha": "Viernes 31 de julio, 19:00 hrs | Viña del Mar",
+          "fecha": "Martes 25 de agosto, 19:00 hrs | Santiago",
+          "moderador": {
+            "nombre": "Gonzalo",
+            "foto": "moderadores/gonzalo.png"
+          },
+          "lugar": "Between Coffee, Santiago",
+          "cuposTotal": 12,
+          "cuposTomados": 4
+        },
+        {
+          "fecha": "Viernes 28 de agosto, 19:00 hrs | Viña del Mar",
           "moderador": {
             "nombre": "Gonzalo",
             "foto": "moderadores/gonzalo.png"
@@ -76,23 +86,13 @@
           "lugar": "Punto & Café, Viña del Mar",
           "cuposTotal": 10,
           "cuposTomados": 5
-        },
-        {
-          "fecha": "Martes 28 de julio, 19:00 hrs | Santiago",
-          "moderador": {
-            "nombre": "Gonzalo",
-            "foto": "moderadores/gonzalo.png"
-          },
-          "lugar": "Between Coffee, Santiago",
-          "cuposTotal": 10,
-          "cuposTomados": 4
         }
       ],
       "club": "Books Up",
-      "curaduria": "Lecturas de no ficción sobre desarrollo personal y profesional. Todos los meses no reunimos en Santiago y en Viña del Mar. En julio estamos leyendo sobre creatividad con Rick Rubin. ",
-      "titulo": "El acto de crear",
-      "mpLink": "https://mpago.la/333XMjN",
-      "portada": "/portadas/el-acto-de-crear-rick-rubin-portada.jpeg"
+      "curaduria": "Lecturas de no ficción sobre desarrollo personal y profesional. Todos los meses no reunimos en Santiago y en Viña del Mar. En agosto leemos sobre la encíclica del Papa León XIV \"Magnífica Humanitas\".",
+      "titulo": "Magnifica Humanitas",
+      "mpLink": "https://mpago.la/22831NY",
+      "portada": "/portadas/magnifica-humanitas-portada.jpeg"
     },
     {
       "autor": "Homero",
