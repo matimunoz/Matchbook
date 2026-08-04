@@ -26,10 +26,10 @@
       "precio": 5000,
       "sesiones": [
         {
-          "fecha": "Sábado 1 de Agosto, 11:30 hrs",
+          "fecha": "Sábado 29 de Agosto, 11:30 hrs",
           "moderador": {
-            "nombre": "Paulette",
-            "foto": "/portadas/pau.png"
+            "nombre": "Matías",
+            "foto": "/portadas/mati.jpg"
           },
           "lugar": "Punto & Café, Viña del Mar",
           "cuposTotal": 10,
@@ -38,7 +38,7 @@
         {
           "cuposTotal": 10,
           "cuposTomados": 0,
-          "fecha": "Domingo 2 de Agosto, 11:30 hrs en INGLÉS",
+          "fecha": "Domingo 30 de Agosto, 11:30 hrs en INGLÉS",
           "lugar": "La Florería, Viña del Mar",
           "moderador": {
             "nombre": "Brianna ",
@@ -46,10 +46,10 @@
           }
         },
         {
-          "fecha": "Domingo 2 de Agosto, 14:30 hrs",
+          "fecha": "Domingo 30 de Agosto, 14:30 hrs",
           "moderador": {
             "nombre": "Matías",
-            "foto": "moderadores/matias.jpg"
+            "foto": "/portadas/mati.jpg"
           },
           "lugar": "La Florería, Viña del Mar",
           "cuposTotal": 10,
@@ -60,7 +60,7 @@
       "curaduria": "Cada mes votamos por un libro distinto y exploramos nuevos mundos. Este mes: Una novela que cruza memoria, investigación y ficción para explorar la Guerra Civil Española.",
       "titulo": "Soldados de Salamina",
       "mpLink": " https://mpago.la/2R9WruX",
-      "portada": "/portadas/soldados-de-salamina.jpg"
+      "portada": "/portadas/images.jpg"
     },
     {
       "autor": "Papa León XIV",
