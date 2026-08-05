@@ -26,7 +26,7 @@
       "precio": 5000,
       "sesiones": [
         {
-          "fecha": "Sábado 29 de Agosto, 11:30 hrs",
+          "fecha": "Sábado 29 de agosto, 11:30 hrs",
           "moderador": {
             "nombre": "Matías",
             "foto": "/portadas/mati.jpg"
@@ -38,7 +38,7 @@
         {
           "cuposTotal": 10,
           "cuposTomados": 0,
-          "fecha": "Domingo 30 de Agosto, 11:30 hrs en INGLÉS",
+          "fecha": "Domingo 30 de agosto, 11:30 hrs en INGLÉS",
           "lugar": "La Florería, Viña del Mar",
           "moderador": {
             "nombre": "Brianna ",
@@ -46,7 +46,7 @@
           }
         },
         {
-          "fecha": "Domingo 30 de Agosto, 14:30 hrs",
+          "fecha": "Domingo 30 de agosto, 14:30 hrs",
           "moderador": {
             "nombre": "Matías",
             "foto": "/portadas/mati.jpg"
