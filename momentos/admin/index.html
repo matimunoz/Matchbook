@@ -279,7 +279,10 @@
     if (!r.ok) { toast('Error al cargar el archivo', true); return; }
     const data = await r.json();
     fileSha  = data.sha;
-    rawHtml  = atob(data.content.replace(/\n/g, ''));
+    const b64 = data.content.replace(/\n/g, '');
+    rawHtml  = decodeURIComponent(
+      atob(b64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join('')
+    );
     momentos = parseMomentos(rawHtml);
     dirty = false;
     renderList();
