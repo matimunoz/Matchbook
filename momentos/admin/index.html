@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin · 100 Momentos</title>
+<meta name="robots" content="noindex">
+<style>
+  :root {
+    --bg: #EBF5ED; --card: #FFFFFF;
+    --g1: #2A5040; --g2: #45856A; --g3: #78B896;
+    --g4: #C0DECA; --g5: #EAF5EE;
+    --t1: #1C3A2C; --t2: #507260; --t3: #8AADA0;
+    --red: #D94F4F; --red-bg: #FEF0F0;
+    --shadow: 0 4px 20px rgba(42,80,64,0.10);
+    --r: 14px; --rsm: 8px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #182E22; --card: #1F3828;
+      --g1: #9FD4B5; --g2: #78B896; --g3: #507260;
+      --g4: #2A4B38; --g5: #1A3025;
+      --t1: #CCE9D8; --t2: #88B89E; --t3: #507260;
+      --red: #F08080; --red-bg: #3A2020;
+      --shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+    color: var(--t1); min-height: 100vh;
+    padding: 24px 16px 64px;
+  }
+
+  .wrap { max-width: 640px; margin: 0 auto; }
+
+  /* ── Header ── */
+  .top-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 28px; flex-wrap: wrap; gap: 12px;
+  }
+  .top-bar h1 {
+    font-family: Georgia, serif; font-size: 1.4rem; font-weight: normal; color: var(--g1);
+  }
+  .top-bar .meta { font-size: 0.78rem; color: var(--t3); }
+
+  /* ── Cards ── */
+  .card {
+    background: var(--card); border-radius: var(--r);
+    padding: 24px; box-shadow: var(--shadow); margin-bottom: 16px;
+  }
+
+  /* ── Forms ── */
+  label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--t2); display: block; margin-bottom: 6px; }
+  input, textarea {
+    width: 100%; border: 1.5px solid var(--g4); border-radius: var(--rsm);
+    padding: 10px 12px; font-size: 0.9rem; font-family: inherit;
+    color: var(--t1); background: var(--bg); resize: vertical;
+    transition: border-color 0.15s;
+  }
+  input:focus, textarea:focus { outline: none; border-color: var(--g2); }
+  textarea { min-height: 90px; line-height: 1.6; }
+
+  /* ── Buttons ── */
+  .btn {
+    border: none; border-radius: 50px; padding: 10px 20px;
+    font-size: 0.85rem; font-weight: 600; cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .btn:active { transform: scale(0.97); }
+  .btn-primary { background: var(--g2); color: #fff; }
+  .btn-primary:hover { background: var(--g1); }
+  .btn-sm { padding: 6px 14px; font-size: 0.78rem; border-radius: 20px; }
+  .btn-ghost { background: var(--g5); color: var(--t2); }
+  .btn-ghost:hover { background: var(--g4); }
+  .btn-danger { background: var(--red-bg); color: var(--red); }
+  .btn-danger:hover { background: var(--red); color: #fff; }
+  .btn-full { width: 100%; justify-content: center; padding: 14px; font-size: 0.95rem; }
+
+  /* ── Progress bar ── */
+  .progress-row { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+  .progress-bar { flex: 1; height: 6px; background: var(--g4); border-radius: 3px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--g2); border-radius: 3px; transition: width 0.5s; }
+  .progress-label { font-size: 0.8rem; color: var(--t2); white-space: nowrap; font-weight: 600; }
+
+  /* ── Moment list ── */
+  .section-title {
+    font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--t2); margin-bottom: 12px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .section-title::after { content: ''; flex: 1; height: 1px; background: var(--g4); }
+
+  .moment-item {
+    background: var(--card); border: 1.5px solid var(--g4);
+    border-radius: var(--rsm); padding: 14px 16px; margin-bottom: 8px;
+    transition: border-color 0.15s;
+  }
+  .moment-item:hover { border-color: var(--g3); }
+  .moment-item.editing { border-color: var(--g2); }
+
+  .moment-header {
+    display: flex; align-items: flex-start; gap: 10px;
+  }
+  .moment-num {
+    font-size: 0.7rem; font-weight: 700; color: var(--g2);
+    background: var(--g5); border-radius: 6px; padding: 3px 8px;
+    white-space: nowrap; flex-shrink: 0; margin-top: 2px;
+  }
+  .moment-preview {
+    flex: 1; font-size: 0.875rem; line-height: 1.5; color: var(--t1);
+  }
+  .moment-preview.empty { color: var(--t3); font-style: italic; }
+  .moment-actions {
+    display: flex; gap: 6px; flex-shrink: 0; margin-left: 8px;
+  }
+
+  .moment-edit-area { margin-top: 12px; }
+  .moment-edit-area textarea { margin-bottom: 8px; }
+  .moment-edit-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+  /* ── Add form ── */
+  .add-form { display: none; margin-top: 16px; }
+  .add-form.open { display: block; }
+
+  /* ── Toast ── */
+  .toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+    background: var(--g1); color: #fff; border-radius: 50px;
+    padding: 12px 24px; font-size: 0.875rem; font-weight: 500;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2); z-index: 100;
+    opacity: 0; transition: opacity 0.3s;
+    white-space: nowrap;
+  }
+  .toast.show { opacity: 1; }
+  .toast.error { background: var(--red); }
+
+  /* ── Setup screen ── */
+  #setupScreen { display: none; }
+  #setupScreen.active { display: block; }
+  #adminScreen { display: none; }
+  #adminScreen.active { display: block; }
+
+  .setup-card { max-width: 440px; margin: 60px auto 0; }
+  .setup-card h2 { font-family: Georgia, serif; font-size: 1.5rem; font-weight: normal; color: var(--g1); margin-bottom: 8px; }
+  .setup-card p { font-size: 0.85rem; color: var(--t2); margin-bottom: 20px; line-height: 1.6; }
+  .setup-card a { color: var(--g2); }
+  .field { margin-bottom: 16px; }
+
+  .status-dot {
+    display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+    background: var(--g3); margin-right: 6px;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+  .badge-ok  { color: var(--g2); font-size: 0.75rem; font-weight: 600; }
+  .badge-err { color: var(--red); font-size: 0.75rem; font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- SETUP -->
+  <div id="setupScreen">
+    <div class="card setup-card">
+      <h2>🌿 Admin · 100 Momentos</h2>
+      <p>Para guardar cambios directamente en el sitio, necesitás un <strong>GitHub Personal Access Token</strong> con permiso de escritura en el repositorio.</p>
+      <p><a href="https://github.com/settings/tokens/new?scopes=repo&description=100%20Momentos%20Admin" target="_blank">→ Crear token en GitHub</a> (marcar scope <strong>repo</strong>)</p>
+      <div class="field" style="margin-top:20px">
+        <label>GitHub Token</label>
+        <input type="password" id="tokenInput" placeholder="ghp_xxxxxxxxxxxx" />
+      </div>
+      <button class="btn btn-primary btn-full" onclick="connect()">Conectar</button>
+      <div id="connectError" style="margin-top:12px;font-size:0.8rem;color:var(--red);display:none"></div>
+    </div>
+  </div>
+
+  <!-- ADMIN -->
+  <div id="adminScreen">
+
+    <div class="top-bar">
+      <h1>🌿 Admin · 100 Momentos</h1>
+      <div style="display:flex;align-items:center;gap:12px">
+        <span class="badge-ok"><span class="status-dot"></span>Conectado</span>
+        <button class="btn btn-ghost btn-sm" onclick="logout()">Salir</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="progress-row">
+        <div class="progress-bar"><div class="progress-fill" id="progFill" style="width:0%"></div></div>
+        <div class="progress-label" id="progLabel">— / 100</div>
+      </div>
+
+      <div class="section-title">Momentos</div>
+      <div id="momentList"></div>
+
+      <button class="btn btn-ghost btn-sm" style="margin-top:8px" onclick="toggleAdd()">+ Agregar momento</button>
+      <div class="add-form" id="addForm">
+        <div class="field" style="margin-top:12px">
+          <label>Nuevo momento</label>
+          <textarea id="newText" placeholder="Escribe el recuerdo aquí..."></textarea>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-primary btn-sm" onclick="addMomento()">Agregar</button>
+          <button class="btn btn-ghost btn-sm" onclick="toggleAdd()">Cancelar</button>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn btn-primary btn-full" id="saveBtn" onclick="saveToGitHub()">
+      💾 Guardar y publicar
+    </button>
+    <p style="text-align:center;font-size:0.72rem;color:var(--t3);margin-top:10px">
+      Los cambios se publican en matchbook.cl/momentos en ~1 minuto
+    </p>
+
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  const OWNER = 'matimunoz';
+  const REPO  = 'Matchbook';
+  const FILE  = 'momentos/index.html';
+
+  let momentos = [];
+  let fileSha  = '';
+  let rawHtml  = '';
+  let dirty    = false;
+
+  // ── Auth ───────────────────────────────────────────────────────────
+  function getToken() { return localStorage.getItem('m_token') || ''; }
+
+  async function connect() {
+    const token = document.getElementById('tokenInput').value.trim();
+    if (!token) return;
+    // Verificar token
+    const r = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    if (!r.ok) {
+      document.getElementById('connectError').style.display = 'block';
+      document.getElementById('connectError').textContent = '❌ Token inválido o sin acceso al repositorio.';
+      return;
+    }
+    localStorage.setItem('m_token', token);
+    showAdmin();
+  }
+
+  function logout() {
+    localStorage.removeItem('m_token');
+    document.getElementById('adminScreen').classList.remove('active');
+    document.getElementById('setupScreen').classList.add('active');
+  }
+
+  // ── Init ───────────────────────────────────────────────────────────
+  window.addEventListener('load', () => {
+    if (getToken()) showAdmin();
+    else document.getElementById('setupScreen').classList.add('active');
+  });
+
+  async function showAdmin() {
+    document.getElementById('setupScreen').classList.remove('active');
+    document.getElementById('adminScreen').classList.add('active');
+    await loadMomentos();
+  }
+
+  // ── GitHub API ─────────────────────────────────────────────────────
+  async function loadMomentos() {
+    const r = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/contents/${FILE}`, {
+      headers: { Authorization: `Bearer ${getToken()}` }
+    });
+    if (!r.ok) { toast('Error al cargar el archivo', true); return; }
+    const data = await r.json();
+    fileSha  = data.sha;
+    rawHtml  = atob(data.content.replace(/\n/g, ''));
+    momentos = parseMomentos(rawHtml);
+    dirty = false;
+    renderList();
+  }
+
+  async function saveToGitHub() {
+    const btn = document.getElementById('saveBtn');
+    btn.textContent = '⏳ Guardando...';
+    btn.disabled = true;
+    const updated = rebuildHtml(rawHtml, momentos);
+    const body = {
+      message: `Admin: actualizar 100 momentos`,
+      content: btoa(unescape(encodeURIComponent(updated))),
+      sha: fileSha
+    };
+    const r = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/contents/${FILE}`, {
+      method: 'PUT',
+      headers: { Authorization: `Bearer ${getToken()}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    btn.disabled = false;
+    btn.textContent = '💾 Guardar y publicar';
+    if (r.ok) {
+      const data = await r.json();
+      fileSha = data.content.sha;
+      rawHtml = updated;
+      dirty   = false;
+      toast('✅ Publicado — live en ~1 minuto');
+    } else {
+      const err = await r.json();
+      toast('Error: ' + (err.message || 'no se pudo guardar'), true);
+    }
+  }
+
+  // ── Parse / rebuild ────────────────────────────────────────────────
+  function parseMomentos(html) {
+    const match = html.match(/const MOMENTOS = \[([\s\S]*?)\n\];/);
+    if (!match) return [];
+    try {
+      return new Function(`return [${match[1]}]`)();
+    } catch(e) {
+      toast('Error al leer los momentos', true);
+      return [];
+    }
+  }
+
+  function rebuildHtml(html, arr) {
+    const lines = arr.map(m =>
+      m === null
+        ? '  null,'
+        : '  `' + m.replace(/`/g, '\\`') + '`,'
+    ).join('\n');
+    return html.replace(
+      /const MOMENTOS = \[[\s\S]*?\n\];/,
+      `const MOMENTOS = [\n${lines}\n];`
+    );
+  }
+
+  // ── Render ─────────────────────────────────────────────────────────
+  function renderList() {
+    const total   = momentos.length;
+    const written = momentos.filter(m => m !== null).length;
+    document.getElementById('progFill').style.width  = (written / 100 * 100) + '%';
+    document.getElementById('progLabel').textContent = `${written} / 100`;
+
+    const list = document.getElementById('momentList');
+    list.innerHTML = momentos.map((m, i) => {
+      const isEmpty = m === null;
+      const preview = isEmpty
+        ? '— sin escribir'
+        : (m.length > 100 ? m.slice(0, 100) + '…' : m);
+      return `
+        <div class="moment-item" id="item-${i}">
+          <div class="moment-header">
+            <span class="moment-num">#${i + 1}</span>
+            <span class="moment-preview ${isEmpty ? 'empty' : ''}" id="preview-${i}">${escHtml(preview)}</span>
+            <div class="moment-actions">
+              <button class="btn btn-ghost btn-sm" onclick="toggleEdit(${i})">✏️</button>
+              <button class="btn btn-danger btn-sm" onclick="deleteMomento(${i})">🗑</button>
+            </div>
+          </div>
+          <div class="moment-edit-area" id="edit-${i}" style="display:none">
+            <textarea id="ta-${i}" rows="4">${escHtml(m || '')}</textarea>
+            <div class="moment-edit-actions">
+              <button class="btn btn-primary btn-sm" onclick="saveMomento(${i})">Guardar</button>
+              <button class="btn btn-ghost btn-sm" onclick="toggleEdit(${i})">Cancelar</button>
+              ${!isEmpty ? `<button class="btn btn-danger btn-sm" onclick="clearMomento(${i})">Limpiar</button>` : ''}
+            </div>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  function escHtml(s) {
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  // ── CRUD ───────────────────────────────────────────────────────────
+  function toggleEdit(i) {
+    const area = document.getElementById(`edit-${i}`);
+    const item = document.getElementById(`item-${i}`);
+    const open = area.style.display === 'none';
+    area.style.display = open ? 'block' : 'none';
+    item.classList.toggle('editing', open);
+    if (open) document.getElementById(`ta-${i}`).focus();
+  }
+
+  function saveMomento(i) {
+    const val = document.getElementById(`ta-${i}`).value.trim();
+    momentos[i] = val || null;
+    dirty = true;
+    renderList();
+    toast('Momento actualizado — recordá guardar y publicar');
+  }
+
+  function clearMomento(i) {
+    if (!confirm('¿Limpiar este momento? Quedará como pendiente.')) return;
+    momentos[i] = null;
+    dirty = true;
+    renderList();
+  }
+
+  function deleteMomento(i) {
+    if (!confirm(`¿Eliminar el momento #${i + 1}? No se puede deshacer.`)) return;
+    momentos.splice(i, 1);
+    dirty = true;
+    renderList();
+    toast('Momento eliminado — recordá guardar y publicar');
+  }
+
+  function toggleAdd() {
+    const form = document.getElementById('addForm');
+    form.classList.toggle('open');
+    if (form.classList.contains('open')) document.getElementById('newText').focus();
+  }
+
+  function addMomento() {
+    const val = document.getElementById('newText').value.trim();
+    if (!val) return;
+    // Buscar el primer null y reemplazarlo; si no hay, agregar al final
+    const emptyIdx = momentos.indexOf(null);
+    if (emptyIdx !== -1) {
+      momentos[emptyIdx] = val;
+    } else {
+      momentos.push(val);
+    }
+    document.getElementById('newText').value = '';
+    document.getElementById('addForm').classList.remove('open');
+    dirty = true;
+    renderList();
+    // Scroll al momento agregado
+    const idx = emptyIdx !== -1 ? emptyIdx : momentos.length - 1;
+    setTimeout(() => document.getElementById(`item-${idx}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
+    toast('Momento agregado — recordá guardar y publicar');
+  }
+
+  // ── Toast ───────────────────────────────────────────────────────────
+  let toastTimer;
+  function toast(msg, isError = false) {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.className   = 'toast show' + (isError ? ' error' : '');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => el.classList.remove('show'), 3500);
+  }
+
+  // ── Warn on unsaved changes ─────────────────────────────────────────
+  window.addEventListener('beforeunload', e => {
+    if (dirty) { e.preventDefault(); e.returnValue = ''; }
+  });
+</script>
+</body>
+</html>
