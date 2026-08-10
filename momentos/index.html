@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>100 Momentos 🌿</title>
+<meta name="robots" content="noindex">
+
+<style>
+  :root {
+    --bg: #EBF5ED;
+    --card: #FFFFFF;
+    --g1: #2A5040;
+    --g2: #45856A;
+    --g3: #78B896;
+    --g4: #C0DECA;
+    --g5: #EAF5EE;
+    --t1: #1C3A2C;
+    --t2: #507260;
+    --t3: #8AADA0;
+    --gold: #C9A84C;
+    --shadow: 0 6px 32px rgba(42,80,64,0.12);
+    --shadow-lg: 0 12px 48px rgba(42,80,64,0.18);
+    --r: 18px;
+    --rsm: 12px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #182E22; --card: #1F3828;
+      --g1: #9FD4B5; --g2: #78B896; --g3: #507260;
+      --g4: #2A4B38; --g5: #1A3025;
+      --t1: #CCE9D8; --t2: #88B89E; --t3: #507260;
+      --gold: #D4AF5A;
+      --shadow: 0 6px 32px rgba(0,0,0,0.35);
+      --shadow-lg: 0 12px 48px rgba(0,0,0,0.45);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #182E22; --card: #1F3828;
+    --g1: #9FD4B5; --g2: #78B896; --g3: #507260;
+    --g4: #2A4B38; --g5: #1A3025;
+    --t1: #CCE9D8; --t2: #88B89E; --t3: #507260;
+    --shadow: 0 6px 32px rgba(0,0,0,0.35);
+    --shadow-lg: 0 12px 48px rgba(0,0,0,0.45);
+  }
+  :root[data-theme="light"] {
+    --bg: #EBF5ED; --card: #FFFFFF;
+    --g1: #2A5040; --g2: #45856A; --g3: #78B896;
+    --g4: #C0DECA; --g5: #EAF5EE;
+    --t1: #1C3A2C; --t2: #507260; --t3: #8AADA0;
+    --shadow: 0 6px 32px rgba(42,80,64,0.12);
+    --shadow-lg: 0 12px 48px rgba(42,80,64,0.18);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+    min-height: 100vh;
+    padding: 32px 16px 64px;
+    color: var(--t1);
+  }
+
+  .wrap { max-width: 480px; margin: 0 auto; }
+
+  /* ── Header ── */
+  .header { text-align: center; margin-bottom: 32px; }
+  .header-deco { font-size: 2.2rem; display: block; margin-bottom: 10px; }
+  .header h1 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 2rem; font-weight: normal;
+    color: var(--g1); margin-bottom: 6px;
+  }
+  .header p { font-size: 0.85rem; color: var(--t3); letter-spacing: 0.02em; }
+
+  /* ── Progress ── */
+  .progress-wrap { margin-bottom: 28px; }
+  .progress-label {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 8px;
+  }
+  .progress-label span { font-size: 0.75rem; color: var(--t2); letter-spacing: 0.04em; text-transform: uppercase; font-weight: 600; }
+  .progress-label strong { font-size: 1.1rem; color: var(--g1); font-family: Georgia, serif; font-weight: normal; }
+  .progress-bar { height: 6px; background: var(--g4); border-radius: 3px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--g2); border-radius: 3px; transition: width 0.8s cubic-bezier(0.34, 1.2, 0.64, 1); }
+
+  /* ── Daily card ── */
+  .daily-section { margin-bottom: 32px; }
+
+  .unlock-card {
+    background: var(--card);
+    border-radius: var(--r);
+    padding: 36px 28px;
+    box-shadow: var(--shadow-lg);
+    text-align: center;
+    border: 1.5px solid var(--g4);
+  }
+
+  .lock-icon { font-size: 2.8rem; display: block; margin-bottom: 14px; }
+
+  .unlock-title {
+    font-family: Georgia, serif; font-size: 1.4rem; font-weight: normal;
+    color: var(--g1); margin-bottom: 8px;
+  }
+  .unlock-sub { font-size: 0.82rem; color: var(--t3); margin-bottom: 24px; line-height: 1.5; }
+
+  .btn-unlock {
+    width: 100%; background: var(--g2); color: #fff;
+    border: none; border-radius: 50px; padding: 16px 24px;
+    font-size: 1rem; font-weight: 600; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    transition: background 0.2s, transform 0.12s;
+    letter-spacing: 0.01em;
+  }
+  .btn-unlock:hover { background: var(--g1); }
+  .btn-unlock:active { transform: scale(0.98); }
+
+  /* ── Revealed moment ── */
+  .moment-card {
+    background: var(--card);
+    border-radius: var(--r);
+    padding: 32px 28px;
+    box-shadow: var(--shadow-lg);
+    border: 1.5px solid var(--g4);
+    animation: revealCard 0.6s cubic-bezier(0.34, 1.4, 0.64, 1) both;
+  }
+  @keyframes revealCard {
+    from { opacity: 0; transform: scale(0.9) translateY(16px); }
+    to   { opacity: 1; transform: scale(1)   translateY(0); }
+  }
+  @media (prefers-reduced-motion: reduce) { .moment-card { animation: none; } }
+
+  .moment-num {
+    font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--g2); margin-bottom: 16px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .moment-num::before, .moment-num::after {
+    content: ''; flex: 1; height: 1px; background: var(--g4);
+  }
+
+  .moment-text {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1.15rem; line-height: 1.7;
+    color: var(--t1); margin-bottom: 20px;
+    text-wrap: balance;
+  }
+
+  .moment-date {
+    font-size: 0.75rem; color: var(--t3);
+    display: flex; align-items: center; gap: 6px;
+  }
+
+  /* ── Countdown ── */
+  .countdown-wrap {
+    margin-top: 16px;
+    background: var(--g5);
+    border-radius: var(--rsm);
+    padding: 14px 16px;
+    text-align: center;
+  }
+  .countdown-label { font-size: 0.72rem; color: var(--t3); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 4px; }
+  .countdown-time { font-family: Georgia, serif; font-size: 1.4rem; color: var(--g1); letter-spacing: 0.05em; font-variant-numeric: tabular-nums; }
+
+  /* ── Archive ── */
+  .archive-section { }
+  .archive-title {
+    font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--t2); margin-bottom: 16px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .archive-title::after { content: ''; flex: 1; height: 1px; background: var(--g4); }
+
+  .archive-empty { text-align: center; color: var(--t3); font-size: 0.85rem; padding: 24px; }
+
+  .archive-grid { display: flex; flex-direction: column; gap: 10px; }
+
+  .archive-card {
+    background: var(--card);
+    border-radius: var(--rsm);
+    padding: 16px 18px;
+    border-left: 3px solid var(--g3);
+    box-shadow: 0 2px 10px rgba(42,80,64,0.07);
+    animation: fadeIn 0.4s ease both;
+  }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  .archive-num {
+    font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--g2); margin-bottom: 6px;
+  }
+  .archive-text {
+    font-family: Georgia, serif; font-size: 0.92rem;
+    line-height: 1.6; color: var(--t1);
+  }
+  .archive-date { font-size: 0.7rem; color: var(--t3); margin-top: 6px; }
+
+  /* ── Finale ── */
+  .finale-card {
+    background: var(--g1); color: #fff;
+    border-radius: var(--r); padding: 40px 28px; text-align: center;
+    box-shadow: var(--shadow-lg);
+  }
+  .finale-card h2 { font-family: Georgia, serif; font-size: 1.6rem; font-weight: normal; margin-bottom: 12px; }
+  .finale-card p { font-size: 0.9rem; line-height: 1.6; opacity: 0.85; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="header">
+    <span class="header-deco">🌿</span>
+    <h1>100 Momentos</h1>
+    <p>un recuerdo nuestro, cada día</p>
+  </header>
+
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span>Descubiertos</span>
+      <strong id="progressText">0 de 100</strong>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill" style="width:0%"></div>
+    </div>
+  </div>
+
+  <div class="daily-section" id="dailySection"></div>
+
+  <div class="archive-section">
+    <div class="archive-title">Momentos descubiertos</div>
+    <div id="archiveGrid"></div>
+  </div>
+
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════════════════
+//  TUS 100 MOMENTOS — escribe cada recuerdo entre comillas
+//  Deja null en los que todavía no quieras escribir
+//  (los null no aparecerán hasta que los completes)
+// ══════════════════════════════════════════════════════════════════════
+const MOMENTOS = [
+  "Un 5 de agosto, después de una travesía para reunirnos en Valparaíso, fuimos en compensación a disfrutar en El Pasaje. Entre libros y risas sentí reconectar contigo, porque me encanta verte sonriente, sobre todo después de haberte dedicado los artículos e incisos más pasionales de código penal.",
+  "Un 31 de julio, me invitabas a conocer a tus mejores amigos de la infancia. Debo decir que lo valoré un montón, y me agradó todo. Sentir tus ganas de mostrarme, tus besos en la entrada, mi mano en tu pierna mientras conversábamos y la grata compañía con Miguel y Natalia. Recuerdo haberme ido con ganas tremendas de haber terminado ese día durmiendo contigo.",
+  "Un 25 de julio, me sentía ansioso por la Fiesta de Lectura y no olvidaré nunca la calma y amor que me transmitiste. Me costó tanto despedirme de tus besos en la entrada, sin embargo, me llenaba el corazón que hubieses estado ahí aunque sea un momento y que después me propusieras llegar a dormir a mi departamento sin importar la hora que fuese. Además, fue el día que apliqué la idea de construirte una aplicación solo para ti, para que se sintiese especial cada vez que nos viéramos y así poderte sacar una sonrisa.",
+  "Un 19 de julio, veíamos la final del Mundial tras unos días lluviosos en conjunto. Comimos unos sushi, nos tomamos una siesta y después dijimos ¿y si salimos a comprar antes que vuelva a llover? Así fue como salieron las michipillas y mientras trabajaba un poco en paralelo, pensaba "me encantaría la cotidianidad con ella".",
+  "Un 18 de julio, como panorama random me acompañabas al matrimonio de la Cata y terminábamos siendo parte del grupo VIP, con acceso directo previo al cumpleaños de doña Marta jajaja Lo pasé tan bien a tu lado ese día, sentí mostrarte lo mucho que disfruto cuando la vida se pone en modo aleatorio.",
+  "Un 8 de julio, tras ver un par de plátanos maduros en la cocina me dices "¿y si hago un banana bread?". La respuesta claro que fue un sí y de ahí tras compartir un rato en la cocina, comer y acostarnos. Te dije lo que pensaba ya desde hace días: te quiero. Siento literal me lo venía aguantando con tal de hallar un momento idóneo, porque después de ya haberte deseado, respetado, admirado, era inevitable empezar a quererte, tal cual eres.",
+  "Un 27 de junio, mientras comíamos tranquilamente en el living, nos dábamos cuenta que llegaríamos tarde al show en Santiago de Pink Floyd. Ante ello, corrimos lo más que pudimos, y sí, lo logramos contra todo pronóstico. Así que modo celebración nos fuimos después al MUT, a cumplir tu sueño y comernos unas ricas pizzas. Fue un día soñado.",
+  "Un 12 de febrero, te comentaba que había llegado al departamento y me decías que después te costaba mucho volver. Ante eso, te respondí "¿Y no te tinca venir a tomarte algo?" a lo cual me dijiste que en ese caso valía la pena devolverse más tarde en Uber. Cambié el sillón de posición, abrí el vino, llegaste y no paramos de conversar en horas. Hasta que llegó el momento en que nos miramos y nos besamos intensamente. Recuerdo sacarte la polera, sentir lo suave de tu piel y tener unas ganas inmensas de ser uno contigo.",
+  "Un 9 de abril, venía de vuelta de Santiago como si fuese un día normal. Entre coqueteo y coqueteo terminaste viniendo de inmediato. De solo recordarlo todo me revivo.",
+  "Varios días en Marzo, estuvimos muy pendientes de la trama de "Chistín, el comediante serial". Recuerdo que literal me enviabas cada capítulo casi al segundo y nos reíamos un montón. Ahí comenzaba a pensar que me gustaba compartir ese tipo de humor contigo.",
+  null, // pendiente — agrega tu recuerdo aquí
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+];
+
+// ── Helpers de fecha ──────────────────────────────────────────────────
+function today() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+function formatDate(iso) {
+  const [y,m,d] = iso.split('-');
+  const meses = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  return `${parseInt(d)} de ${meses[parseInt(m)-1]} de ${y}`;
+}
+
+// ── localStorage ──────────────────────────────────────────────────────
+function getState() {
+  return {
+    seen:      JSON.parse(localStorage.getItem('momentos_seen')      || '[]'),
+    seenDates: JSON.parse(localStorage.getItem('momentos_seenDates') || '{}'),
+    lastDate:  localStorage.getItem('momentos_lastDate')  || '',
+    todayIdx:  localStorage.getItem('momentos_todayIdx') !== null
+               ? parseInt(localStorage.getItem('momentos_todayIdx'))
+               : null,
+  };
+}
+
+function saveState(st) {
+  localStorage.setItem('momentos_seen',      JSON.stringify(st.seen));
+  localStorage.setItem('momentos_seenDates', JSON.stringify(st.seenDates));
+  localStorage.setItem('momentos_lastDate',  st.lastDate);
+  if (st.todayIdx !== null) localStorage.setItem('momentos_todayIdx', st.todayIdx);
+}
+
+// ── Pool de momentos disponibles ──────────────────────────────────────
+function getAvailable(seen) {
+  return MOMENTOS
+    .map((m, i) => ({ m, i }))
+    .filter(x => x.m !== null && !seen.includes(x.i));
+}
+
+// ── Render ────────────────────────────────────────────────────────────
+function render() {
+  const st       = getState();
+  const total    = MOMENTOS.filter(m => m !== null).length;
+  const count    = st.seen.length;
+  const pct      = total > 0 ? (count / total) * 100 : 0;
+
+  // Progress
+  document.getElementById('progressText').textContent = `${count} de ${total}`;
+  document.getElementById('progressFill').style.width = pct + '%';
+
+  // Daily section
+  renderDaily(st, total);
+
+  // Archive
+  renderArchive(st);
+}
+
+function renderDaily(st, total) {
+  const section  = document.getElementById('dailySection');
+  const available = getAvailable(st.seen);
+  const alreadyOpenedToday = st.lastDate === today() && st.todayIdx !== null;
+
+  // Todos descubiertos
+  if (available.length === 0 && st.seen.length >= total && total > 0) {
+    section.innerHTML = `
+      <div class="finale-card">
+        <div style="font-size:2.5rem;margin-bottom:16px">🌿</div>
+        <h2>Los 100 momentos, descubiertos</h2>
+        <p>Gracias por haber vivido cada uno de estos momentos conmigo.<br>Ojalá sigamos llenando más páginas juntos.</p>
+      </div>`;
+    return;
+  }
+
+  // Sin momentos disponibles aún
+  if (available.length === 0) {
+    section.innerHTML = `<div class="unlock-card"><span class="lock-icon">🌱</span><p class="unlock-sub">Pronto habrá más momentos para descubrir.</p></div>`;
+    return;
+  }
+
+  if (alreadyOpenedToday) {
+    // Ya abrió hoy — muestra el momento de hoy + countdown
+    const texto = MOMENTOS[st.todayIdx];
+    const fecha = formatDate(st.seenDates[st.todayIdx] || today());
+    section.innerHTML = `
+      <div class="moment-card">
+        <div class="moment-num">Momento ${st.seen.indexOf(st.todayIdx) + 1}</div>
+        <p class="moment-text">${texto}</p>
+        <div class="moment-date">🌿 Descubierto el ${fecha}</div>
+      </div>
+      <div class="countdown-wrap">
+        <div class="countdown-label">Próximo momento en</div>
+        <div class="countdown-time" id="countdown">--:--:--</div>
+      </div>`;
+    startCountdown();
+  } else {
+    // Puede abrir uno nuevo
+    section.innerHTML = `
+      <div class="unlock-card">
+        <span class="lock-icon">🎁</span>
+        <h2 class="unlock-title">Tu momento de hoy</h2>
+        <p class="unlock-sub">Hay un recuerdo especial esperándote.<br>Solo puedes abrir uno por día.</p>
+        <button class="btn-unlock" onclick="unlockMomento()">
+          Descubrir momento de hoy 🌿
+        </button>
+      </div>`;
+  }
+}
+
+function renderArchive(st) {
+  const grid = document.getElementById('archiveGrid');
+  const past = st.seen.filter(i => i !== (st.todayIdx ?? -1));
+
+  if (past.length === 0) {
+    grid.innerHTML = `<div class="archive-empty">Los momentos que descubras aparecerán aquí ✨</div>`;
+    return;
+  }
+
+  // Mostrar del más reciente al más antiguo, excluyendo el de hoy
+  grid.innerHTML = [...past].reverse().map(i => {
+    const fecha = formatDate(st.seenDates[i] || '');
+    const num   = st.seen.indexOf(i) + 1;
+    return `
+      <div class="archive-card">
+        <div class="archive-num">Momento ${num}</div>
+        <div class="archive-text">${MOMENTOS[i]}</div>
+        <div class="archive-date">🌿 ${fecha}</div>
+      </div>`;
+  }).join('');
+}
+
+// ── Desbloquear ───────────────────────────────────────────────────────
+function unlockMomento() {
+  const st        = getState();
+  const available = getAvailable(st.seen);
+  if (available.length === 0) return;
+
+  const pick = available[Math.floor(Math.random() * available.length)];
+  st.seen.push(pick.i);
+  st.seenDates[pick.i] = today();
+  st.lastDate  = today();
+  st.todayIdx  = pick.i;
+  saveState(st);
+  render();
+}
+
+// ── Countdown hasta medianoche ────────────────────────────────────────
+let countdownTimer = null;
+
+function startCountdown() {
+  if (countdownTimer) clearInterval(countdownTimer);
+  function update() {
+    const el = document.getElementById('countdown');
+    if (!el) { clearInterval(countdownTimer); return; }
+    const now  = new Date();
+    const next = new Date(now); next.setHours(24,0,0,0);
+    const diff = next - now;
+    const h = String(Math.floor(diff / 3600000)).padStart(2,'0');
+    const m = String(Math.floor((diff % 3600000) / 60000)).padStart(2,'0');
+    const s = String(Math.floor((diff % 60000) / 1000)).padStart(2,'0');
+    el.textContent = `${h}:${m}:${s}`;
+  }
+  update();
+  countdownTimer = setInterval(update, 1000);
+}
+
+// ── Init ──────────────────────────────────────────────────────────────
+render();
+</script>
+</body>
+</html>
