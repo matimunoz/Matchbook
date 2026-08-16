@@ -564,6 +564,9 @@ const MOMENTOS = [
 // ══════════════════════════════════════════════════════════════════════
 //  HITOS DE RACHA — edita los premios aquí cuando los tengas definidos
 // ══════════════════════════════════════════════════════════════════════
+// Racha base: días que Alyn ya llevaba antes de que existiera el contador
+const STREAK_BASE = 3;
+
 const MILESTONES = [
   { day: 10,  emoji: '✨', title: '10 días',  prize: 'Escribe aquí el premio del día 10' },
   { day: 25,  emoji: '🌸', title: '25 días',  prize: 'Escribe aquí el premio del día 25' },
@@ -605,7 +608,7 @@ function getState() {
     todayIdx:      localStorage.getItem('momentos_todayIdx') !== null
                    ? parseInt(localStorage.getItem('momentos_todayIdx'))
                    : null,
-    streak:        parseInt(localStorage.getItem('momentos_streak')          || '0'),
+    streak:        parseInt(localStorage.getItem('momentos_streak')          || String(STREAK_BASE)),
     streakDate:    localStorage.getItem('momentos_streakDate')               || '',
     notifiedMs:    JSON.parse(localStorage.getItem('momentos_notifiedMs')    || '[]'),
   };
@@ -619,6 +622,16 @@ function saveState(st) {
   localStorage.setItem('momentos_streak',     st.streak);
   localStorage.setItem('momentos_streakDate', st.streakDate);
   localStorage.setItem('momentos_notifiedMs', JSON.stringify(st.notifiedMs));
+}
+
+// ── Migración: sembrar la racha base una sola vez ────────────────────
+function migrateStreak() {
+  if (localStorage.getItem('momentos_streakInit')) return;
+  const lastDate = localStorage.getItem('momentos_lastDate') || '';
+  localStorage.setItem('momentos_streak',     String(STREAK_BASE));
+  // Anclamos a su última apertura para que el próximo día siga sumando
+  localStorage.setItem('momentos_streakDate', lastDate || today());
+  localStorage.setItem('momentos_streakInit', '1');
 }
 
 // ── Pool de momentos disponibles ──────────────────────────────────────
@@ -903,6 +916,7 @@ async function sendSuggestion() {
 }
 
 // ── Init ──────────────────────────────────────────────────────────────
+migrateStreak();
 render();
 </script>
 </body>
