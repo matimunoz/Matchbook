@@ -625,13 +625,21 @@ function saveState(st) {
 }
 
 // ── Migración: sembrar la racha base una sola vez ────────────────────
+// v2: si ya abrió el momento de hoy, ese día ya cuenta dentro de la racha
 function migrateStreak() {
-  if (localStorage.getItem('momentos_streakInit')) return;
-  const lastDate = localStorage.getItem('momentos_lastDate') || '';
-  localStorage.setItem('momentos_streak',     String(STREAK_BASE));
+  if (localStorage.getItem('momentos_streakInit_v2')) return;
+
+  const lastDate    = localStorage.getItem('momentos_lastDate') || '';
+  const abrioHoy    = lastDate === today();
+  // Ya abrió hoy → la base ya está consumida y hoy suma uno más
+  const streak      = abrioHoy ? STREAK_BASE + 1 : STREAK_BASE;
+
+  localStorage.setItem('momentos_streak',     String(streak));
   // Anclamos a su última apertura para que el próximo día siga sumando
   localStorage.setItem('momentos_streakDate', lastDate || today());
-  localStorage.setItem('momentos_streakInit', '1');
+  if (abrioHoy) localStorage.setItem('momentos_baseConsumed', '1');
+
+  localStorage.setItem('momentos_streakInit_v2', '1');
 }
 
 // ── Pool de momentos disponibles ──────────────────────────────────────
