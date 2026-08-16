@@ -286,27 +286,70 @@
 
   .archive-empty { text-align: center; color: var(--t3); font-size: 0.85rem; padding: 24px; }
 
-  .archive-grid { display: flex; flex-direction: column; gap: 10px; }
+  .archive-grid { display: flex; flex-direction: column; gap: 6px; }
 
-  .archive-card {
-    background: var(--card);
-    border-radius: var(--rsm);
-    padding: 16px 18px;
-    border-left: 3px solid var(--g3);
-    box-shadow: 0 2px 10px rgba(42,80,64,0.07);
-    animation: fadeIn 0.4s ease both;
-  }
   @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
+  /* ── Acordeón ── */
+  .archive-item {
+    background: var(--card);
+    border-radius: var(--rsm);
+    border: 1.5px solid var(--g4);
+    box-shadow: 0 2px 8px rgba(42,80,64,0.06);
+    overflow: hidden;
+    animation: fadeIn 0.3s ease both;
+    transition: border-color 0.2s;
+  }
+  .archive-item.open { border-color: var(--g3); }
+
+  .archive-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 13px 16px; cursor: pointer;
+    gap: 10px; user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .archive-header:active { background: var(--g5); }
+
+  .archive-header-left {
+    display: flex; align-items: center; gap: 10px; min-width: 0;
+  }
+  .archive-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--g3); flex-shrink: 0;
+  }
+  .archive-item.open .archive-dot { background: var(--g2); }
+
+  .archive-header-info { min-width: 0; }
   .archive-num {
-    font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em;
-    text-transform: uppercase; color: var(--g2); margin-bottom: 6px;
+    font-size: 0.65rem; font-weight: 700; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--g2);
+  }
+  .archive-date-compact {
+    font-size: 0.78rem; color: var(--t2); white-space: nowrap;
+    overflow: hidden; text-overflow: ellipsis;
+  }
+
+  .archive-chevron {
+    font-size: 0.75rem; color: var(--t3); flex-shrink: 0;
+    transition: transform 0.25s ease;
+  }
+  .archive-item.open .archive-chevron { transform: rotate(180deg); }
+
+  .archive-body {
+    max-height: 0; overflow: hidden;
+    transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .archive-item.open .archive-body { max-height: 600px; }
+
+  .archive-body-inner {
+    padding: 0 16px 16px;
+    border-top: 1px solid var(--g4);
+    padding-top: 14px;
   }
   .archive-text {
     font-family: Georgia, serif; font-size: 0.92rem;
-    line-height: 1.6; color: var(--t1);
+    line-height: 1.65; color: var(--t1);
   }
-  .archive-date { font-size: 0.7rem; color: var(--t3); margin-top: 6px; }
 
   /* ── Suggest box ── */
   .suggest-section { margin-top: 32px; }
@@ -715,16 +758,38 @@ function renderArchive(st) {
     return;
   }
 
-  grid.innerHTML = [...past].reverse().map(i => {
+  grid.innerHTML = [...past].reverse().map((i, idx) => {
     const fecha = formatDate(st.seenDates[i] || '');
     const num   = st.seen.indexOf(i) + 1;
+    const id    = `arc-${i}`;
     return `
-      <div class="archive-card">
-        <div class="archive-num">Momento ${num}</div>
-        <div class="archive-text">${MOMENTOS[i]}</div>
-        <div class="archive-date">🌿 ${fecha}</div>
+      <div class="archive-item" id="${id}" onclick="toggleArchive('${id}')">
+        <div class="archive-header">
+          <div class="archive-header-left">
+            <div class="archive-dot"></div>
+            <div class="archive-header-info">
+              <div class="archive-num">Momento ${num}</div>
+              <div class="archive-date-compact">${fecha}</div>
+            </div>
+          </div>
+          <span class="archive-chevron">▼</span>
+        </div>
+        <div class="archive-body">
+          <div class="archive-body-inner">
+            <div class="archive-text">${MOMENTOS[i]}</div>
+          </div>
+        </div>
       </div>`;
   }).join('');
+}
+
+function toggleArchive(id) {
+  const el = document.getElementById(id);
+  const isOpen = el.classList.contains('open');
+  // Cerrar todos
+  document.querySelectorAll('.archive-item.open').forEach(e => e.classList.remove('open'));
+  // Abrir el tocado (si estaba cerrado)
+  if (!isOpen) el.classList.add('open');
 }
 
 // ── Desbloquear ───────────────────────────────────────────────────────
