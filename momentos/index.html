@@ -196,6 +196,32 @@
   }
   .archive-date { font-size: 0.7rem; color: var(--t3); margin-top: 6px; }
 
+  /* ── Suggest box ── */
+  .suggest-section { margin-top: 32px; }
+  .suggest-card {
+    background: var(--card); border-radius: var(--r);
+    padding: 24px 28px; box-shadow: var(--shadow);
+    border: 1.5px dashed var(--g4);
+  }
+  .suggest-title {
+    font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--t2); margin-bottom: 14px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .suggest-title::after { content: ''; flex: 1; height: 1px; background: var(--g4); }
+  .suggest-card textarea {
+    width: 100%; border: 1.5px solid var(--g4); border-radius: var(--rsm);
+    padding: 12px 14px; font-size: 0.9rem; font-family: Georgia, 'Times New Roman', serif;
+    color: var(--t1); background: var(--g5); resize: vertical;
+    min-height: 90px; line-height: 1.6; transition: border-color 0.15s;
+  }
+  .suggest-card textarea:focus { outline: none; border-color: var(--g2); }
+  .suggest-card textarea::placeholder { color: var(--t3); font-style: italic; }
+  .suggest-status {
+    font-size: 0.8rem; text-align: center; padding: 8px; min-height: 28px;
+    color: var(--g2); display: none;
+  }
+
   /* ── Finale ── */
   .finale-card {
     background: var(--g1); color: #fff;
@@ -230,6 +256,22 @@
   <div class="archive-section">
     <div class="archive-title">Momentos descubiertos</div>
     <div id="archiveGrid"></div>
+  </div>
+
+  <!-- Formulario oculto para que Netlify lo detecte en el build -->
+  <form name="sugerencias" netlify netlify-honeypot="bot-field" style="display:none">
+    <input name="sugerencia" />
+  </form>
+
+  <div class="suggest-section">
+    <div class="suggest-card">
+      <div class="suggest-title">💌 Sugiere un momento</div>
+      <textarea id="suggestText" placeholder="¿Hay un recuerdo que quieras sumar? Escríbelo acá…"></textarea>
+      <div class="suggest-status" id="suggestStatus"></div>
+      <button class="btn-unlock" style="margin-top:12px" onclick="sendSuggestion()">
+        Enviar sugerencia 🌿
+      </button>
+    </div>
   </div>
 
 </div>
@@ -506,6 +548,27 @@ function startCountdown() {
   }
   update();
   countdownTimer = setInterval(update, 1000);
+}
+
+// ── Sugerencias (Netlify Forms) ───────────────────────────────────────
+async function sendSuggestion() {
+  const texto = document.getElementById('suggestText').value.trim();
+  if (!texto) return;
+  const status = document.getElementById('suggestStatus');
+  status.style.display = 'block';
+  status.textContent = '📨 Guardando…';
+  try {
+    await fetch('/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({ 'form-name': 'sugerencias', sugerencia: texto }).toString()
+    });
+    status.textContent = '✅ ¡Sugerencia guardada!';
+    document.getElementById('suggestText').value = '';
+    setTimeout(() => { status.style.display = 'none'; }, 3000);
+  } catch(err) {
+    status.textContent = '❌ No se pudo guardar. Intentá de nuevo.';
+  }
 }
 
 // ── Init ──────────────────────────────────────────────────────────────
