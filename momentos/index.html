@@ -385,6 +385,13 @@
     <input name="sugerencia" />
   </form>
 
+  <!-- Formulario oculto: racha diaria (invisible para Alyn, visible en Netlify Forms) -->
+  <form name="racha-diaria" netlify netlify-honeypot="bot-field" style="display:none">
+    <input name="racha" />
+    <input name="momento" />
+    <input name="fecha" />
+  </form>
+
   <div class="suggest-section">
     <div class="suggest-card">
       <div class="suggest-title">💌 Sugiere un momento</div>
@@ -744,6 +751,10 @@ function unlockMomento() {
 
   saveState(st);
 
+  // Registro silencioso de racha en Netlify Forms
+  const momentNum = st.seen.length;
+  logStreakToNetlify(st.streak, momentNum);
+
   // Notificar hito si aplica
   const hitMs = MILESTONES.find(ms => ms.day === st.streak && !st.notifiedMs.includes(ms.day));
   if (hitMs) {
@@ -753,6 +764,20 @@ function unlockMomento() {
   }
 
   render();
+}
+
+// ── Registro diario de racha en Netlify Forms (silencioso) ───────────
+function logStreakToNetlify(streak, momentNum) {
+  fetch('/', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({
+      'form-name': 'racha-diaria',
+      racha:   `${streak} día${streak !== 1 ? 's' : ''}`,
+      momento: `Momento ${momentNum}`,
+      fecha:   formatDate(today()),
+    }).toString()
+  }).catch(() => {}); // silencioso si falla
 }
 
 // ── Notificar a Matías al alcanzar un hito ────────────────────────────
