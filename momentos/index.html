@@ -822,7 +822,12 @@ function unlockMomento() {
   st.todayIdx  = pick.i;
 
   // Calcular racha
-  if (st.streakDate === yesterday()) {
+  const baseConsumed = localStorage.getItem('momentos_baseConsumed');
+  if (!baseConsumed) {
+    // Primera apertura con el contador activo: continúa desde la racha base
+    st.streak = STREAK_BASE + 1;
+    localStorage.setItem('momentos_baseConsumed', '1');
+  } else if (st.streakDate === yesterday()) {
     st.streak += 1;
   } else if (st.streakDate === today()) {
     // ya contado hoy (no debería pasar, pero por si acaso)
