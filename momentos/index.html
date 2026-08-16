@@ -424,15 +424,19 @@
   </div>
 
   <!-- Formulario oculto para que Netlify lo detecte en el build -->
-  <form name="sugerencias" netlify netlify-honeypot="bot-field" style="display:none">
-    <input name="sugerencia" />
+  <form name="sugerencias" data-netlify="true" netlify-honeypot="bot-field" hidden>
+    <input type="hidden" name="form-name" value="sugerencias" />
+    <input type="text" name="bot-field" />
+    <input type="text" name="sugerencia" />
   </form>
 
   <!-- Formulario oculto: racha diaria (invisible para Alyn, visible en Netlify Forms) -->
-  <form name="racha-diaria" netlify netlify-honeypot="bot-field" style="display:none">
-    <input name="racha" />
-    <input name="momento" />
-    <input name="fecha" />
+  <form name="racha-diaria" data-netlify="true" netlify-honeypot="bot-field" hidden>
+    <input type="hidden" name="form-name" value="racha-diaria" />
+    <input type="text" name="bot-field" />
+    <input type="text" name="racha" />
+    <input type="text" name="momento" />
+    <input type="text" name="fecha" />
   </form>
 
   <div class="suggest-section">
