@@ -292,9 +292,28 @@
     const btn = document.getElementById('saveBtn');
     btn.textContent = '⏳ Guardando...';
     btn.disabled = true;
+
+    // Intentar guardar; si el SHA está desactualizado, recargar y reintentar
+    const ok = await attemptSave();
+    if (!ok) {
+      toast('⚠️ Archivo desactualizado, recargando…');
+      await reloadSha();
+      const retry = await attemptSave();
+      btn.disabled = false;
+      btn.textContent = '💾 Guardar y publicar';
+      if (retry) toast('✅ Publicado — live en ~1 minuto');
+      else toast('❌ No se pudo guardar. Recargá la página e intentá de nuevo.', true);
+      return;
+    }
+    btn.disabled = false;
+    btn.textContent = '💾 Guardar y publicar';
+    toast('✅ Publicado — live en ~1 minuto');
+  }
+
+  async function attemptSave() {
     const updated = rebuildHtml(rawHtml, momentos);
     const body = {
-      message: `Admin: actualizar 100 momentos`,
+      message: 'Admin: actualizar 100 momentos',
       content: btoa(unescape(encodeURIComponent(updated))),
       sha: fileSha
     };
@@ -303,18 +322,28 @@
       headers: { Authorization: `Bearer ${getToken()}`, 'Content-Type': 'application/json' },
       body: JSON.stringify(body)
     });
-    btn.disabled = false;
-    btn.textContent = '💾 Guardar y publicar';
     if (r.ok) {
       const data = await r.json();
       fileSha = data.content.sha;
-      rawHtml = updated;
+      rawHtml = rebuildHtml(rawHtml, momentos);
       dirty   = false;
-      toast('✅ Publicado — live en ~1 minuto');
-    } else {
-      const err = await r.json();
-      toast('Error: ' + (err.message || 'no se pudo guardar'), true);
+      return true;
     }
+    return false;
+  }
+
+  async function reloadSha() {
+    const r = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/contents/${FILE}`, {
+      headers: { Authorization: `Bearer ${getToken()}` }
+    });
+    if (!r.ok) return;
+    const data = await r.json();
+    fileSha = data.sha;
+    // Actualizar rawHtml base pero preservar los momentos editados
+    const b64 = data.content.replace(/\n/g, '');
+    rawHtml = decodeURIComponent(
+      atob(b64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join('')
+    );
   }
 
   // ── Parse / rebuild ────────────────────────────────────────────────
