@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>100 Momentos 🌿</title>
 <meta name="robots" content="noindex">
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
 <style>
   :root {
@@ -75,7 +76,7 @@
   .header p { font-size: 0.85rem; color: var(--t3); letter-spacing: 0.02em; }
 
   /* ── Progress ── */
-  .progress-wrap { margin-bottom: 28px; }
+  .progress-wrap { margin-bottom: 16px; }
   .progress-label {
     display: flex; justify-content: space-between; align-items: baseline;
     margin-bottom: 8px;
@@ -84,6 +85,24 @@
   .progress-label strong { font-size: 1.1rem; color: var(--g1); font-family: Georgia, serif; font-weight: normal; }
   .progress-bar { height: 6px; background: var(--g4); border-radius: 3px; overflow: hidden; }
   .progress-fill { height: 100%; background: var(--g2); border-radius: 3px; transition: width 0.8s cubic-bezier(0.34, 1.2, 0.64, 1); }
+
+  /* ── Racha ── */
+  .streak-row {
+    display: flex; align-items: center; justify-content: flex-end;
+    margin-bottom: 28px;
+  }
+  .streak-badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: var(--card); border: 1.5px solid var(--g4);
+    border-radius: 50px; padding: 5px 14px;
+    font-size: 0.78rem; color: var(--t2);
+    box-shadow: 0 2px 8px rgba(42,80,64,0.08);
+  }
+  .streak-badge .fire { font-size: 1rem; }
+  .streak-badge .streak-count {
+    font-family: Georgia, serif; font-size: 1rem;
+    color: var(--g1); font-weight: 600;
+  }
 
   /* ── Daily card ── */
   .daily-section { margin-bottom: 32px; }
@@ -152,6 +171,99 @@
     display: flex; align-items: center; gap: 6px;
   }
 
+  /* ── Milestone celebration ── */
+  .milestone-celebration {
+    background: linear-gradient(135deg, var(--g1) 0%, var(--g2) 100%);
+    border-radius: var(--r);
+    padding: 28px 24px;
+    text-align: center;
+    color: #fff;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow-lg);
+    animation: revealCard 0.7s cubic-bezier(0.34, 1.4, 0.64, 1) both;
+  }
+  .milestone-celebration .ms-deco { font-size: 2.2rem; margin-bottom: 10px; }
+  .milestone-celebration h3 {
+    font-family: Georgia, serif; font-size: 1.3rem; font-weight: normal;
+    margin-bottom: 6px;
+  }
+  .milestone-celebration p { font-size: 0.82rem; opacity: 0.85; line-height: 1.5; }
+
+  /* ── Milestones section ── */
+  .milestones-section { margin-bottom: 32px; }
+  .milestones-title {
+    font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--t2); margin-bottom: 14px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .milestones-title::after { content: ''; flex: 1; height: 1px; background: var(--g4); }
+
+  .milestones-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+  }
+
+  .milestone-card {
+    background: var(--card);
+    border-radius: var(--rsm);
+    padding: 16px 14px;
+    border: 1.5px solid var(--g4);
+    box-shadow: 0 2px 10px rgba(42,80,64,0.07);
+    position: relative; overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .milestone-card.achieved {
+    border-color: var(--g2);
+    background: var(--g5);
+  }
+  .milestone-card.next-target {
+    border-color: var(--g3);
+  }
+
+  .ms-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  .ms-day {
+    font-family: Georgia, serif; font-size: 1.5rem; color: var(--g1);
+    line-height: 1;
+  }
+  .ms-label {
+    font-size: 0.65rem; color: var(--t3); text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .ms-icon { font-size: 1.4rem; }
+
+  .ms-progress-bar {
+    height: 4px; background: var(--g4); border-radius: 2px;
+    overflow: hidden; margin-bottom: 10px;
+  }
+  .ms-progress-fill {
+    height: 100%; background: var(--g2); border-radius: 2px;
+    transition: width 0.8s ease;
+  }
+
+  .ms-prize-label {
+    font-size: 0.62rem; color: var(--t3); text-transform: uppercase;
+    letter-spacing: 0.05em; margin-bottom: 4px;
+  }
+  .ms-prize-text {
+    font-family: Georgia, serif; font-size: 0.82rem; color: var(--t1);
+    line-height: 1.4;
+    filter: blur(5px);
+    user-select: none;
+    transition: filter 0.6s ease;
+  }
+  .ms-prize-text.revealed {
+    filter: blur(0);
+  }
+
+  .ms-check {
+    position: absolute; top: 10px; right: 10px;
+    width: 20px; height: 20px; background: var(--g2);
+    border-radius: 50%; display: flex; align-items: center;
+    justify-content: center; font-size: 0.7rem; color: #fff;
+  }
+
   /* ── Countdown ── */
   .countdown-wrap {
     margin-top: 16px;
@@ -164,7 +276,7 @@
   .countdown-time { font-family: Georgia, serif; font-size: 1.4rem; color: var(--g1); letter-spacing: 0.05em; font-variant-numeric: tabular-nums; }
 
   /* ── Archive ── */
-  .archive-section { }
+  .archive-section { margin-bottom: 32px; }
   .archive-title {
     font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em;
     text-transform: uppercase; color: var(--t2); margin-bottom: 16px;
@@ -251,7 +363,17 @@
     </div>
   </div>
 
+  <div class="streak-row">
+    <div class="streak-badge" id="streakBadge" style="display:none">
+      <span class="fire">🔥</span>
+      <span class="streak-count" id="streakCount">0</span>
+      <span>días seguidos</span>
+    </div>
+  </div>
+
   <div class="daily-section" id="dailySection"></div>
+
+  <div class="milestones-section" id="milestonesSection"></div>
 
   <div class="archive-section">
     <div class="archive-title">Momentos descubiertos</div>
@@ -383,12 +505,34 @@ const MOMENTOS = [
   null,
   null,
   null,
-  null,
 ];
+
+// ══════════════════════════════════════════════════════════════════════
+//  HITOS DE RACHA — edita los premios aquí cuando los tengas definidos
+// ══════════════════════════════════════════════════════════════════════
+const MILESTONES = [
+  { day: 10,  emoji: '✨', title: '10 días',  prize: 'Escribe aquí el premio del día 10' },
+  { day: 25,  emoji: '🌸', title: '25 días',  prize: 'Escribe aquí el premio del día 25' },
+  { day: 50,  emoji: '🌿', title: '50 días',  prize: 'Escribe aquí el premio del día 50' },
+  { day: 100, emoji: '💚', title: '100 días', prize: 'Escribe aquí el premio del día 100' },
+];
+
+// EmailJS — notificación a Matías al alcanzar un hito
+const EMAILJS_PUBLIC_KEY  = 'JXALjvHACKd5EL19V';
+const EMAILJS_SERVICE_ID  = 'service_0ivspi2';
+const EMAILJS_TEMPLATE_ID = 'template_r9zfy8n';
+const EMAIL_MATIAS        = 'matias.imz19@gmail.com';
+
+(function() { emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY }); })();
 
 // ── Helpers de fecha ──────────────────────────────────────────────────
 function today() {
   const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+function yesterday() {
+  const d = new Date(); d.setDate(d.getDate() - 1);
   return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 }
 
@@ -401,20 +545,26 @@ function formatDate(iso) {
 // ── localStorage ──────────────────────────────────────────────────────
 function getState() {
   return {
-    seen:      JSON.parse(localStorage.getItem('momentos_seen')      || '[]'),
-    seenDates: JSON.parse(localStorage.getItem('momentos_seenDates') || '{}'),
-    lastDate:  localStorage.getItem('momentos_lastDate')  || '',
-    todayIdx:  localStorage.getItem('momentos_todayIdx') !== null
-               ? parseInt(localStorage.getItem('momentos_todayIdx'))
-               : null,
+    seen:          JSON.parse(localStorage.getItem('momentos_seen')          || '[]'),
+    seenDates:     JSON.parse(localStorage.getItem('momentos_seenDates')     || '{}'),
+    lastDate:      localStorage.getItem('momentos_lastDate')  || '',
+    todayIdx:      localStorage.getItem('momentos_todayIdx') !== null
+                   ? parseInt(localStorage.getItem('momentos_todayIdx'))
+                   : null,
+    streak:        parseInt(localStorage.getItem('momentos_streak')          || '0'),
+    streakDate:    localStorage.getItem('momentos_streakDate')               || '',
+    notifiedMs:    JSON.parse(localStorage.getItem('momentos_notifiedMs')    || '[]'),
   };
 }
 
 function saveState(st) {
-  localStorage.setItem('momentos_seen',      JSON.stringify(st.seen));
-  localStorage.setItem('momentos_seenDates', JSON.stringify(st.seenDates));
-  localStorage.setItem('momentos_lastDate',  st.lastDate);
+  localStorage.setItem('momentos_seen',       JSON.stringify(st.seen));
+  localStorage.setItem('momentos_seenDates',  JSON.stringify(st.seenDates));
+  localStorage.setItem('momentos_lastDate',   st.lastDate);
   if (st.todayIdx !== null) localStorage.setItem('momentos_todayIdx', st.todayIdx);
+  localStorage.setItem('momentos_streak',     st.streak);
+  localStorage.setItem('momentos_streakDate', st.streakDate);
+  localStorage.setItem('momentos_notifiedMs', JSON.stringify(st.notifiedMs));
 }
 
 // ── Pool de momentos disponibles ──────────────────────────────────────
@@ -424,26 +574,42 @@ function getAvailable(seen) {
     .filter(x => x.m !== null && !seen.includes(x.i));
 }
 
-// ── Render ────────────────────────────────────────────────────────────
+// ── Render principal ──────────────────────────────────────────────────
 function render() {
-  const st       = getState();
-  const total    = MOMENTOS.filter(m => m !== null).length;
-  const count    = st.seen.length;
-  const pct      = total > 0 ? (count / total) * 100 : 0;
+  const st    = getState();
+  const total = MOMENTOS.filter(m => m !== null).length;
+  const count = st.seen.length;
+  const pct   = total > 0 ? (count / total) * 100 : 0;
 
   // Progress
   document.getElementById('progressText').textContent = `${count} de ${total}`;
   document.getElementById('progressFill').style.width = pct + '%';
 
+  // Racha badge
+  renderStreakBadge(st);
+
   // Daily section
   renderDaily(st, total);
+
+  // Milestones
+  renderMilestones(st);
 
   // Archive
   renderArchive(st);
 }
 
+function renderStreakBadge(st) {
+  const badge = document.getElementById('streakBadge');
+  if (st.streak >= 2) {
+    badge.style.display = 'inline-flex';
+    document.getElementById('streakCount').textContent = st.streak;
+  } else {
+    badge.style.display = 'none';
+  }
+}
+
 function renderDaily(st, total) {
-  const section  = document.getElementById('dailySection');
+  const section   = document.getElementById('dailySection');
   const available = getAvailable(st.seen);
   const alreadyOpenedToday = st.lastDate === today() && st.todayIdx !== null;
 
@@ -465,12 +631,23 @@ function renderDaily(st, total) {
   }
 
   if (alreadyOpenedToday) {
-    // Ya abrió hoy — muestra el momento de hoy + countdown
     const texto = MOMENTOS[st.todayIdx];
     const fecha = formatDate(st.seenDates[st.todayIdx] || today());
+    const num   = st.seen.indexOf(st.todayIdx) + 1;
+
+    // Celebración de hito
+    const hitMs = MILESTONES.find(m => m.day === st.streak);
+    const celHtml = hitMs ? `
+      <div class="milestone-celebration">
+        <div class="ms-deco">${hitMs.emoji}</div>
+        <h3>¡${hitMs.title} seguidos!</h3>
+        <p>Llevas ${hitMs.day} días descubriendo momentos.<br>Has desbloqueado tu premio 🎁</p>
+      </div>` : '';
+
     section.innerHTML = `
+      ${celHtml}
       <div class="moment-card">
-        <div class="moment-num">Momento ${st.seen.indexOf(st.todayIdx) + 1}</div>
+        <div class="moment-num">Momento ${num}</div>
         <p class="moment-text">${texto}</p>
         <div class="moment-date">🌿 Descubierto el ${fecha}</div>
       </div>
@@ -480,7 +657,6 @@ function renderDaily(st, total) {
       </div>`;
     startCountdown();
   } else {
-    // Puede abrir uno nuevo
     section.innerHTML = `
       <div class="unlock-card">
         <span class="lock-icon">🎁</span>
@@ -493,6 +669,36 @@ function renderDaily(st, total) {
   }
 }
 
+function renderMilestones(st) {
+  const section = document.getElementById('milestonesSection');
+  section.innerHTML = `
+    <div class="milestones-title">🏅 Hitos de racha</div>
+    <div class="milestones-grid">
+      ${MILESTONES.map(ms => {
+        const achieved  = st.streak >= ms.day;
+        const isNext    = !achieved && MILESTONES.find(m => st.streak < m.day) === ms;
+        const progress  = Math.min(100, Math.round((st.streak / ms.day) * 100));
+        const cardClass = achieved ? 'milestone-card achieved' : isNext ? 'milestone-card next-target' : 'milestone-card';
+        return `
+          <div class="${cardClass}">
+            ${achieved ? '<div class="ms-check">✓</div>' : ''}
+            <div class="ms-header">
+              <div>
+                <div class="ms-day">${ms.day}</div>
+                <div class="ms-label">días seguidos</div>
+              </div>
+              <div class="ms-icon">${ms.emoji}</div>
+            </div>
+            <div class="ms-progress-bar">
+              <div class="ms-progress-fill" style="width:${progress}%"></div>
+            </div>
+            <div class="ms-prize-label">Premio</div>
+            <div class="ms-prize-text ${achieved ? 'revealed' : ''}">${ms.prize}</div>
+          </div>`;
+      }).join('')}
+    </div>`;
+}
+
 function renderArchive(st) {
   const grid = document.getElementById('archiveGrid');
   const past = st.seen.filter(i => i !== (st.todayIdx ?? -1));
@@ -502,7 +708,6 @@ function renderArchive(st) {
     return;
   }
 
-  // Mostrar del más reciente al más antiguo, excluyendo el de hoy
   grid.innerHTML = [...past].reverse().map(i => {
     const fecha = formatDate(st.seenDates[i] || '');
     const num   = st.seen.indexOf(i) + 1;
@@ -526,8 +731,40 @@ function unlockMomento() {
   st.seenDates[pick.i] = today();
   st.lastDate  = today();
   st.todayIdx  = pick.i;
+
+  // Calcular racha
+  if (st.streakDate === yesterday()) {
+    st.streak += 1;
+  } else if (st.streakDate === today()) {
+    // ya contado hoy (no debería pasar, pero por si acaso)
+  } else {
+    st.streak = 1;
+  }
+  st.streakDate = today();
+
   saveState(st);
+
+  // Notificar hito si aplica
+  const hitMs = MILESTONES.find(ms => ms.day === st.streak && !st.notifiedMs.includes(ms.day));
+  if (hitMs) {
+    st.notifiedMs.push(hitMs.day);
+    saveState(st);
+    notifyMilestone(hitMs, st.streak);
+  }
+
   render();
+}
+
+// ── Notificar a Matías al alcanzar un hito ────────────────────────────
+function notifyMilestone(ms, streak) {
+  emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+    to_email:   EMAIL_MATIAS,
+    to_name:    'Matías',
+    plan_name:  `Racha de ${ms.day} días en 100 Momentos`,
+    date:       formatDate(today()),
+    time:       '',
+    message:    `¡Alyn alcanzó ${streak} días seguidos descubriendo momentos! 🎉 Ha desbloqueado el hito de ${ms.title}.`
+  }).catch(() => {}); // silencioso si falla
 }
 
 // ── Countdown hasta medianoche ────────────────────────────────────────
