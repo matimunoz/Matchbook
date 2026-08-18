@@ -564,9 +564,6 @@ const MOMENTOS = [
 // ══════════════════════════════════════════════════════════════════════
 //  HITOS DE RACHA — edita los premios aquí cuando los tengas definidos
 // ══════════════════════════════════════════════════════════════════════
-// Racha base: días que Alyn ya llevaba antes de que existiera el contador
-const STREAK_BASE = 3;
-
 const MILESTONES = [
   { day: 10,  emoji: '✨', title: '10 días',  prize: 'Escribe aquí el premio del día 10' },
   { day: 25,  emoji: '🌸', title: '25 días',  prize: 'Escribe aquí el premio del día 25' },
@@ -599,6 +596,30 @@ function formatDate(iso) {
   return `${parseInt(d)} de ${meses[parseInt(m)-1]} de ${y}`;
 }
 
+// Devuelve la fecha ISO desplazada N días
+function shiftDate(iso, delta) {
+  const [y,m,d] = iso.split('-').map(Number);
+  const dt = new Date(y, m - 1, d);
+  dt.setDate(dt.getDate() + delta);
+  return `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}-${String(dt.getDate()).padStart(2,'0')}`;
+}
+
+// ── Racha calculada desde las fechas reales de apertura ───────────────
+// Fuente de verdad: seenDates guarda el día exacto de cada momento abierto.
+// Así la racha se autocorrige y no depende de contadores acumulados.
+function computeStreak(seenDates) {
+  const dias = [...new Set(Object.values(seenDates).filter(Boolean))].sort().reverse();
+  if (dias.length === 0) return 0;
+  // La racha sigue viva solo si su última apertura fue hoy o ayer
+  if (dias[0] !== today() && dias[0] !== yesterday()) return 0;
+  let racha = 1;
+  for (let i = 1; i < dias.length; i++) {
+    if (dias[i] !== shiftDate(dias[i-1], -1)) break;
+    racha++;
+  }
+  return racha;
+}
+
 // ── localStorage ──────────────────────────────────────────────────────
 function getState() {
   return {
@@ -608,7 +629,7 @@ function getState() {
     todayIdx:      localStorage.getItem('momentos_todayIdx') !== null
                    ? parseInt(localStorage.getItem('momentos_todayIdx'))
                    : null,
-    streak:        parseInt(localStorage.getItem('momentos_streak')          || String(STREAK_BASE)),
+    streak:        parseInt(localStorage.getItem('momentos_streak')          || '0'),
     streakDate:    localStorage.getItem('momentos_streakDate')               || '',
     notifiedMs:    JSON.parse(localStorage.getItem('momentos_notifiedMs')    || '[]'),
   };
@@ -624,22 +645,21 @@ function saveState(st) {
   localStorage.setItem('momentos_notifiedMs', JSON.stringify(st.notifiedMs));
 }
 
-// ── Migración: sembrar la racha base una sola vez ────────────────────
-// v2: si ya abrió el momento de hoy, ese día ya cuenta dentro de la racha
-function migrateStreak() {
-  if (localStorage.getItem('momentos_streakInit_v2')) return;
+// ── Sincronizar la racha con las fechas reales ───────────────────────
+// Corre en cada carga: recalcula desde seenDates y repara cualquier
+// desfase heredado de las versiones anteriores del contador.
+function syncStreak() {
+  const seenDates = JSON.parse(localStorage.getItem('momentos_seenDates') || '{}');
+  const racha     = computeStreak(seenDates);
+  const dias      = Object.values(seenDates).filter(Boolean).sort();
 
-  const lastDate    = localStorage.getItem('momentos_lastDate') || '';
-  const abrioHoy    = lastDate === today();
-  // Ya abrió hoy → la base ya está consumida y hoy suma uno más
-  const streak      = abrioHoy ? STREAK_BASE + 1 : STREAK_BASE;
+  localStorage.setItem('momentos_streak',     String(racha));
+  localStorage.setItem('momentos_streakDate', dias.length ? dias[dias.length - 1] : '');
 
-  localStorage.setItem('momentos_streak',     String(streak));
-  // Anclamos a su última apertura para que el próximo día siga sumando
-  localStorage.setItem('momentos_streakDate', lastDate || today());
-  if (abrioHoy) localStorage.setItem('momentos_baseConsumed', '1');
-
-  localStorage.setItem('momentos_streakInit_v2', '1');
+  // Claves de las migraciones antiguas, ya no se usan
+  localStorage.removeItem('momentos_baseConsumed');
+  localStorage.removeItem('momentos_streakInit');
+  localStorage.removeItem('momentos_streakInit_v2');
 }
 
 // ── Pool de momentos disponibles ──────────────────────────────────────
@@ -829,19 +849,8 @@ function unlockMomento() {
   st.lastDate  = today();
   st.todayIdx  = pick.i;
 
-  // Calcular racha
-  const baseConsumed = localStorage.getItem('momentos_baseConsumed');
-  if (!baseConsumed) {
-    // Primera apertura con el contador activo: continúa desde la racha base
-    st.streak = STREAK_BASE + 1;
-    localStorage.setItem('momentos_baseConsumed', '1');
-  } else if (st.streakDate === yesterday()) {
-    st.streak += 1;
-  } else if (st.streakDate === today()) {
-    // ya contado hoy (no debería pasar, pero por si acaso)
-  } else {
-    st.streak = 1;
-  }
+  // Racha recalculada desde las fechas reales de apertura
+  st.streak     = computeStreak(st.seenDates);
   st.streakDate = today();
 
   saveState(st);
@@ -929,7 +938,7 @@ async function sendSuggestion() {
 }
 
 // ── Init ──────────────────────────────────────────────────────────────
-migrateStreak();
+syncStreak();
 render();
 </script>
 </body>
