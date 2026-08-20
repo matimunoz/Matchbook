@@ -620,6 +620,34 @@ function computeStreak(seenDates) {
   return racha;
 }
 
+// Mejor racha alcanzada alguna vez — define qué premios ya se ganó.
+// Se recalcula desde las fechas, así los hitos se recuperan solos.
+function maxStreakEver(seenDates) {
+  const dias = [...new Set(Object.values(seenDates).filter(Boolean))].sort();
+  if (dias.length === 0) return 0;
+  let mejor = 1, actual = 1;
+  for (let i = 1; i < dias.length; i++) {
+    actual = (dias[i] === shiftDate(dias[i-1], 1)) ? actual + 1 : 1;
+    if (actual > mejor) mejor = actual;
+  }
+  return mejor;
+}
+
+// Hitos ya desbloqueados. Una vez ganado, un premio no se vuelve a bloquear.
+function getAchieved() {
+  return JSON.parse(localStorage.getItem('momentos_msAchieved') || '[]');
+}
+
+function syncAchieved(seenDates) {
+  const mejor    = maxStreakEver(seenDates);
+  const achieved = getAchieved();
+  MILESTONES.forEach(ms => {
+    if (mejor >= ms.day && !achieved.includes(ms.day)) achieved.push(ms.day);
+  });
+  localStorage.setItem('momentos_msAchieved', JSON.stringify(achieved));
+  return achieved;
+}
+
 // ── localStorage ──────────────────────────────────────────────────────
 function getState() {
   return {
@@ -655,6 +683,9 @@ function syncStreak() {
 
   localStorage.setItem('momentos_streak',     String(racha));
   localStorage.setItem('momentos_streakDate', dias.length ? dias[dias.length - 1] : '');
+
+  // Premios ya ganados quedan desbloqueados para siempre
+  syncAchieved(seenDates);
 
   // Claves de las migraciones antiguas, ya no se usan
   localStorage.removeItem('momentos_baseConsumed');
@@ -765,14 +796,17 @@ function renderDaily(st, total) {
 }
 
 function renderMilestones(st) {
-  const section = document.getElementById('milestonesSection');
+  const section  = document.getElementById('milestonesSection');
+  // Un premio ganado queda desbloqueado aunque después se corte la racha
+  const unlocked = getAchieved();
+  const pending  = MILESTONES.find(m => !unlocked.includes(m.day));
   section.innerHTML = `
     <div class="milestones-title">🏅 Hitos de racha</div>
     <div class="milestones-grid">
       ${MILESTONES.map(ms => {
-        const achieved  = st.streak >= ms.day;
-        const isNext    = !achieved && MILESTONES.find(m => st.streak < m.day) === ms;
-        const progress  = Math.min(100, Math.round((st.streak / ms.day) * 100));
+        const achieved  = unlocked.includes(ms.day);
+        const isNext    = !achieved && pending === ms;
+        const progress  = achieved ? 100 : Math.min(100, Math.round((st.streak / ms.day) * 100));
         const cardClass = achieved ? 'milestone-card achieved' : isNext ? 'milestone-card next-target' : 'milestone-card';
         return `
           <div class="${cardClass}">
@@ -854,6 +888,9 @@ function unlockMomento() {
   st.streakDate = today();
 
   saveState(st);
+
+  // Desbloquear los premios que correspondan (quedan desbloqueados para siempre)
+  syncAchieved(st.seenDates);
 
   // Registro silencioso de racha en Netlify Forms
   const momentNum = st.seen.length;
