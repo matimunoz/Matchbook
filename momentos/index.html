@@ -8,7 +8,9 @@
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
 <style>
+  /* Paleta fija: la página se ve igual aunque el celular esté en modo oscuro */
   :root {
+    color-scheme: only light;
     --bg: #EBF5ED;
     --card: #FFFFFF;
     --g1: #2A5040;
@@ -24,33 +26,6 @@
     --shadow-lg: 0 12px 48px rgba(42,80,64,0.18);
     --r: 18px;
     --rsm: 12px;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #182E22; --card: #1F3828;
-      --g1: #9FD4B5; --g2: #78B896; --g3: #507260;
-      --g4: #2A4B38; --g5: #1A3025;
-      --t1: #CCE9D8; --t2: #88B89E; --t3: #507260;
-      --gold: #D4AF5A;
-      --shadow: 0 6px 32px rgba(0,0,0,0.35);
-      --shadow-lg: 0 12px 48px rgba(0,0,0,0.45);
-    }
-  }
-  :root[data-theme="dark"] {
-    --bg: #182E22; --card: #1F3828;
-    --g1: #9FD4B5; --g2: #78B896; --g3: #507260;
-    --g4: #2A4B38; --g5: #1A3025;
-    --t1: #CCE9D8; --t2: #88B89E; --t3: #507260;
-    --shadow: 0 6px 32px rgba(0,0,0,0.35);
-    --shadow-lg: 0 12px 48px rgba(0,0,0,0.45);
-  }
-  :root[data-theme="light"] {
-    --bg: #EBF5ED; --card: #FFFFFF;
-    --g1: #2A5040; --g2: #45856A; --g3: #78B896;
-    --g4: #C0DECA; --g5: #EAF5EE;
-    --t1: #1C3A2C; --t2: #507260; --t3: #8AADA0;
-    --shadow: 0 6px 32px rgba(42,80,64,0.12);
-    --shadow-lg: 0 12px 48px rgba(42,80,64,0.18);
   }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
