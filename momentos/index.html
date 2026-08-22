@@ -703,7 +703,8 @@ function getAvailable(seen) {
 // ── Render principal ──────────────────────────────────────────────────
 function render() {
   const st    = getState();
-  const total = MOMENTOS.filter(m => m !== null).length;
+  // Siempre sobre 100, aunque todavía falten momentos por escribir
+  const total = MOMENTOS.length;
   const count = st.seen.length;
   const pct   = total > 0 ? (count / total) * 100 : 0;
 
