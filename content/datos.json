@@ -73,7 +73,7 @@
             "nombre": "Gonzalo",
             "foto": "moderadores/gonzalo.png"
           },
-          "lugar": "Between Coffee, Santiago",
+          "lugar": "Between Coffee",
           "cuposTotal": 12,
           "cuposTomados": 4
         },
@@ -83,9 +83,17 @@
             "nombre": "Gonzalo",
             "foto": "moderadores/gonzalo.png"
           },
-          "lugar": "Club 2D, Viña del Mar",
+          "lugar": "Club 2D",
           "cuposTotal": 10,
           "cuposTomados": 5
+        },
+        {
+          "cuposTotal": 10,
+          "fecha": "Miércoles 2 de septiembre, 19:00 hrs | Santiago ",
+          "lugar": "Between Coffee",
+          "moderador": {
+            "nombre": "Gonzalo"
+          }
         }
       ],
       "club": "Books Up",
