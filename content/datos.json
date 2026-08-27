@@ -36,16 +36,6 @@
           "cuposTomados": 0
         },
         {
-          "cuposTotal": 10,
-          "cuposTomados": 0,
-          "fecha": "Domingo 30 de agosto, 11:30 hrs en INGLÉS",
-          "lugar": "La Florería, Viña del Mar",
-          "moderador": {
-            "nombre": "Brianna ",
-            "foto": "/portadas/4c02e13f-c4e4-4816-bbcd-e9b17364307f.jpg"
-          }
-        },
-        {
           "fecha": "Domingo 30 de agosto, 14:30 hrs",
           "moderador": {
             "nombre": "Matías",
