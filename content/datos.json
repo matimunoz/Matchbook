@@ -92,7 +92,8 @@
           "fecha": "Miércoles 2 de septiembre, 19:00 hrs | Santiago ",
           "lugar": "Between Coffee",
           "moderador": {
-            "nombre": "Gonzalo"
+            "nombre": "Gonzalo",
+            "foto": "/portadas/gonzalo-valdebenito.jpeg"
           }
         }
       ],
