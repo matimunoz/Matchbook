@@ -36,15 +36,6 @@
           "cuposTomados": 0
         },
         {
-          "cuposTotal": 10,
-          "fecha": "Sábado 3 de Octubre, 17:30 hrs",
-          "lugar": "Café Madrid, Viña del Mar",
-          "moderador": {
-            "nombre": "Matías",
-            "foto": "/portadas/mati.jpg"
-          }
-        },
-        {
           "fecha": "Domingo 4 de Octubre en INGLÉS, 11:30 hrs",
           "moderador": {
             "nombre": "Brianna",
@@ -62,22 +53,31 @@
       "portada": "/portadas/naranja.jpg"
     },
     {
-      "autor": "Papa León XIV",
+      "autor": "Sarah Dry",
       "color": "#C9821F",
-      "precio": 15000,
+      "precio": 10000,
       "sesiones": [
         {
-          "fecha": "Martes 1 de septiembre, 19:00 hrs | Santiago",
+          "fecha": "Martes 29 de septiembre, 19:00 hrs | Santiago",
           "moderador": {
             "nombre": "Gonzalo",
             "foto": "moderadores/gonzalo.png"
           },
           "lugar": "Between Coffee",
-          "cuposTotal": 12,
+          "cuposTotal": 10,
           "cuposTomados": 4
         },
         {
-          "fecha": "Viernes 4 de septiembre, 19:00 hrs | Viña del Mar",
+          "cuposTotal": 10,
+          "fecha": "Miércoles 30 de septiembre, 19:00 hrs | Santiago ",
+          "lugar": "Between Coffee",
+          "moderador": {
+            "nombre": "Gonzalo",
+            "foto": "/portadas/gonzalo-valdebenito.jpeg"
+          }
+        },
+        {
+          "fecha": "Viernes 2 de octubre, 19:00 hrs | Viña del Mar",
           "moderador": {
             "nombre": "Gonzalo",
             "foto": "moderadores/gonzalo.png"
@@ -85,22 +85,13 @@
           "lugar": "Club 2D",
           "cuposTotal": 10,
           "cuposTomados": 5
-        },
-        {
-          "cuposTotal": 10,
-          "fecha": "Miércoles 2 de septiembre, 19:00 hrs | Santiago ",
-          "lugar": "Between Coffee",
-          "moderador": {
-            "nombre": "Gonzalo",
-            "foto": "/portadas/gonzalo-valdebenito.jpeg"
-          }
         }
       ],
       "club": "Books Up",
-      "curaduria": "Lecturas de no ficción sobre desarrollo personal y profesional. Todos los meses no reunimos en Santiago y en Viña del Mar. En agosto leemos sobre la encíclica del Papa León XIV \"Magnífica Humanitas\".",
-      "titulo": "Magnifica Humanitas",
-      "mpLink": "https://mpago.la/333XMjN",
-      "portada": "/portadas/images.jpg"
+      "curaduria": "Historia de la Ciencia. ",
+      "titulo": "Marie Curie - Biografía",
+      "mpLink": "https://mpago.la/1eHGFXB",
+      "portada": "/portadas/images.jpeg"
     },
     {
       "autor": "Homero",
