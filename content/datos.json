@@ -36,6 +36,15 @@
           "cuposTomados": 0
         },
         {
+          "cuposTotal": 10,
+          "fecha": "Sábado 3 de Octubre, 17:30 hrs",
+          "lugar": "Café Madrid, Viña del Mar",
+          "moderador": {
+            "nombre": "Matías",
+            "foto": "/portadas/mati.jpg"
+          }
+        },
+        {
           "fecha": "Domingo 4 de Octubre en INGLÉS, 11:30 hrs",
           "moderador": {
             "nombre": "Brianna",
@@ -44,15 +53,6 @@
           "lugar": "La Florería, Viña del Mar",
           "cuposTotal": 10,
           "cuposTomados": 0
-        },
-        {
-          "cuposTotal": 10,
-          "fecha": "Sábado 3 de Octubre, 17:30 hrs",
-          "lugar": "Café Madrid, Viña del Mar",
-          "moderador": {
-            "nombre": "Matías",
-            "foto": "/portadas/mati.jpg"
-          }
         }
       ],
       "club": "Exploración Literaria",
