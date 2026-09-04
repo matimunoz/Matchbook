@@ -21,25 +21,25 @@
   ],
   "clubs": [
     {
-      "autor": "Hernán Rivera Letelier",
+      "autor": "Anthony Burgess",
       "color": "#2F8CC4",
       "precio": 5000,
       "sesiones": [
         {
-          "fecha": "Sábado 29 de agosto, 11:30 hrs",
+          "fecha": "Sábado 3 de Octubre, 11:30 hrs",
           "moderador": {
             "nombre": "Matías",
-            "foto": "/portadas/mati.jpg"
+            "foto": "/portadas/pau.png"
           },
-          "lugar": "Punto & Café, Viña del Mar",
+          "lugar": "Café Colores, Viña del Mar",
           "cuposTotal": 10,
           "cuposTomados": 0
         },
         {
-          "fecha": "Domingo 30 de agosto, 14:30 hrs",
+          "fecha": "Domingo 4 de Octubre en INGLÉS, 11:30 hrs",
           "moderador": {
-            "nombre": "Matías",
-            "foto": "/portadas/mati.jpg"
+            "nombre": "Brianna",
+            "foto": "/portadas/4c02e13f-c4e4-4816-bbcd-e9b17364307f.jpg"
           },
           "lugar": "La Florería, Viña del Mar",
           "cuposTotal": 10,
@@ -47,10 +47,10 @@
         }
       ],
       "club": "Exploración Literaria",
-      "curaduria": "Cada mes votamos por un libro distinto y exploramos nuevos mundos. Este mes: Una novela que celebra el poder de las historias, la imaginación y la memoria.",
-      "titulo": "La Contadora de Películas",
+      "curaduria": "Cada mes votamos por un libro distinto y exploramos nuevos mundos. Este mes: Una novela provocadora sobre la violencia, el libre albedrío y los límites entre el control y la libertad.\n",
+      "titulo": "La Naranja Mecánica",
       "mpLink": " https://mpago.la/2R9WruX",
-      "portada": "/portadas/images-1-.jpg"
+      "portada": "/portadas/naranja.jpg"
     },
     {
       "autor": "Papa León XIV",
