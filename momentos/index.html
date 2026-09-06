@@ -592,18 +592,33 @@ function shiftDate(iso, delta) {
   return `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}-${String(dt.getDate()).padStart(2,'0')}`;
 }
 
+// Días en que entró pero ya no quedaban momentos nuevos por descubrir.
+// No suman a la racha, pero tampoco la cortan: no fue culpa suya.
+function getDroughtDays() {
+  try { return new Set(JSON.parse(localStorage.getItem('momentos_diasSinStock') || '[]')); }
+  catch (e) { return new Set(); }
+}
+
 // ── Racha calculada desde las fechas reales de apertura ───────────────
 // Fuente de verdad: seenDates guarda el día exacto de cada momento abierto.
 // Así la racha se autocorrige y no depende de contadores acumulados.
 function computeStreak(seenDates) {
-  const dias = [...new Set(Object.values(seenDates).filter(Boolean))].sort().reverse();
-  if (dias.length === 0) return 0;
-  // La racha sigue viva solo si su última apertura fue hoy o ayer
-  if (dias[0] !== today() && dias[0] !== yesterday()) return 0;
-  let racha = 1;
-  for (let i = 1; i < dias.length; i++) {
-    if (dias[i] !== shiftDate(dias[i-1], -1)) break;
-    racha++;
+  const abiertos = new Set(Object.values(seenDates).filter(Boolean));
+  if (abiertos.size === 0) return 0;
+  const sinStock = getDroughtDays();
+  const cuenta   = (d) => abiertos.has(d) || sinStock.has(d);
+
+  // Sigue viva si hoy o ayer abrió un momento, o si no había nada que abrir
+  let cursor = today();
+  if (!cuenta(cursor)) {
+    cursor = yesterday();
+    if (!cuenta(cursor)) return 0;
+  }
+
+  let racha = 0;
+  while (cuenta(cursor)) {
+    if (abiertos.has(cursor)) racha++;   // solo suman los días que sí abrió
+    cursor = shiftDate(cursor, -1);
   }
   return racha;
 }
@@ -626,8 +641,8 @@ function getAchieved() {
   return JSON.parse(localStorage.getItem('momentos_msAchieved') || '[]');
 }
 
-function syncAchieved(seenDates) {
-  const mejor    = maxStreakEver(seenDates);
+function syncAchieved(seenDates, rachaActual) {
+  const mejor    = Math.max(maxStreakEver(seenDates), rachaActual || 0);
   const achieved = getAchieved();
   MILESTONES.forEach(ms => {
     if (mejor >= ms.day && !achieved.includes(ms.day)) achieved.push(ms.day);
@@ -666,14 +681,26 @@ function saveState(st) {
 // desfase heredado de las versiones anteriores del contador.
 function syncStreak() {
   const seenDates = JSON.parse(localStorage.getItem('momentos_seenDates') || '{}');
-  const racha     = computeStreak(seenDates);
+  const seen      = JSON.parse(localStorage.getItem('momentos_seen')      || '[]');
   const dias      = Object.values(seenDates).filter(Boolean).sort();
+
+  // Si ya descubrió todo lo escrito, hoy no hay nada que abrir: se registra
+  // como día sin stock para que la racha se congele en vez de romperse.
+  if (dias.length && getAvailable(seen).length === 0) {
+    const sinStock = JSON.parse(localStorage.getItem('momentos_diasSinStock') || '[]');
+    if (!sinStock.includes(today())) {
+      sinStock.push(today());
+      localStorage.setItem('momentos_diasSinStock', JSON.stringify(sinStock));
+    }
+  }
+
+  const racha = computeStreak(seenDates);
 
   localStorage.setItem('momentos_streak',     String(racha));
   localStorage.setItem('momentos_streakDate', dias.length ? dias[dias.length - 1] : '');
 
   // Premios ya ganados quedan desbloqueados para siempre
-  syncAchieved(seenDates);
+  syncAchieved(seenDates, racha);
 
   // Claves de las migraciones antiguas, ya no se usan
   localStorage.removeItem('momentos_baseConsumed');
@@ -879,7 +906,7 @@ function unlockMomento() {
   saveState(st);
 
   // Desbloquear los premios que correspondan (quedan desbloqueados para siempre)
-  syncAchieved(st.seenDates);
+  syncAchieved(st.seenDates, st.streak);
 
   // Registro silencioso de racha en Netlify Forms
   const momentNum = st.seen.length;
