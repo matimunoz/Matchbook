@@ -349,8 +349,32 @@
   .suggest-card textarea::placeholder { color: var(--t3); font-style: italic; }
   .suggest-status {
     font-size: 0.8rem; text-align: center; padding: 8px; min-height: 28px;
-    color: var(--g2); display: none;
+    color: var(--g2); display: none; line-height: 1.5;
   }
+
+  /* ── Bonus de racha ── */
+  .bonus-box {
+    margin-top: 14px; padding: 12px 14px;
+    background: var(--g5); border-radius: var(--rsm);
+    border: 1px solid var(--g4);
+  }
+  .bonus-box.agotado { opacity: 0.55; }
+  .bonus-head {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 8px; margin-bottom: 6px;
+  }
+  .bonus-tag {
+    font-size: 0.68rem; font-weight: 700; letter-spacing: 0.06em;
+    text-transform: uppercase; color: var(--g2);
+  }
+  .bonus-left { font-size: 0.7rem; color: var(--t3); }
+  .bonus-desc { font-size: 0.76rem; color: var(--t2); line-height: 1.45; }
+  .bonus-dots { display: flex; gap: 5px; margin-top: 9px; }
+  .bonus-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--g2);
+  }
+  .bonus-dot.gastado { background: var(--g4); }
 
   /* ── Finale ── */
   .finale-card {
@@ -418,6 +442,16 @@
     <div class="suggest-card">
       <div class="suggest-title">💌 Sugiere un momento</div>
       <textarea id="suggestText" placeholder="¿Hay un recuerdo que quieras sumar? Escríbelo acá…"></textarea>
+
+      <div class="bonus-box" id="bonusBox">
+        <div class="bonus-head">
+          <span class="bonus-tag">🎁 Bonus</span>
+          <span class="bonus-left" id="bonusLeft"></span>
+        </div>
+        <p class="bonus-desc" id="bonusDesc"></p>
+        <div class="bonus-dots" id="bonusDots"></div>
+      </div>
+
       <div class="suggest-status" id="suggestStatus"></div>
       <button class="btn-unlock" style="margin-top:12px" onclick="sendSuggestion()">
         Enviar sugerencia 🌿
@@ -594,9 +628,54 @@ function shiftDate(iso, delta) {
 
 // Días en que entró pero ya no quedaban momentos nuevos por descubrir.
 // No suman a la racha, pero tampoco la cortan: no fue culpa suya.
+// Aquí también caen los días que el bonus perdona (ver aplicarBonusRacha).
 function getDroughtDays() {
   try { return new Set(JSON.parse(localStorage.getItem('momentos_diasSinStock') || '[]')); }
   catch (e) { return new Set(); }
+}
+
+// ══════════════════════════════════════════════════════════════════════
+//  BONUS: enviar un momento recupera la racha completa. Máximo 3 veces.
+// ══════════════════════════════════════════════════════════════════════
+const BONUS_MAX = 3;
+
+function getBonusUsados() {
+  return parseInt(localStorage.getItem('momentos_bonusUsados') || '0');
+}
+
+function getBonusRestantes() {
+  return Math.max(0, BONUS_MAX - getBonusUsados());
+}
+
+// Racha que le correspondería si no se le hubiera cortado nunca:
+// un día por cada momento que ya descubrió.
+function rachaPotencial(seenDates) {
+  return new Set(Object.values(seenDates).filter(Boolean)).size;
+}
+
+// Perdona todos los huecos entre su primera apertura y hoy, de modo que
+// la racha vuelva a contar todos sus días. Devuelve la racha resultante,
+// o null si no quedan bonus o si no hay nada que recuperar.
+function aplicarBonusRacha() {
+  if (getBonusRestantes() === 0) return null;
+
+  const seenDates = JSON.parse(localStorage.getItem('momentos_seenDates') || '{}');
+  const abiertos  = new Set(Object.values(seenDates).filter(Boolean));
+  if (abiertos.size === 0) return null;
+
+  const potencial = rachaPotencial(seenDates);
+  if (computeStreak(seenDates) >= potencial) return null;  // no gastar el bonus en vano
+
+  const puente = getDroughtDays();
+  const desde  = [...abiertos].sort()[0];
+  for (let cursor = desde; cursor <= today(); cursor = shiftDate(cursor, 1)) {
+    if (!abiertos.has(cursor)) puente.add(cursor);
+  }
+  localStorage.setItem('momentos_diasSinStock', JSON.stringify([...puente]));
+  localStorage.setItem('momentos_bonusUsados', String(getBonusUsados() + 1));
+
+  syncStreak();
+  return parseInt(localStorage.getItem('momentos_streak'));
 }
 
 // ── Racha calculada desde las fechas reales de apertura ───────────────
@@ -982,17 +1061,57 @@ async function sendSuggestion() {
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: new URLSearchParams({ 'form-name': 'sugerencias', sugerencia: texto }).toString()
     });
-    status.textContent = '✅ ¡Sugerencia guardada!';
     document.getElementById('suggestText').value = '';
-    setTimeout(() => { status.style.display = 'none'; }, 3000);
+
+    // Bonus: el momento enviado recupera la racha (máximo 3 veces)
+    const recuperada = aplicarBonusRacha();
+    if (recuperada !== null) {
+      status.innerHTML = `✅ ¡Momento enviado!<br>🔥 Recuperaste tu racha de ${recuperada} días`;
+      render();
+      renderBonusInfo();
+      setTimeout(() => { status.style.display = 'none'; }, 6000);
+    } else {
+      status.textContent = '✅ ¡Momento enviado!';
+      setTimeout(() => { status.style.display = 'none'; }, 3000);
+    }
   } catch(err) {
     status.textContent = '❌ No se pudo guardar. Intentá de nuevo.';
   }
 }
 
+// ── Aviso del bonus ───────────────────────────────────────────────────
+function renderBonusInfo() {
+  const box       = document.getElementById('bonusBox');
+  const restantes = getBonusRestantes();
+  const seenDates = JSON.parse(localStorage.getItem('momentos_seenDates') || '{}');
+  const potencial = rachaPotencial(seenDates);
+  const actual    = parseInt(localStorage.getItem('momentos_streak') || '0');
+
+  box.classList.toggle('agotado', restantes === 0);
+
+  document.getElementById('bonusLeft').textContent =
+    restantes === 0 ? 'sin usos disponibles' : `te quedan ${restantes} de ${BONUS_MAX}`;
+
+  let desc;
+  if (restantes === 0) {
+    desc = 'Ya usaste tus 3 recuperaciones de racha. Ahora depende de entrar cada día 🌿';
+  } else if (actual < potencial) {
+    desc = `Envía un momento y recuperas tu racha completa: pasarías de ${actual} a ${potencial} días. Puedes hacerlo ${BONUS_MAX} veces en total.`;
+  } else {
+    desc = `Si alguna vez pierdes tu racha, envía un momento y la recuperas completa. Puedes hacerlo ${BONUS_MAX} veces en total.`;
+  }
+  document.getElementById('bonusDesc').textContent = desc;
+
+  document.getElementById('bonusDots').innerHTML =
+    Array.from({ length: BONUS_MAX }, (_, i) =>
+      `<div class="bonus-dot ${i < getBonusUsados() ? 'gastado' : ''}"></div>`
+    ).join('');
+}
+
 // ── Init ──────────────────────────────────────────────────────────────
 syncStreak();
 render();
+renderBonusInfo();
 </script>
 </body>
 </html>
