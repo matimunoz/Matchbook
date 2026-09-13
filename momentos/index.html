@@ -419,17 +419,16 @@
     font-size: 0.78rem; font-weight: 600; color: var(--g1);
     font-family: Georgia, serif; letter-spacing: 0.01em;
   }
-  .bonus-left {
-    font-size: 0.68rem; color: var(--t3); margin-top: 1px;
+  .bonus-hearts { display: flex; gap: 5px; flex-shrink: 0; }
+  .bonus-heart {
+    font-size: 1.05rem; line-height: 1;
+    color: var(--g2);
+    transition: color 0.35s ease, transform 0.35s ease;
   }
-
-  .bonus-dots { display: flex; gap: 4px; flex-shrink: 0; }
-  .bonus-dot {
-    width: 16px; height: 5px; border-radius: 3px;
-    background: var(--g2);
-    transition: background 0.3s ease;
+  .bonus-heart.gastado {
+    color: var(--g4);
+    transform: scale(0.85);
   }
-  .bonus-dot.gastado { background: var(--g4); }
 
   .bonus-desc {
     font-size: 0.78rem; color: var(--t2); line-height: 1.5;
@@ -514,12 +513,11 @@
 
       <div class="bonus-box" id="bonusBox">
         <div class="bonus-head">
-          <span class="bonus-icon">🎁</span>
+          <span class="bonus-icon">🍀</span>
           <div class="bonus-headtext">
             <div class="bonus-tag">Bonus de racha</div>
-            <div class="bonus-left" id="bonusLeft"></div>
           </div>
-          <div class="bonus-dots" id="bonusDots"></div>
+          <div class="bonus-hearts" id="bonusHearts"></div>
         </div>
         <p class="bonus-desc" id="bonusDesc"></p>
       </div>
@@ -1169,30 +1167,16 @@ async function sendSuggestion() {
 
 // ── Aviso del bonus ───────────────────────────────────────────────────
 function renderBonusInfo() {
-  const box       = document.getElementById('bonusBox');
-  const restantes = getBonusRestantes();
-  const seenDates = JSON.parse(localStorage.getItem('momentos_seenDates') || '{}');
-  const potencial = rachaPotencial(seenDates);
-  const actual    = parseInt(localStorage.getItem('momentos_streak') || '0');
+  const usados = getBonusUsados();
 
-  box.classList.toggle('agotado', restantes === 0);
+  document.getElementById('bonusBox').classList.toggle('agotado', getBonusRestantes() === 0);
+  document.getElementById('bonusDesc').textContent =
+    `Envía un momento y recupera tu racha (máximo ${BONUS_MAX} veces)`;
 
-  document.getElementById('bonusLeft').textContent =
-    restantes === 0 ? 'sin usos disponibles' : `te quedan ${restantes} de ${BONUS_MAX}`;
-
-  let desc;
-  if (restantes === 0) {
-    desc = 'Ya usaste tus 3 recuperaciones de racha. Ahora depende de entrar cada día 🌿';
-  } else if (actual < potencial) {
-    desc = `Envía un momento y recuperas tu racha completa: pasarías de ${actual} a ${potencial} días. Puedes hacerlo ${BONUS_MAX} veces en total.`;
-  } else {
-    desc = `Si alguna vez pierdes tu racha, envía un momento y la recuperas completa. Puedes hacerlo ${BONUS_MAX} veces en total.`;
-  }
-  document.getElementById('bonusDesc').textContent = desc;
-
-  document.getElementById('bonusDots').innerHTML =
+  // Los usos disponibles se muestran como corazones que se van gastando
+  document.getElementById('bonusHearts').innerHTML =
     Array.from({ length: BONUS_MAX }, (_, i) =>
-      `<div class="bonus-dot ${i < getBonusUsados() ? 'gastado' : ''}"></div>`
+      `<span class="bonus-heart ${i < usados ? 'gastado' : ''}">♥</span>`
     ).join('');
 }
 
