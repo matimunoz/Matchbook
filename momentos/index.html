@@ -349,7 +349,7 @@
     max-height: 0; overflow: hidden;
     transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   }
-  .archive-item.open .archive-body { max-height: 600px; }
+  .archive-item.open .archive-body { max-height: 2000px; }
 
   .archive-body-inner {
     padding: 0 16px 16px;
@@ -386,6 +386,70 @@
     font-size: 0.8rem; text-align: center; padding: 8px; min-height: 28px;
     color: var(--g2); display: none; line-height: 1.5;
   }
+
+  /* ── Respuestas a un momento ── */
+  .reply-zone { margin-top: 16px; }
+
+  .reply-open-btn {
+    width: 100%; background: transparent; color: var(--g2);
+    border: 1.5px dashed var(--g4); border-radius: var(--rsm);
+    padding: 10px 14px; font-size: 0.8rem; font-weight: 600;
+    font-family: inherit; cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .reply-open-btn:hover { border-color: var(--g3); background: var(--g5); }
+
+  .reply-form textarea {
+    width: 100%; border: 1.5px solid var(--g4); border-radius: var(--rsm);
+    padding: 11px 13px; font-size: 0.88rem;
+    font-family: Georgia, 'Times New Roman', serif;
+    color: var(--t1); background: var(--g5); resize: vertical;
+    min-height: 76px; line-height: 1.6; transition: border-color 0.15s;
+  }
+  .reply-form textarea:focus { outline: none; border-color: var(--g2); }
+  .reply-form textarea::placeholder { color: var(--t3); font-style: italic; }
+
+  .reply-actions { display: flex; gap: 8px; margin-top: 9px; }
+  .reply-actions button {
+    flex: 1; border-radius: 50px; padding: 10px 14px;
+    font-size: 0.82rem; font-weight: 600; font-family: inherit;
+    cursor: pointer; border: none;
+    transition: background 0.2s, transform 0.12s;
+  }
+  .reply-actions button:active { transform: scale(0.98); }
+  .reply-send   { background: var(--g2); color: #fff; }
+  .reply-send:hover { background: var(--g1); }
+  .reply-cancel { background: var(--g5); color: var(--t2); border: 1.5px solid var(--g4) !important; }
+
+  .reply-status {
+    font-size: 0.78rem; color: var(--g2); text-align: center;
+    margin-top: 7px; display: none;
+  }
+
+  .reply-saved {
+    background: var(--g5); border-radius: var(--rsm);
+    border-left: 3px solid var(--g3);
+    padding: 12px 14px;
+    animation: fadeIn 0.35s ease both;
+  }
+  .reply-saved-head {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 10px; margin-bottom: 6px;
+  }
+  .reply-saved-tag {
+    font-size: 0.64rem; font-weight: 700; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--g2);
+  }
+  .reply-edit {
+    background: none; border: none; cursor: pointer; padding: 0;
+    font-family: inherit; font-size: 0.72rem; color: var(--t3);
+    text-decoration: underline;
+  }
+  .reply-saved-text {
+    font-family: Georgia, serif; font-size: 0.88rem;
+    line-height: 1.6; color: var(--t1); white-space: pre-wrap;
+  }
+  .reply-saved-date { font-size: 0.68rem; color: var(--t3); margin-top: 7px; }
 
   /* ── Bonus de racha ── */
   .bonus-box {
@@ -503,6 +567,15 @@
     <input type="text" name="bot-field" />
     <input type="text" name="racha" />
     <input type="text" name="momento" />
+    <input type="text" name="fecha" />
+  </form>
+
+  <!-- Formulario oculto: sus respuestas a los momentos -->
+  <form name="respuestas" data-netlify="true" netlify-honeypot="bot-field" hidden>
+    <input type="hidden" name="form-name" value="respuestas" />
+    <input type="text" name="bot-field" />
+    <input type="text" name="momento" />
+    <input type="text" name="respuesta" />
     <input type="text" name="fecha" />
   </form>
 
@@ -941,6 +1014,7 @@ function renderDaily(st, total) {
         <div class="moment-num">Momento ${num}</div>
         <p class="moment-text">${texto}</p>
         <div class="moment-date">🌿 Descubierto el ${fecha}</div>
+        <div class="reply-zone" id="replyZone-${st.todayIdx}">${replyZoneHtml(st.todayIdx)}</div>
       </div>
       <div class="countdown-wrap">
         <div class="countdown-label">Próximo momento en</div>
@@ -1013,8 +1087,8 @@ function renderArchive(st) {
     const num   = st.seen.indexOf(i) + 1;
     const id    = `arc-${i}`;
     return `
-      <div class="archive-item" id="${id}" onclick="toggleArchive('${id}')">
-        <div class="archive-header">
+      <div class="archive-item" id="${id}">
+        <div class="archive-header" onclick="toggleArchive('${id}')">
           <div class="archive-header-left">
             <div class="archive-dot"></div>
             <div class="archive-header-info">
@@ -1027,6 +1101,7 @@ function renderArchive(st) {
         <div class="archive-body">
           <div class="archive-body-inner">
             <div class="archive-text">${MOMENTOS[i]}</div>
+            <div class="reply-zone" id="replyZone-${i}">${replyZoneHtml(i)}</div>
           </div>
         </div>
       </div>`;
@@ -1162,6 +1237,95 @@ async function sendSuggestion() {
     }
   } catch(err) {
     status.textContent = '❌ No se pudo guardar. Intentá de nuevo.';
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════════
+//  RESPUESTAS — ella puede contestar cualquier momento ya descubierto
+// ══════════════════════════════════════════════════════════════════════
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, c =>
+    ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+}
+
+function getRespuestas() {
+  try { return JSON.parse(localStorage.getItem('momentos_respuestas') || '{}'); }
+  catch (e) { return {}; }
+}
+
+// Bloque de respuesta para un momento: su texto guardado, o la invitación a escribir
+function replyZoneHtml(idx) {
+  const guardada = getRespuestas()[idx];
+  const cabecera = guardada
+    ? `<div class="reply-saved" id="replySaved-${idx}">
+         <div class="reply-saved-head">
+           <span class="reply-saved-tag">💬 Tu respuesta</span>
+           <button class="reply-edit" onclick="openReplyForm(${idx})">editar</button>
+         </div>
+         <p class="reply-saved-text">${esc(guardada.texto)}</p>
+         <div class="reply-saved-date">${esc(guardada.fecha)}</div>
+       </div>`
+    : `<button class="reply-open-btn" id="replyOpen-${idx}" onclick="openReplyForm(${idx})">
+         💬 Responder este momento
+       </button>`;
+
+  return `
+    ${cabecera}
+    <div class="reply-form" id="replyForm-${idx}" hidden>
+      <textarea id="replyText-${idx}" placeholder="¿Qué recuerdas tú de ese día?">${guardada ? esc(guardada.texto) : ''}</textarea>
+      <div class="reply-actions">
+        <button class="reply-cancel" onclick="closeReplyForm(${idx})">Cancelar</button>
+        <button class="reply-send" onclick="sendReply(${idx})">Enviar 💚</button>
+      </div>
+      <div class="reply-status" id="replyStatus-${idx}"></div>
+    </div>`;
+}
+
+function openReplyForm(idx) {
+  const saved = document.getElementById(`replySaved-${idx}`);
+  const open  = document.getElementById(`replyOpen-${idx}`);
+  if (saved) saved.hidden = true;
+  if (open)  open.hidden  = true;
+  document.getElementById(`replyForm-${idx}`).hidden = false;
+  document.getElementById(`replyText-${idx}`).focus();
+}
+
+function closeReplyForm(idx) {
+  document.getElementById(`replyForm-${idx}`).hidden = true;
+  const saved = document.getElementById(`replySaved-${idx}`);
+  const open  = document.getElementById(`replyOpen-${idx}`);
+  if (saved) saved.hidden = false;
+  if (open)  open.hidden  = false;
+}
+
+async function sendReply(idx) {
+  const texto = document.getElementById(`replyText-${idx}`).value.trim();
+  if (!texto) return;
+
+  const status = document.getElementById(`replyStatus-${idx}`);
+  status.style.display = 'block';
+  status.textContent = '📨 Enviando…';
+
+  try {
+    await fetch('/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        'form-name': 'respuestas',
+        momento:   `Momento ${idx + 1}`,
+        respuesta: texto,
+        fecha:     formatDate(today()),
+      }).toString()
+    });
+
+    const todas = getRespuestas();
+    todas[idx] = { texto: texto, fecha: formatDate(today()) };
+    localStorage.setItem('momentos_respuestas', JSON.stringify(todas));
+
+    // Redibujar solo este bloque, para no cerrar el momento abierto
+    document.getElementById(`replyZone-${idx}`).innerHTML = replyZoneHtml(idx);
+  } catch (err) {
+    status.textContent = '❌ No se pudo enviar. Intentá de nuevo.';
   }
 }
 
