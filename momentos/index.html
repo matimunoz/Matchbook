@@ -574,8 +574,9 @@
   <form name="respuestas" data-netlify="true" netlify-honeypot="bot-field" hidden>
     <input type="hidden" name="form-name" value="respuestas" />
     <input type="text" name="bot-field" />
-    <input type="text" name="momento" />
     <input type="text" name="respuesta" />
+    <input type="text" name="momento" />
+    <input type="text" name="recuerdo" />
     <input type="text" name="fecha" />
   </form>
 
@@ -1312,8 +1313,9 @@ async function sendReply(idx) {
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: new URLSearchParams({
         'form-name': 'respuestas',
-        momento:   `Momento ${idx + 1}`,
         respuesta: texto,
+        momento:   `Momento ${idx + 1}`,
+        recuerdo:  MOMENTOS[idx] || '',
         fecha:     formatDate(today()),
       }).toString()
     });
