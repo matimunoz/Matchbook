@@ -77,15 +77,6 @@
           "cuposTomados": 4
         },
         {
-          "cuposTotal": 10,
-          "fecha": "Miércoles 30 de septiembre, 19:00 hrs | Santiago ",
-          "lugar": "Between Coffee",
-          "moderador": {
-            "nombre": "Gonzalo",
-            "foto": "/portadas/gonzalo-valdebenito.jpeg"
-          }
-        },
-        {
           "fecha": "Viernes 2 de octubre, 19:00 hrs | Viña del Mar",
           "moderador": {
             "nombre": "Gonzalo",
