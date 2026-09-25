@@ -202,8 +202,12 @@
       <button class="btn btn-ghost btn-sm" style="margin-top:8px" onclick="toggleAdd()">+ Agregar razón</button>
       <div class="add-form" id="addForm">
         <div class="field" style="margin-top:12px">
-          <label>Nueva razón</label>
-          <textarea id="newText" placeholder="Escribe el recuerdo aquí..."></textarea>
+          <label>Título</label>
+          <input id="newTitle" type="text" placeholder="Tu carita" />
+        </div>
+        <div class="field" style="margin-top:10px">
+          <label>Descripción</label>
+          <textarea id="newText" placeholder="Me encanta porque..."></textarea>
         </div>
         <div style="display:flex;gap:8px">
           <button class="btn btn-primary btn-sm" onclick="addRazon()">Agregar</button>
@@ -358,12 +362,21 @@
     }
   }
 
+  // Normaliza a { titulo, texto } — tolera entradas antiguas en texto suelto
+  function norm(r) {
+    if (r === null || r === undefined) return null;
+    return typeof r === 'string' ? { titulo: '', texto: r } : r;
+  }
+
+  function tick(s) { return '`' + String(s || '').replace(/`/g, '\\`').replace(/\$\{/g, '\\${') + '`'; }
+
   function rebuildHtml(html, arr) {
-    const lines = arr.map(m =>
-      m === null
+    const lines = arr.map(r => {
+      const o = norm(r);
+      return o === null
         ? '  null,'
-        : '  `' + m.replace(/`/g, '\\`') + '`,'
-    ).join('\n');
+        : `  { titulo: ${tick(o.titulo)}, texto: ${tick(o.texto)} },`;
+    }).join('\n');
     return html.replace(
       /const RAZONES = \[[\s\S]*?\n\];/,
       `const RAZONES = [\n${lines}\n];`
@@ -378,11 +391,12 @@
     document.getElementById('progLabel').textContent = `${written} / 100`;
 
     const list = document.getElementById('momentList');
-    list.innerHTML = razones.map((m, i) => {
-      const isEmpty = m === null;
+    list.innerHTML = razones.map((raw, i) => {
+      const r       = norm(raw);
+      const isEmpty = r === null;
       const preview = isEmpty
         ? '— sin escribir'
-        : (m.length > 100 ? m.slice(0, 100) + '…' : m);
+        : (r.titulo || (r.texto.length > 80 ? r.texto.slice(0, 80) + '…' : r.texto));
       return `
         <div class="moment-item" id="item-${i}">
           <div class="moment-header">
@@ -394,7 +408,14 @@
             </div>
           </div>
           <div class="moment-edit-area" id="edit-${i}" style="display:none">
-            <textarea id="ta-${i}" rows="4">${escHtml(m || '')}</textarea>
+            <div class="field">
+              <label>Título</label>
+              <input id="ti-${i}" type="text" placeholder="Tu carita" value="${escHtml(isEmpty ? '' : r.titulo)}" />
+            </div>
+            <div class="field" style="margin-top:8px">
+              <label>Descripción</label>
+              <textarea id="ta-${i}" rows="4" placeholder="Me encanta porque...">${escHtml(isEmpty ? '' : r.texto)}</textarea>
+            </div>
             <div class="moment-edit-actions">
               <button class="btn btn-primary btn-sm" onclick="saveRazon(${i})">Guardar</button>
               <button class="btn btn-ghost btn-sm" onclick="toggleEdit(${i})">Cancelar</button>
@@ -416,12 +437,13 @@
     const open = area.style.display === 'none';
     area.style.display = open ? 'block' : 'none';
     item.classList.toggle('editing', open);
-    if (open) document.getElementById(`ta-${i}`).focus();
+    if (open) document.getElementById(`ti-${i}`).focus();
   }
 
   function saveRazon(i) {
-    const val = document.getElementById(`ta-${i}`).value.trim();
-    razones[i] = val || null;
+    const titulo = document.getElementById(`ti-${i}`).value.trim();
+    const texto  = document.getElementById(`ta-${i}`).value.trim();
+    razones[i] = (titulo || texto) ? { titulo: titulo, texto: texto } : null;
     dirty = true;
     renderList();
     toast('Razón actualizada — recordá guardar y publicar');
@@ -445,19 +467,22 @@
   function toggleAdd() {
     const form = document.getElementById('addForm');
     form.classList.toggle('open');
-    if (form.classList.contains('open')) document.getElementById('newText').focus();
+    if (form.classList.contains('open')) document.getElementById('newTitle').focus();
   }
 
   function addRazon() {
-    const val = document.getElementById('newText').value.trim();
-    if (!val) return;
+    const titulo = document.getElementById('newTitle').value.trim();
+    const texto  = document.getElementById('newText').value.trim();
+    if (!titulo && !texto) return;
+    const nueva = { titulo: titulo, texto: texto };
     // Buscar el primer null y reemplazarlo; si no hay, agregar al final
     const emptyIdx = razones.indexOf(null);
     if (emptyIdx !== -1) {
-      razones[emptyIdx] = val;
+      razones[emptyIdx] = nueva;
     } else {
-      razones.push(val);
+      razones.push(nueva);
     }
+    document.getElementById('newTitle').value = '';
     document.getElementById('newText').value = '';
     document.getElementById('addForm').classList.remove('open');
     dirty = true;
