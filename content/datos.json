@@ -92,36 +92,6 @@
       "titulo": "Marie Curie - Biografía",
       "mpLink": "https://mpago.la/1eHGFXB",
       "portada": "/portadas/images.jpeg"
-    },
-    {
-      "autor": "Homero",
-      "color": "#d50c13",
-      "precio": 20000,
-      "sesiones": [
-        {
-          "cuposTotal": 10,
-          "fecha": "Sábado 12 de septiembre, 11:30 hrs | Santiago",
-          "lugar": "Café Odisea, Alameda 117",
-          "moderador": {
-            "nombre": "Bárbara y Gonzalo",
-            "foto": "/portadas/bárbara-y-gonzalo.png"
-          }
-        },
-        {
-          "cuposTotal": 10,
-          "fecha": "Domingo 13 de septiembre 11:30hrs | Viña del Mar",
-          "lugar": "Punto y Café",
-          "moderador": {
-            "nombre": "Bárbara y Gonzalo",
-            "foto": "/portadas/bárbara-y-gonzalo.png"
-          }
-        }
-      ],
-      "club": "El Viaje del Héroe",
-      "curaduria": "Analizamos literatura clásica desde la estructura de \"el viaje del héroe\" o Monomito. Nos reunimos cada dos sábados en sesiones online y la última reunión es presencial.",
-      "titulo": "La Odisea ",
-      "mpLink": "https://mpago.la/2vRJZV2",
-      "portada": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTNgOFBhv9xqrth-6abF9P8AYjU7W4Yt3-8OqPtjdHHHI5szjtVdK7R_34&s=10"
     }
   ],
   "testimonios": [
