@@ -62,25 +62,34 @@
       "portada": "/portadas/naranja.jpg"
     },
     {
-      "autor": "Sarah Dry",
+      "autor": "Yanis Varoufakis",
       "color": "#C9821F",
       "precio": 10000,
       "sesiones": [
         {
-          "fecha": "Martes 29 de septiembre, 19:00 hrs | Santiago",
+          "fecha": "Martes 27 de octubre, 19:00 hrs | Santiago",
           "moderador": {
             "nombre": "Gonzalo",
-            "foto": "moderadores/gonzalo.png"
+            "foto": "/portadas/gonzalo-valdebenito.jpeg"
           },
           "lugar": "Between Coffee",
           "cuposTotal": 10,
           "cuposTomados": 4
         },
         {
-          "fecha": "Viernes 2 de octubre, 19:00 hrs | Viña del Mar",
+          "cuposTotal": 10,
+          "fecha": "Miércoles 28 de octubre, 19:00 hrs. | Santiago",
+          "lugar": "Between Coffee",
           "moderador": {
             "nombre": "Gonzalo",
-            "foto": "moderadores/gonzalo.png"
+            "foto": "/portadas/gonzalo-valdebenito.jpeg"
+          }
+        },
+        {
+          "fecha": "Viernes 30 de octubre, 19:00 hrs | Viña del Mar",
+          "moderador": {
+            "nombre": "Gonzalo",
+            "foto": "/portadas/gonzalo-valdebenito.jpeg"
           },
           "lugar": "Club 2D",
           "cuposTotal": 10,
@@ -88,10 +97,10 @@
         }
       ],
       "club": "Books Up",
-      "curaduria": "Historia de la Ciencia. Leer la biografía de Marie Curie en 2026 resulta especialmente relevante: en medio del acelerado desarrollo de la inteligencia artificial y de nuevas tecnologías, su historia nos invita a conversar sobre liderazgo, ética, desigualdad y responsabilidad científica.",
-      "titulo": "Marie Curie - Biografía",
+      "curaduria": "Yanis Varoufakis es economista y político griego, profesor de la Universidad de Atenas. En este libro sostiene que el capitalismo ya fue reemplazado por algo peor. Empresas como Amazon o Google serían los nuevos señores feudales: los vendedores les pagan una especie de arriendo por estar en sus plataformas, y los usuarios trabajan gratis para ellas cada día. Está escrito como cartas a su padre. ",
+      "titulo": "Tecnofeudalismo",
       "mpLink": "https://mpago.la/1eHGFXB",
-      "portada": "/portadas/images.jpeg"
+      "portada": "/portadas/d0dc81574c6d798f3389959680ae587d.webp"
     }
   ],
   "testimonios": [
