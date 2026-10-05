@@ -101,6 +101,27 @@
       "titulo": "Tecnofeudalismo",
       "mpLink": "https://mpago.la/1eHGFXB",
       "portada": "/portadas/d0dc81574c6d798f3389959680ae587d.webp"
+    },
+    {
+      "autor": "Aldous Huxley",
+      "color": "#00ff13",
+      "precio": 5000,
+      "sesiones": [
+        {
+          "cuposTotal": 10,
+          "fecha": "Viernes 7 de Noviembre, 18:30 hrs",
+          "lugar": "Terraza Madrid",
+          "moderador": {
+            "nombre": "Matías",
+            "foto": "/portadas/mati.jpg"
+          }
+        }
+      ],
+      "club": "Utopías de Bolsillo",
+      "curaduria": "Cada mes leemos una utopía distinta para imaginar otros mundos posibles. Este mes: La isla, de Aldous Huxley. Después de Un mundo feliz, Huxley imaginó lo contrario: una isla donde la felicidad no se impone, se cultiva. ¿Podría existir un lugar así?",
+      "titulo": "La Isla",
+      "mpLink": " https://mpago.la/2R9WruX",
+      "portada": "/portadas/681.webp"
     }
   ],
   "testimonios": [
