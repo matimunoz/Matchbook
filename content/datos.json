@@ -31,14 +31,14 @@
             "nombre": "Paulette",
             "foto": "/portadas/pau.png"
           },
-          "lugar": "Terraza Madrid, Viña del Mar",
+          "lugar": "Café Madrid, Viña del Mar",
           "cuposTotal": 10,
           "cuposTomados": 0
         },
         {
           "cuposTotal": 10,
           "fecha": "Sábado 7 de Noviembre, 17:30 hrs",
-          "lugar": "Terraza Madrid, Viña del Mar",
+          "lugar": "Café Madrid, Viña del Mar",
           "moderador": {
             "nombre": "Matías",
             "foto": "/portadas/mati.jpg"
