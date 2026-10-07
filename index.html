@@ -115,7 +115,25 @@
     max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
   }
   .nav-sesion:hover{background:rgba(94,122,82,.1);border-color:var(--hoja)}
-  @media(max-width:520px){.nav-sesion{display:none}}
+  .nav-usuario{
+    font-family:var(--sans);font-weight:800;font-size:.88rem;
+    background:none;border:none;cursor:pointer;color:var(--tinta-suave);
+    padding:8px 6px;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+    text-decoration:underline;text-decoration-color:rgba(94,122,82,.35);text-underline-offset:4px;
+  }
+  .nav-usuario:hover{color:var(--hoja);text-decoration-color:var(--hoja)}
+  /* En celular solo cabe un botón de cuenta: queda "Mis lecturas",
+     y desde ahí se llega a los datos con el enlace del pie del modal. */
+  .lbl-corto{display:none}
+  @media(max-width:620px){
+    .nav-usuario{display:none!important}
+    .nav-sesion{padding:8px 13px;font-size:.82rem;max-width:none}
+    .nav-cta{padding:9px 14px;font-size:.82rem;white-space:nowrap}
+    .nav-acciones{gap:7px}
+    .lbl-largo{display:none}
+    .lbl-corto{display:inline}
+  }
+  .cuenta-pie{display:flex;justify-content:center;gap:18px;align-items:center;margin-top:4px}
   @media(min-width:780px){.nav-links{display:flex}}
 
   /* ---------- HERO amanecer ---------- */
@@ -489,6 +507,8 @@
   .pd-btn:disabled{opacity:.6;cursor:default}
   .pd-err{color:#B0492E;font-size:.8rem;font-weight:700;margin-top:7px}
   .pd-ok{font-family:var(--serif);font-style:italic;color:var(--hoja);font-size:.86rem;text-align:center}
+  .dato-fijo{font-family:var(--serif);font-size:.98rem;color:var(--noche);background:rgba(94,122,82,.08);border-radius:12px;padding:11px 14px;word-break:break-all}
+  .dato-nota{font-family:var(--serif);font-size:.78rem;color:var(--tinta-suave);margin-top:6px;line-height:1.45}
 
   :focus-visible{outline:3px solid var(--ambar);outline-offset:2px}
   @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
@@ -530,6 +550,7 @@
       <a href="#faq">Preguntas</a>
     </div>
     <div class="nav-acciones">
+      <button class="nav-usuario" id="btnDatos" onclick="abrirDatos()" title="Editar mis datos" hidden></button>
       <button class="nav-sesion" id="btnSesion" onclick="accionSesion()">Entrar</button>
       <button class="nav-cta" onclick="openModal()">Reservar silla</button>
     </div>
@@ -818,7 +839,34 @@
     <p class="cuenta-mail" id="cuentaMail"></p>
     <div id="cuentaDatos"></div>
     <div id="cuentaCuerpo"></div>
-    <button class="btn-salir" onclick="cerrarSesion()">Cerrar sesión</button>
+    <div class="cuenta-pie">
+      <button class="btn-salir" onclick="cerrarCuenta();abrirDatos()">Editar mis datos</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL MIS DATOS -->
+<div class="modal-overlay" id="overlayDatos" role="dialog" aria-modal="true" aria-labelledby="datosTitle">
+  <div class="modal">
+    <button class="modal-close" onclick="cerrarDatos()" aria-label="Cerrar">×</button>
+    <h3 id="datosTitle">Mis datos</h3>
+    <p class="sub">Los usamos para tus reservas, así no los escribes cada vez.</p>
+    <div class="field">
+      <label for="miNombre">Nombre completo</label>
+      <input id="miNombre" type="text" autocomplete="name" placeholder="Tu nombre">
+    </div>
+    <div class="field">
+      <label for="miFono">Teléfono (WhatsApp)</label>
+      <input id="miFono" type="tel" autocomplete="tel" placeholder="+56 9 ...">
+    </div>
+    <div class="field">
+      <label>Correo</label>
+      <p class="dato-fijo" id="miMail"></p>
+      <p class="dato-nota">Es el correo con el que buscamos tus lecturas, por eso no se cambia desde aquí.</p>
+    </div>
+    <button class="btn btn-sol" id="btnGuardarDatos" onclick="guardarMisDatos()">Guardar</button>
+    <p class="pd-err" id="miErr"></p>
+    <button class="btn-salir" onclick="cerrarSesion()" style="margin-top:20px">Cerrar sesión</button>
   </div>
 </div>
 
@@ -1125,7 +1173,8 @@
   function closeModal(){overlay.classList.remove("open");document.body.style.overflow="";activeModalClubId=null;}
   overlay.addEventListener("click",e=>{if(e.target.id==="overlay")closeModal()});
   overlayCuenta.addEventListener("click",e=>{if(e.target.id==="overlayCuenta")cerrarCuenta()});
-  document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeModal();cerrarCuenta();}});
+  overlayDatos.addEventListener("click",e=>{if(e.target.id==="overlayDatos")cerrarDatos()});
+  document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeModal();cerrarCuenta();cerrarDatos();}});
   const setInvalid=(id,bad)=>{document.getElementById(id).classList.toggle("invalid",bad);return !bad};
 
   async function submitReserva(){
@@ -1197,14 +1246,59 @@
 
   function pintarSesion(){
     const btn = document.getElementById("btnSesion");
+    const btnD = document.getElementById("btnDatos");
     if (!btn) return;
     if (USUARIO) {
-      const nombre = (USUARIO.user_metadata && USUARIO.user_metadata.full_name) || USUARIO.email;
-      btn.textContent = String(nombre).trim().split(" ")[0] || "Mi cuenta";
-      btn.title = "Ver mis libros";
+      btn.innerHTML = '<span class="lbl-largo">Mis lecturas</span><span class="lbl-corto">Lecturas</span>';
+      btn.title = "Ver mis lecturas";
+      if (btnD) {
+        const nombre = (USUARIO.user_metadata && USUARIO.user_metadata.full_name) || USUARIO.email;
+        btnD.textContent = String(nombre).trim().split(" ")[0] || "Mi cuenta";
+        btnD.hidden = false;
+      }
     } else {
       btn.textContent = "Entrar";
       btn.title = "Iniciar sesión";
+      if (btnD) btnD.hidden = true;
+    }
+  }
+
+  function abrirDatos(){
+    if (!USUARIO) return;
+    const md = USUARIO.user_metadata || {};
+    document.getElementById("miNombre").value = md.full_name || "";
+    document.getElementById("miFono").value = md.telefono || "";
+    document.getElementById("miMail").textContent = USUARIO.email;
+    document.getElementById("miErr").textContent = "";
+    document.getElementById("overlayDatos").classList.add("open");
+    document.body.style.overflow = "hidden";
+  }
+
+  function cerrarDatos(){
+    document.getElementById("overlayDatos").classList.remove("open");
+    document.body.style.overflow = "";
+  }
+
+  async function guardarMisDatos(){
+    const nom = document.getElementById("miNombre").value.trim();
+    const fono = document.getElementById("miFono").value.trim();
+    const err = document.getElementById("miErr");
+    const btn = document.getElementById("btnGuardarDatos");
+
+    if (nom.length < 2){ err.textContent = "Escribe tu nombre."; return; }
+    if (fono.length < 8){ err.textContent = "Escribe un teléfono válido."; return; }
+    err.textContent = "";
+    btn.disabled = true; btn.textContent = "Guardando…";
+
+    try {
+      const u = window.netlifyIdentity.currentUser();
+      USUARIO = await u.update({ data: Object.assign({}, u.user_metadata, { full_name: nom, telefono: fono }) });
+      pintarSesion();
+      btn.textContent = "Guardado ✓";
+      setTimeout(function(){ btn.disabled = false; btn.textContent = "Guardar"; cerrarDatos(); }, 900);
+    } catch(e){
+      err.textContent = "No se pudo guardar. Intenta de nuevo.";
+      btn.disabled = false; btn.textContent = "Guardar";
     }
   }
 
@@ -1220,6 +1314,7 @@
 
   function cerrarSesion(){
     cerrarCuenta();
+    cerrarDatos();
     if (window.netlifyIdentity) window.netlifyIdentity.logout();
   }
 
