@@ -509,6 +509,12 @@
   .pd-ok{font-family:var(--serif);font-style:italic;color:var(--hoja);font-size:.86rem;text-align:center}
   .dato-fijo{font-family:var(--serif);font-size:.98rem;color:var(--noche);background:rgba(94,122,82,.08);border-radius:12px;padding:11px 14px;word-break:break-all}
   .dato-nota{font-family:var(--serif);font-size:.78rem;color:var(--tinta-suave);margin-top:6px;line-height:1.45}
+  /* Varias clases del sitio declaran display, y eso le gana al [hidden] del
+     navegador. Esta regla hace que ocultar por atributo siempre funcione. */
+  [hidden]{display:none!important}
+  .auth-pie{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 20px;margin-top:18px}
+  .auth-pie .btn-salir{margin:0}
+  #authForm .pd-err{text-align:center;margin-bottom:10px}
 
   :focus-visible{outline:3px solid var(--ambar);outline-offset:2px}
   @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
@@ -845,6 +851,45 @@
   </div>
 </div>
 
+<!-- MODAL ENTRAR / CREAR CUENTA -->
+<div class="modal-overlay" id="overlayAuth" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+  <div class="modal">
+    <button class="modal-close" onclick="cerrarAuth()" aria-label="Cerrar">×</button>
+    <h3 id="authTitle">Entrar</h3>
+    <p class="sub" id="authSub">Para ver tus lecturas y reservar más rápido.</p>
+
+    <div id="authForm">
+      <div class="field" id="fa-nombre" hidden>
+        <label for="auNombre">Nombre completo</label>
+        <input id="auNombre" type="text" autocomplete="name" placeholder="Tu nombre">
+      </div>
+      <div class="field">
+        <label for="auMail">Correo electrónico</label>
+        <input id="auMail" type="email" autocomplete="email" placeholder="tu@correo.cl">
+      </div>
+      <div class="field" id="fa-fono" hidden>
+        <label for="auFono">Teléfono (WhatsApp)</label>
+        <input id="auFono" type="tel" autocomplete="tel" placeholder="+56 9 ...">
+      </div>
+      <div class="field">
+        <label for="auClave">Contraseña</label>
+        <input id="auClave" type="password" autocomplete="current-password" placeholder="Mínimo 6 caracteres">
+      </div>
+      <p class="pd-err" id="auErr"></p>
+      <button class="btn btn-sol" id="auBtn" onclick="enviarAuth()">Entrar</button>
+      <div class="auth-pie">
+        <button class="btn-salir" id="auCambiar" onclick="cambiarVistaAuth()">Crear una cuenta</button>
+        <button class="btn-salir" id="auOlvide" onclick="recuperarClave()">Olvidé mi contraseña</button>
+      </div>
+    </div>
+
+    <div id="authAviso" style="display:none">
+      <svg style="width:54px;height:54px;margin:4px auto 14px;display:block"><use href="#mb-icon"/></svg>
+      <p class="cuenta-vacio" id="authAvisoTxt"></p>
+    </div>
+  </div>
+</div>
+
 <!-- MODAL MIS DATOS -->
 <div class="modal-overlay" id="overlayDatos" role="dialog" aria-modal="true" aria-labelledby="datosTitle">
   <div class="modal">
@@ -1174,7 +1219,9 @@
   overlay.addEventListener("click",e=>{if(e.target.id==="overlay")closeModal()});
   overlayCuenta.addEventListener("click",e=>{if(e.target.id==="overlayCuenta")cerrarCuenta()});
   overlayDatos.addEventListener("click",e=>{if(e.target.id==="overlayDatos")cerrarDatos()});
-  document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeModal();cerrarCuenta();cerrarDatos();}});
+  overlayAuth.addEventListener("click",e=>{if(e.target.id==="overlayAuth")cerrarAuth()});
+  document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeModal();cerrarCuenta();cerrarDatos();cerrarAuth();}});
+  overlayAuth.addEventListener("keydown",e=>{if(e.key==="Enter")enviarAuth();});
   const setInvalid=(id,bad)=>{document.getElementById(id).classList.toggle("invalid",bad);return !bad};
 
   async function submitReserva(){
@@ -1291,7 +1338,7 @@
     btn.disabled = true; btn.textContent = "Guardando…";
 
     try {
-      const u = window.netlifyIdentity.currentUser();
+      const u = usuarioActual();
       USUARIO = await u.update({ data: Object.assign({}, u.user_metadata, { full_name: nom, telefono: fono }) });
       pintarSesion();
       btn.textContent = "Guardado ✓";
@@ -1304,7 +1351,156 @@
 
   function accionSesion(){
     if (USUARIO) abrirCuenta();
-    else if (window.netlifyIdentity) window.netlifyIdentity.open("login");
+    else abrirAuth("entrar");
+  }
+
+  // ---------- Entrar / Crear cuenta (formulario propio) ----------
+  // Usamos la API que hay debajo del widget para poder pedir el teléfono al
+  // registrar. El widget se mantiene cargado: es el que abre solo cuando llega
+  // alguien desde un enlace de confirmación o de recuperación de contraseña.
+  function gt(){ return window.netlifyIdentity && window.netlifyIdentity.gotrue; }
+
+  function usuarioActual(){
+    const w = window.netlifyIdentity;
+    if (!w) return null;
+    return w.currentUser() || (w.gotrue && w.gotrue.currentUser()) || null;
+  }
+
+  const ERRORES_AUTH = [
+    [/already registered|already been registered|user already/i, "Ya existe una cuenta con ese correo."],
+    [/email not confirmed|not confirmed/i, "Todavía no confirmas tu correo. Busca el mensaje que te enviamos."],
+    [/invalid.*(email|password|grant)|no user found|wrong password|bad credentials/i, "Correo o contraseña incorrectos."],
+    [/password.*(6|short|least|weak)/i, "La contraseña debe tener al menos 6 caracteres."],
+    [/signups? not allowed|disabled/i, "El registro está cerrado en este momento."],
+    [/rate limit|too many|security purposes/i, "Demasiados intentos seguidos. Espera un minuto."],
+    [/network|failed to fetch/i, "Problema de conexión. Revisa tu internet."]
+  ];
+
+  function mensajeError(e){
+    const txt = (e && (e.message || e.msg || e.error_description || e.error)) || String(e || "");
+    for (let i = 0; i < ERRORES_AUTH.length; i++){
+      if (ERRORES_AUTH[i][0].test(txt)) return ERRORES_AUTH[i][1];
+    }
+    console.warn("Auth:", txt);
+    return "No pudimos completar la operación. Intenta de nuevo.";
+  }
+
+  let vistaAuth = "entrar";
+
+  function pintarAuth(){
+    const crear = vistaAuth === "crear";
+    document.getElementById("authTitle").textContent = crear ? "Crear cuenta" : "Entrar";
+    document.getElementById("authSub").textContent = crear
+      ? "Guardamos tus datos para que no los escribas en cada reserva."
+      : "Para ver tus lecturas y reservar más rápido.";
+    document.getElementById("fa-nombre").hidden = !crear;
+    document.getElementById("fa-fono").hidden = !crear;
+    document.getElementById("auBtn").textContent = crear ? "Crear cuenta" : "Entrar";
+    document.getElementById("auCambiar").textContent = crear ? "Ya tengo cuenta" : "Crear una cuenta";
+    document.getElementById("auOlvide").hidden = crear;
+    document.getElementById("auClave").setAttribute("autocomplete", crear ? "new-password" : "current-password");
+  }
+
+  function abrirAuth(vista){
+    vistaAuth = vista || "entrar";
+    pintarAuth();
+    document.getElementById("authForm").style.display = "block";
+    document.getElementById("authAviso").style.display = "none";
+    document.getElementById("auErr").textContent = "";
+    document.getElementById("overlayAuth").classList.add("open");
+    document.body.style.overflow = "hidden";
+    document.getElementById(vistaAuth === "crear" ? "auNombre" : "auMail").focus();
+  }
+
+  function cambiarVistaAuth(){
+    vistaAuth = vistaAuth === "crear" ? "entrar" : "crear";
+    document.getElementById("auErr").textContent = "";
+    pintarAuth();
+    document.getElementById(vistaAuth === "crear" ? "auNombre" : "auMail").focus();
+  }
+
+  function cerrarAuth(){
+    document.getElementById("overlayAuth").classList.remove("open");
+    document.body.style.overflow = "";
+  }
+
+  function avisoAuth(html){
+    document.getElementById("authForm").style.display = "none";
+    document.getElementById("authAvisoTxt").innerHTML = html;
+    document.getElementById("authAviso").style.display = "block";
+  }
+
+  function entrarConUsuario(u){
+    USUARIO = u;
+    pintarSesion();
+    cerrarAuth();
+    if (esAdmin(u)) { document.location.href = "/admin/"; return; }
+    setTimeout(abrirCuenta, 250);
+  }
+
+  async function enviarAuth(){
+    const crear = vistaAuth === "crear";
+    const mail = document.getElementById("auMail").value.trim();
+    const clave = document.getElementById("auClave").value;
+    const err = document.getElementById("auErr");
+    const btn = document.getElementById("auBtn");
+    const g = gt();
+
+    // Si la API no está disponible por lo que sea, caemos al widget de Netlify
+    if (!g) { cerrarAuth(); window.netlifyIdentity.open(crear ? "signup" : "login"); return; }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mail)) { err.textContent = "Escribe un correo válido."; return; }
+    if (clave.length < 6) { err.textContent = "La contraseña debe tener al menos 6 caracteres."; return; }
+
+    let nombre = "", fono = "";
+    if (crear){
+      nombre = document.getElementById("auNombre").value.trim();
+      fono = document.getElementById("auFono").value.trim();
+      if (nombre.length < 2) { err.textContent = "Escribe tu nombre completo."; return; }
+      if (fono.length < 8) { err.textContent = "Escribe un teléfono válido."; return; }
+    }
+
+    err.textContent = "";
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span>&nbsp; ' + (crear ? "Creando…" : "Entrando…");
+
+    try {
+      if (crear){
+        await g.signup(mail, clave, { full_name: nombre, telefono: fono });
+        // Si el sitio no exige confirmación, el login entra directo
+        try {
+          entrarConUsuario(await g.login(mail, clave, true));
+        } catch(sinConfirmar){
+          avisoAuth("Te enviamos un correo a <b>" + esc(mail) + "</b> para confirmar tu cuenta.<br><br>Ábrelo y después vuelve a entrar acá.");
+        }
+      } else {
+        entrarConUsuario(await g.login(mail, clave, true));
+      }
+    } catch(e){
+      err.textContent = mensajeError(e);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = crear ? "Crear cuenta" : "Entrar";
+    }
+  }
+
+  async function recuperarClave(){
+    const mail = document.getElementById("auMail").value.trim();
+    const err = document.getElementById("auErr");
+    const g = gt();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mail)){
+      err.textContent = "Escribe tu correo arriba y vuelve a tocar aquí.";
+      document.getElementById("auMail").focus();
+      return;
+    }
+    if (!g) { cerrarAuth(); window.netlifyIdentity.open("login"); return; }
+    err.textContent = "";
+    try {
+      await g.requestPasswordRecovery(mail);
+      avisoAuth("Te enviamos un correo a <b>" + esc(mail) + "</b> con el enlace para cambiar tu contraseña.");
+    } catch(e){
+      err.textContent = mensajeError(e);
+    }
   }
 
   function cerrarCuenta(){
@@ -1354,7 +1550,7 @@
     btn.disabled = true; btn.textContent = "Guardando…";
 
     try {
-      const u = window.netlifyIdentity.currentUser();
+      const u = usuarioActual();
       USUARIO = await u.update({ data: Object.assign({}, u.user_metadata, datos) });
       pintarSesion();
       document.getElementById("cuentaDatos").innerHTML = '<p class="pd-ok">Listo, guardamos tus datos.</p>';
@@ -1380,7 +1576,9 @@
       promesa,
       new Promise((_, rechaza) => setTimeout(() => rechaza(new Error("tardó demasiado: " + etiqueta)), ms))
     ]);
-    const token = await conCorte(window.netlifyIdentity.currentUser().jwt(), 8000, "token");
+    const u = usuarioActual();
+    if (!u) throw new Error("sin sesión");
+    const token = await conCorte(u.jwt(), 8000, "token");
     const r = await conCorte(fetch("/.netlify/functions/mis-reservas", {
       headers: { Authorization: "Bearer " + token }
     }), 14000, "función");
