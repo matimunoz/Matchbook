@@ -21,12 +21,12 @@
   ],
   "clubs": [
     {
-      "autor": "Anthony Burgess",
+      "autor": "Pearl S. Buck",
       "color": "#2F8CC4",
       "precio": 5000,
       "sesiones": [
         {
-          "fecha": "Sábado 3 de Octubre, 11:30 hrs",
+          "fecha": "Sábado 7 de Noviembre, 11:30 hrs",
           "moderador": {
             "nombre": "Paulette",
             "foto": "/portadas/pau.png"
@@ -37,7 +37,7 @@
         },
         {
           "cuposTotal": 10,
-          "fecha": "Sábado 3 de Octubre, 17:30 hrs",
+          "fecha": "Sábado 7 de Noviembre, 17:30 hrs",
           "lugar": "Café Madrid, Viña del Mar",
           "moderador": {
             "nombre": "Matías",
@@ -45,7 +45,7 @@
           }
         },
         {
-          "fecha": "Domingo 4 de Octubre en INGLÉS, 11:30 hrs",
+          "fecha": "Domingo 8 de Noviembre en INGLÉS, 11:30 hrs",
           "moderador": {
             "nombre": "Brianna",
             "foto": "/portadas/4c02e13f-c4e4-4816-bbcd-e9b17364307f.jpg"
@@ -56,10 +56,10 @@
         }
       ],
       "club": "Exploración Literaria",
-      "curaduria": "Cada mes votamos por un libro distinto y exploramos nuevos mundos. Este mes: Una novela provocadora sobre la violencia, el libre albedrío y los límites entre el control y la libertad.\n",
-      "titulo": "La Naranja Mecánica",
+      "curaduria": "Cada mes votamos por un libro distinto y exploramos nuevos mundos. Este mes: Una novela épica sobre la familia, la tierra y la supervivencia, que retrata la lucha entre la adversidad, la ambición y los valores que nos sostienen.",
+      "titulo": "La Buena Tierra",
       "mpLink": " https://mpago.la/2R9WruX",
-      "portada": "/portadas/naranja.jpg"
+      "portada": "/portadas/dcca63a5f0864ff21df1b71a53e3d63f.webp"
     },
     {
       "autor": "Yanis Varoufakis",
@@ -109,7 +109,7 @@
       "sesiones": [
         {
           "cuposTotal": 10,
-          "fecha": "Viernes 6 de Noviembre, 18:30 hrs",
+          "fecha": "Viernes 20 de Noviembre, 18:30 hrs",
           "lugar": "Terraza Madrid",
           "moderador": {
             "nombre": "Matías",
