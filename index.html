@@ -1287,15 +1287,22 @@
     document.getElementById("overlayCuenta").classList.add("open");
     document.body.style.overflow = "hidden";
 
+    // Con corte de tiempo: ni el token ni la función pueden dejar el spinner girando para siempre
+    const conCorte = (promesa, ms, etiqueta) => Promise.race([
+      promesa,
+      new Promise((_, rechaza) => setTimeout(() => rechaza(new Error("tardó demasiado: " + etiqueta)), ms))
+    ]);
+
     let data;
     try {
-      const token = await window.netlifyIdentity.currentUser().jwt();
-      const r = await fetch("/.netlify/functions/mis-reservas", {
+      const token = await conCorte(window.netlifyIdentity.currentUser().jwt(), 8000, "token");
+      const r = await conCorte(fetch("/.netlify/functions/mis-reservas", {
         headers: { Authorization: "Bearer " + token }
-      });
+      }), 15000, "función");
       data = await r.json();
-      if (!r.ok) throw new Error(data.error || "error");
+      if (!r.ok) throw new Error(data.error || "respuesta " + r.status);
     } catch (e) {
+      console.warn("Mis lecturas:", e.message);
       cuerpo.innerHTML = '<p class="cuenta-vacio">No pudimos cargar tus lecturas en este momento.<br>Intenta de nuevo en un rato.</p>';
       return;
     }
