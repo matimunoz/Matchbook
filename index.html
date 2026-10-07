@@ -462,17 +462,33 @@
   .spinner{width:20px;height:20px;border:3px solid rgba(251,242,226,.4);border-top-color:var(--crema);border-radius:50%;animation:spin .7s linear infinite;display:inline-block;vertical-align:middle}
   @keyframes spin{to{transform:rotate(360deg)}}
 
-  /* ---------- MIS LIBROS ---------- */
+  /* ---------- MIS LECTURAS ---------- */
   .cuenta-mail{font-family:var(--serif);font-style:italic;color:var(--tinta-suave);font-size:.9rem;margin-bottom:18px;word-break:break-all}
-  .lib-lista{display:flex;flex-direction:column;gap:10px;margin-bottom:20px}
-  .lib{border:1px solid rgba(94,122,82,.28);border-left:4px solid var(--hoja);border-radius:0 12px 12px 0;background:#FFFDF7;padding:12px 15px}
-  .lib-titulo{font-family:var(--serif);font-weight:700;font-size:1.02rem;color:var(--noche);line-height:1.3}
-  .lib-club{font-size:.74rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--hoja);margin-top:3px}
-  .lib-meta{font-family:var(--serif);font-size:.84rem;color:var(--tinta-suave);margin-top:6px}
-  .cuenta-vacio{font-family:var(--serif);color:var(--tinta-suave);font-size:.95rem;line-height:1.6;text-align:center;padding:14px 0}
   .cuenta-conteo{font-family:var(--serif);font-weight:700;color:var(--noche);font-size:1.05rem;margin-bottom:14px}
+  .cuenta-vacio{font-family:var(--serif);color:var(--tinta-suave);font-size:.95rem;line-height:1.6;text-align:center;padding:14px 0}
+  .lib-repisa{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}
+  @media(max-width:420px){.lib-repisa{grid-template-columns:repeat(2,1fr)}}
+  .lib-tapa{aspect-ratio:2/3;border-radius:4px;box-shadow:0 2px 7px rgba(19,41,63,.2);overflow:hidden;background:#FFFDF7}
+  .lib-tapa img{width:100%;height:100%;object-fit:cover;display:block}
+  .lib-tapa.sin-img{display:flex;align-items:center;justify-content:center;border:1px solid rgba(94,122,82,.3);padding:9px}
+  .lib-tapa.sin-img span{font-family:var(--serif);font-style:italic;font-size:.72rem;color:var(--noche);line-height:1.3;text-align:center}
+  .lib-titulo{font-family:var(--serif);font-weight:600;font-size:.8rem;color:var(--noche);line-height:1.3;margin-top:8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .lib-meta{font-size:.68rem;color:var(--tinta-suave);margin-top:2px;display:flex;align-items:center;gap:4px}
+  .lib-punto{width:5px;height:5px;border-radius:50%;background:var(--hoja);flex-shrink:0}
   .btn-salir{background:none;border:none;cursor:pointer;font-family:var(--sans);font-weight:800;font-size:.86rem;color:var(--tinta-suave);text-decoration:underline;padding:4px;display:block;margin:0 auto}
   .btn-salir:hover{color:#B0492E}
+
+  /* Pide los datos que faltan para reservar */
+  .pide-datos{background:rgba(245,169,59,.14);border:1px solid rgba(245,169,59,.5);border-radius:14px;padding:16px;margin-bottom:18px}
+  .pd-titulo{font-weight:800;font-size:.92rem;color:var(--noche);margin-bottom:3px}
+  .pd-sub{font-family:var(--serif);font-size:.84rem;color:var(--tinta-suave);margin-bottom:11px;line-height:1.45}
+  .pide-datos input{width:100%;padding:10px 13px;border:1.5px solid rgba(94,122,82,.4);border-radius:12px;background:#FFFDF7;font-family:var(--sans);font-size:.95rem;margin-bottom:9px}
+  .pide-datos input:focus{outline:3px solid rgba(245,169,59,.5);border-color:var(--ambar)}
+  .pd-btn{width:100%;background:var(--ambar);color:var(--noche);border:none;border-radius:999px;padding:10px;font-weight:800;font-size:.9rem;cursor:pointer;font-family:var(--sans)}
+  .pd-btn:hover{background:var(--ambar-suave)}
+  .pd-btn:disabled{opacity:.6;cursor:default}
+  .pd-err{color:#B0492E;font-size:.8rem;font-weight:700;margin-top:7px}
+  .pd-ok{font-family:var(--serif);font-style:italic;color:var(--hoja);font-size:.86rem;text-align:center}
 
   :focus-visible{outline:3px solid var(--ambar);outline-offset:2px}
   @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
@@ -798,8 +814,9 @@
 <div class="modal-overlay" id="overlayCuenta" role="dialog" aria-modal="true" aria-labelledby="cuentaTitle">
   <div class="modal">
     <button class="modal-close" onclick="cerrarCuenta()" aria-label="Cerrar">×</button>
-    <h3 id="cuentaTitle">Mis libros</h3>
+    <h3 id="cuentaTitle">Mis lecturas</h3>
     <p class="cuenta-mail" id="cuentaMail"></p>
+    <div id="cuentaDatos"></div>
     <div id="cuentaCuerpo"></div>
     <button class="btn-salir" onclick="cerrarSesion()">Cerrar sesión</button>
   </div>
@@ -1206,9 +1223,66 @@
     if (window.netlifyIdentity) window.netlifyIdentity.logout();
   }
 
+  // El widget de Netlify solo pide nombre, correo y contraseña. El teléfono lo
+  // necesitamos para las reservas, así que lo pedimos acá la primera vez.
+  function bloqueDatos(){
+    const md = USUARIO.user_metadata || {};
+    const faltaNombre = !md.full_name;
+    const faltaFono = !md.telefono;
+    if(!faltaNombre && !faltaFono) return "";
+    return '<div class="pide-datos" id="pideDatos">' +
+      '<p class="pd-titulo">Completa tus datos</p>' +
+      '<p class="pd-sub">Los usamos para tus reservas, así no tienes que escribirlos cada vez.</p>' +
+      (faltaNombre ? '<input id="pdNombre" type="text" placeholder="Tu nombre completo" autocomplete="name">' : '') +
+      (faltaFono ? '<input id="pdFono" type="tel" placeholder="Tu WhatsApp: +56 9 ..." autocomplete="tel">' : '') +
+      '<button class="pd-btn" id="pdBtn" onclick="guardarDatos()">Guardar</button>' +
+      '<p class="pd-err" id="pdErr"></p>' +
+      '</div>';
+  }
+
+  async function guardarDatos(){
+    const nom = document.getElementById("pdNombre");
+    const fono = document.getElementById("pdFono");
+    const err = document.getElementById("pdErr");
+    const btn = document.getElementById("pdBtn");
+    const datos = {};
+
+    if(nom){
+      if(nom.value.trim().length < 2){ err.textContent = "Escribe tu nombre."; return; }
+      datos.full_name = nom.value.trim();
+    }
+    if(fono){
+      if(fono.value.trim().length < 8){ err.textContent = "Escribe un teléfono válido."; return; }
+      datos.telefono = fono.value.trim();
+    }
+    err.textContent = "";
+    btn.disabled = true; btn.textContent = "Guardando…";
+
+    try {
+      const u = window.netlifyIdentity.currentUser();
+      USUARIO = await u.update({ data: Object.assign({}, u.user_metadata, datos) });
+      pintarSesion();
+      document.getElementById("cuentaDatos").innerHTML = '<p class="pd-ok">Listo, guardamos tus datos.</p>';
+    } catch(e){
+      err.textContent = "No se pudo guardar. Intenta de nuevo.";
+      btn.disabled = false; btn.textContent = "Guardar";
+    }
+  }
+
+  function mesDe(fecha){
+    const m = String(fecha).toLowerCase().match(/enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre/);
+    return m ? m[0] : "";
+  }
+
+  function colorClub(nombre){
+    const c = CLUBS.find(function(x){ return x.club === nombre; });
+    return (c && c.color) ? c.color : "var(--hoja)";
+  }
+
   async function abrirCuenta(){
     const cuerpo = document.getElementById("cuentaCuerpo");
     document.getElementById("cuentaMail").textContent = USUARIO.email;
+    document.getElementById("cuentaDatos").innerHTML = bloqueDatos();
     cuerpo.innerHTML = '<p class="cuenta-vacio"><span class="spinner" style="border-color:rgba(94,122,82,.25);border-top-color:var(--hoja)"></span></p>';
     document.getElementById("overlayCuenta").classList.add("open");
     document.body.style.overflow = "hidden";
@@ -1222,23 +1296,26 @@
       data = await r.json();
       if (!r.ok) throw new Error(data.error || "error");
     } catch (e) {
-      cuerpo.innerHTML = '<p class="cuenta-vacio">No pudimos cargar tu historial en este momento.<br>Intenta de nuevo en un rato.</p>';
+      cuerpo.innerHTML = '<p class="cuenta-vacio">No pudimos cargar tus lecturas en este momento.<br>Intenta de nuevo en un rato.</p>';
       return;
     }
 
     const rs = data.reservas || [];
     if (!rs.length) {
-      cuerpo.innerHTML = '<p class="cuenta-vacio">Todavía no tenemos reservas asociadas a este correo.<br><br>Si reservaste con otro, escríbenos a <b>contacto@matchbook.cl</b> y lo vinculamos a tu cuenta.</p>';
+      cuerpo.innerHTML = '<p class="cuenta-vacio">Todavía no tenemos lecturas asociadas a este correo.<br><br>Si reservaste con otro, escríbenos a <b>contacto@matchbook.cl</b> y lo vinculamos a tu cuenta.</p>';
       return;
     }
 
     cuerpo.innerHTML =
-      '<p class="cuenta-conteo">' + rs.length + (rs.length === 1 ? ' libro' : ' libros') + ' con nosotros</p>' +
-      '<div class="lib-lista">' + rs.map(function(x){
-        return '<div class="lib">' +
+      '<p class="cuenta-conteo">' + rs.length + (rs.length === 1 ? ' lectura' : ' lecturas') + ' con nosotros</p>' +
+      '<div class="lib-repisa">' + rs.map(function(x){
+        const tapa = x.portada
+          ? '<div class="lib-tapa"><img src="' + esc(x.portada) + '" alt="' + esc(x.libro) + '" loading="lazy"></div>'
+          : '<div class="lib-tapa sin-img"><span>' + esc(x.libro) + '</span></div>';
+        const mes = mesDe(x.fecha);
+        return '<div>' + tapa +
           '<div class="lib-titulo">' + esc(x.libro) + '</div>' +
-          '<div class="lib-club">' + esc(x.club) + '</div>' +
-          '<div class="lib-meta">' + esc(x.fecha) + ' · ' + esc(x.lugar) + '</div>' +
+          '<div class="lib-meta"><span class="lib-punto" style="background:' + colorClub(x.club) + '"></span>' + esc(mes) + '</div>' +
         '</div>';
       }).join('') + '</div>';
   }
@@ -1252,7 +1329,8 @@
       USUARIO = user;
       pintarSesion();
       window.netlifyIdentity.close();
-      if (esAdmin(user)) document.location.href = "/admin/";
+      if (esAdmin(user)) { document.location.href = "/admin/"; return; }
+      setTimeout(abrirCuenta, 250);   // al entrar, mostrar sus lecturas
     });
     window.netlifyIdentity.on("logout", function(){
       USUARIO = null;
