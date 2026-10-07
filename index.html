@@ -779,7 +779,8 @@
   // Reservas en vivo desde Google Sheets (Apps Script)
   const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx2rj_n2EqFClmhlniEyGW9epy30nrI6xZVsEVw9aKEf23iC3hja4tm2U4xTL-rD70v0w/exec";
 
-  const SHEET_CSV = "https://docs.google.com/spreadsheets/d/1Y9rDM3GFXzZ88b8IIchdBPpFYaPVFFVq8E8vEtSXNbw/export?format=csv&gid=0";
+  // Pestaña "Cupos" publicada aparte: solo club, fecha y conteo. Sin datos personales.
+  const SHEET_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTH0MHAaKPlgoyrLgVDL_3j_tdrHwOgrYgLL7ZTPCKiPbu8PyNZ_Uu4Aa7eJXCAZfVhIEAk77YnWAvZ/pub?gid=394282392&single=true&output=csv";
 
   function parseCSV(str){
     const rows = []; let row = [], cur = '', inQ = false;
@@ -802,9 +803,9 @@
       const rows = parseCSV(await r.text());
       const counts = {};
       for(let i = 1; i < rows.length; i++){
-        const club = rows[i][4], fecha = rows[i][6];
-        if(!club || !fecha) continue;
-        counts[club + "||" + fecha] = (counts[club + "||" + fecha] || 0) + 1;
+        const club = rows[i][0], fecha = rows[i][1], n = parseInt(rows[i][2], 10);
+        if(!club || !fecha || isNaN(n)) continue;
+        counts[club + "||" + fecha] = n;
       }
       return counts;
     } catch(e){ return null; }
