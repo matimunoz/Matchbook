@@ -1279,6 +1279,21 @@
     return (c && c.color) ? c.color : "var(--hoja)";
   }
 
+  // Una llamada al historial, con corte de tiempo para que nada quede colgado
+  async function pedirReservas(){
+    const conCorte = (promesa, ms, etiqueta) => Promise.race([
+      promesa,
+      new Promise((_, rechaza) => setTimeout(() => rechaza(new Error("tardó demasiado: " + etiqueta)), ms))
+    ]);
+    const token = await conCorte(window.netlifyIdentity.currentUser().jwt(), 8000, "token");
+    const r = await conCorte(fetch("/.netlify/functions/mis-reservas", {
+      headers: { Authorization: "Bearer " + token }
+    }), 14000, "función");
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.error || "respuesta " + r.status);
+    return data;
+  }
+
   async function abrirCuenta(){
     const cuerpo = document.getElementById("cuentaCuerpo");
     document.getElementById("cuentaMail").textContent = USUARIO.email;
@@ -1287,24 +1302,23 @@
     document.getElementById("overlayCuenta").classList.add("open");
     document.body.style.overflow = "hidden";
 
-    // Con corte de tiempo: ni el token ni la función pueden dejar el spinner girando para siempre
-    const conCorte = (promesa, ms, etiqueta) => Promise.race([
-      promesa,
-      new Promise((_, rechaza) => setTimeout(() => rechaza(new Error("tardó demasiado: " + etiqueta)), ms))
-    ]);
-
+    // Apps Script duerme cuando lleva rato sin uso y la primera llamada puede pasarse
+    // de los 10s que aguanta Netlify. La segunda, ya despierto, responde rápido.
     let data;
     try {
-      const token = await conCorte(window.netlifyIdentity.currentUser().jwt(), 8000, "token");
-      const r = await conCorte(fetch("/.netlify/functions/mis-reservas", {
-        headers: { Authorization: "Bearer " + token }
-      }), 15000, "función");
-      data = await r.json();
-      if (!r.ok) throw new Error(data.error || "respuesta " + r.status);
-    } catch (e) {
-      console.warn("Mis lecturas:", e.message);
-      cuerpo.innerHTML = '<p class="cuenta-vacio">No pudimos cargar tus lecturas en este momento.<br>Intenta de nuevo en un rato.</p>';
-      return;
+      data = await pedirReservas();
+    } catch (e1) {
+      console.warn("Mis lecturas, intento 1:", e1.message);
+      cuerpo.innerHTML = '<p class="cuenta-vacio">' +
+        '<span class="spinner" style="border-color:rgba(94,122,82,.25);border-top-color:var(--hoja)"></span>' +
+        '<br><br>Despertando el archivo…<br>La primera vez del día puede tardar.</p>';
+      try {
+        data = await pedirReservas();
+      } catch (e2) {
+        console.warn("Mis lecturas, intento 2:", e2.message);
+        cuerpo.innerHTML = '<p class="cuenta-vacio">No pudimos cargar tus lecturas en este momento.<br>Intenta de nuevo en un rato.</p>';
+        return;
+      }
     }
 
     const rs = data.reservas || [];
