@@ -1,0 +1,7 @@
+# Solo declara dónde viven las funciones.
+# A propósito no se toca "publish": el sitio no tiene build y la carpeta de
+# publicación ya está configurada en el panel de Netlify.
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"

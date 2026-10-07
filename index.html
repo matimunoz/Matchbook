@@ -107,6 +107,15 @@
     padding:10px 20px;border-radius:999px;transition:background .2s,box-shadow .2s;
   }
   .nav-cta:hover{background:var(--ambar-suave);box-shadow:0 0 0 4px rgba(245,169,59,.25)}
+  .nav-acciones{display:flex;align-items:center;gap:10px}
+  .nav-sesion{
+    font-family:var(--sans);font-weight:800;font-size:.88rem;
+    background:none;color:var(--hoja);border:1.5px solid rgba(94,122,82,.4);cursor:pointer;
+    padding:8px 16px;border-radius:999px;transition:background .2s,border-color .2s;
+    max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  }
+  .nav-sesion:hover{background:rgba(94,122,82,.1);border-color:var(--hoja)}
+  @media(max-width:520px){.nav-sesion{display:none}}
   @media(min-width:780px){.nav-links{display:flex}}
 
   /* ---------- HERO amanecer ---------- */
@@ -453,6 +462,18 @@
   .spinner{width:20px;height:20px;border:3px solid rgba(251,242,226,.4);border-top-color:var(--crema);border-radius:50%;animation:spin .7s linear infinite;display:inline-block;vertical-align:middle}
   @keyframes spin{to{transform:rotate(360deg)}}
 
+  /* ---------- MIS LIBROS ---------- */
+  .cuenta-mail{font-family:var(--serif);font-style:italic;color:var(--tinta-suave);font-size:.9rem;margin-bottom:18px;word-break:break-all}
+  .lib-lista{display:flex;flex-direction:column;gap:10px;margin-bottom:20px}
+  .lib{border:1px solid rgba(94,122,82,.28);border-left:4px solid var(--hoja);border-radius:0 12px 12px 0;background:#FFFDF7;padding:12px 15px}
+  .lib-titulo{font-family:var(--serif);font-weight:700;font-size:1.02rem;color:var(--noche);line-height:1.3}
+  .lib-club{font-size:.74rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--hoja);margin-top:3px}
+  .lib-meta{font-family:var(--serif);font-size:.84rem;color:var(--tinta-suave);margin-top:6px}
+  .cuenta-vacio{font-family:var(--serif);color:var(--tinta-suave);font-size:.95rem;line-height:1.6;text-align:center;padding:14px 0}
+  .cuenta-conteo{font-family:var(--serif);font-weight:700;color:var(--noche);font-size:1.05rem;margin-bottom:14px}
+  .btn-salir{background:none;border:none;cursor:pointer;font-family:var(--sans);font-weight:800;font-size:.86rem;color:var(--tinta-suave);text-decoration:underline;padding:4px;display:block;margin:0 auto}
+  .btn-salir:hover{color:#B0492E}
+
   :focus-visible{outline:3px solid var(--ambar);outline-offset:2px}
   @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
 </style>
@@ -492,7 +513,10 @@
       <a href="#comunidad">La fogata</a>
       <a href="#faq">Preguntas</a>
     </div>
-    <button class="nav-cta" onclick="openModal()">Reservar silla</button>
+    <div class="nav-acciones">
+      <button class="nav-sesion" id="btnSesion" onclick="accionSesion()">Entrar</button>
+      <button class="nav-cta" onclick="openModal()">Reservar silla</button>
+    </div>
   </div>
 </nav>
 
@@ -770,11 +794,23 @@
   </div>
 </div>
 
+<!-- MODAL MIS LIBROS -->
+<div class="modal-overlay" id="overlayCuenta" role="dialog" aria-modal="true" aria-labelledby="cuentaTitle">
+  <div class="modal">
+    <button class="modal-close" onclick="cerrarCuenta()" aria-label="Cerrar">×</button>
+    <h3 id="cuentaTitle">Mis libros</h3>
+    <p class="cuenta-mail" id="cuentaMail"></p>
+    <div id="cuentaCuerpo"></div>
+    <button class="btn-salir" onclick="cerrarSesion()">Cerrar sesión</button>
+  </div>
+</div>
+
 <script>
   // El contenido se carga desde content/datos.json (editable en /admin)
   let CLUBS = [];
   let CONTENT = {};
   let activeModalClubId = null;
+  let USUARIO = null;   // sesión de Netlify Identity (ver bloque al final del archivo)
 
   // Reservas en vivo desde Google Sheets (Apps Script)
   const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx2rj_n2EqFClmhlniEyGW9epy30nrI6xZVsEVw9aKEf23iC3hja4tm2U4xTL-rD70v0w/exec";
@@ -795,8 +831,9 @@
     return rows;
   }
 
-  // Lee los conteos directamente desde el CSV público del Sheet (~200ms, sin cold start)
-  async function fetchCuposEnVivo(){
+  // Fuente rápida: CSV publicado (~400ms). Google lo cachea, así que puede ir
+  // unos minutos atrasado respecto al Sheet.
+  async function fetchCuposCSV(){
     try {
       const r = await fetch(SHEET_CSV, {cache:"no-store"});
       if(!r.ok) return null;
@@ -811,6 +848,28 @@
     } catch(e){ return null; }
   }
 
+  // Fuente autoritativa: Apps Script lee el Sheet en vivo. Más lenta (cold start),
+  // pero siempre exacta. Va por JSONP para evitar CORS.
+  function fetchCuposAppsScript(){
+    return new Promise(resolve=>{
+      const cb = "mbCupos_" + Math.random().toString(36).slice(2);
+      const sc = document.createElement("script");
+      let listo = false;
+      // Se deja como función vacía en vez de borrarla: si Apps Script responde
+      // tarde, la respuesta cae en el vacío sin lanzar ReferenceError.
+      const limpiar = ()=>{ window[cb]=()=>{}; sc.remove(); };
+      window[cb] = data => { listo=true; resolve(data); limpiar(); };
+      sc.onerror = ()=>{ if(!listo){ resolve(null); limpiar(); } };
+      sc.src = APPS_SCRIPT_URL + "?callback=" + cb + "&_=" + Date.now();
+      document.head.appendChild(sc);
+      setTimeout(()=>{ if(!listo){ resolve(null); limpiar(); } }, 12000);
+    });
+  }
+
+  function guardarCacheCupos(counts){
+    try { localStorage.setItem("mb_cupos", JSON.stringify({ts:Date.now(), counts})); } catch(e){}
+  }
+
   function aplicarCounts(counts){
     CLUBS.forEach(c => c.sesiones.forEach(s => {
       s.cuposTomados = counts[c.club + "||" + s.fecha] || 0;
@@ -823,8 +882,9 @@
     }
   }
 
+  // Tres pasadas, de la más rápida a la más exacta. Cada una pisa a la anterior.
   async function aplicarCuposEnVivo(){
-    // Aplicar caché inmediatamente si existe y es reciente (< 2 min)
+    // 1. Caché del navegador: instantáneo, de la visita anterior
     try {
       const raw = localStorage.getItem("mb_cupos");
       if(raw){
@@ -833,11 +893,17 @@
       }
     } catch(e){}
 
-    // Fetch en segundo plano y actualizar si hay cambios
-    const counts = await fetchCuposEnVivo();
-    if(!counts) return;
-    try { localStorage.setItem("mb_cupos", JSON.stringify({ts:Date.now(), counts})); } catch(e){}
-    aplicarCounts(counts);
+    // Las dos fuentes parten juntas; no se esperan entre sí
+    const pCSV = fetchCuposCSV();
+    const pVivo = fetchCuposAppsScript();
+
+    // 2. CSV publicado: llega primero y pinta
+    const csv = await pCSV;
+    if(csv){ guardarCacheCupos(csv); aplicarCounts(csv); }
+
+    // 3. Apps Script: llega después y corrige si el CSV venía atrasado
+    const vivo = await pVivo;
+    if(vivo){ guardarCacheCupos(vivo); aplicarCounts(vivo); }
   }
 
   const esc = s => String(s==null?"":s)
@@ -1023,12 +1089,26 @@
     fillSesionCards(id);
     formView.style.display="block";confirmView.style.display="none";
     overlay.classList.add("open");document.body.style.overflow="hidden";
+    autocompletarDatos();
     const firstCard = document.querySelector("#sesionCards .ses-card:not(.full)");
     (firstCard||document.getElementById("inNombre")).focus();
   }
+
+  // Rellena nombre, correo y teléfono si hay sesión iniciada
+  function autocompletarDatos(){
+    if(!USUARIO) return;
+    const md = USUARIO.user_metadata || {};
+    const nom = document.getElementById("inNombre");
+    const mail = document.getElementById("inEmail");
+    const fono = document.getElementById("inFono");
+    if(!nom.value && md.full_name) nom.value = md.full_name;
+    if(!mail.value) mail.value = USUARIO.email;
+    if(!fono.value && md.telefono) fono.value = md.telefono;
+  }
   function closeModal(){overlay.classList.remove("open");document.body.style.overflow="";activeModalClubId=null;}
   overlay.addEventListener("click",e=>{if(e.target.id==="overlay")closeModal()});
-  document.addEventListener("keydown",e=>{if(e.key==="Escape")closeModal()});
+  overlayCuenta.addEventListener("click",e=>{if(e.target.id==="overlayCuenta")cerrarCuenta()});
+  document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeModal();cerrarCuenta();}});
   const setInvalid=(id,bad)=>{document.getElementById(id).classList.toggle("invalid",bad);return !bad};
 
   async function submitReserva(){
@@ -1057,6 +1137,15 @@
     btnPagar.href=c.mpLink;
     formView.style.display="none";confirmView.style.display="block";
     btn.disabled=false;btn.textContent="Continuar al pago →";
+
+    // Guarda nombre y teléfono en la cuenta para no volver a pedirlos
+    if(USUARIO && window.netlifyIdentity){
+      const u = window.netlifyIdentity.currentUser();
+      if(u) u.update({ data: Object.assign({}, u.user_metadata, { full_name: nombre, telefono: fono }) })
+             .then(nu => { USUARIO = nu; })
+             .catch(() => {});
+    }
+
     ["inNombre","inEmail","inFono"].forEach(i=>document.getElementById(i).value="");
   }
   // Captura de correo (boletín)
@@ -1080,14 +1169,94 @@
   loadData();
 </script>
 
-<!-- Login de administración (redirige al panel tras aceptar la invitación) -->
+<!-- Sesión de lectores (y de administración, según el rol) -->
 <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 <script>
+  // Solo quienes tengan el rol "admin" en Netlify Identity van al CMS.
+  // El resto se queda en la página con su sesión iniciada.
+  function esAdmin(u){
+    return !!(u && u.app_metadata && (u.app_metadata.roles || []).indexOf("admin") !== -1);
+  }
+
+  function pintarSesion(){
+    const btn = document.getElementById("btnSesion");
+    if (!btn) return;
+    if (USUARIO) {
+      const nombre = (USUARIO.user_metadata && USUARIO.user_metadata.full_name) || USUARIO.email;
+      btn.textContent = String(nombre).trim().split(" ")[0] || "Mi cuenta";
+      btn.title = "Ver mis libros";
+    } else {
+      btn.textContent = "Entrar";
+      btn.title = "Iniciar sesión";
+    }
+  }
+
+  function accionSesion(){
+    if (USUARIO) abrirCuenta();
+    else if (window.netlifyIdentity) window.netlifyIdentity.open("login");
+  }
+
+  function cerrarCuenta(){
+    document.getElementById("overlayCuenta").classList.remove("open");
+    document.body.style.overflow = "";
+  }
+
+  function cerrarSesion(){
+    cerrarCuenta();
+    if (window.netlifyIdentity) window.netlifyIdentity.logout();
+  }
+
+  async function abrirCuenta(){
+    const cuerpo = document.getElementById("cuentaCuerpo");
+    document.getElementById("cuentaMail").textContent = USUARIO.email;
+    cuerpo.innerHTML = '<p class="cuenta-vacio"><span class="spinner" style="border-color:rgba(94,122,82,.25);border-top-color:var(--hoja)"></span></p>';
+    document.getElementById("overlayCuenta").classList.add("open");
+    document.body.style.overflow = "hidden";
+
+    let data;
+    try {
+      const token = await window.netlifyIdentity.currentUser().jwt();
+      const r = await fetch("/.netlify/functions/mis-reservas", {
+        headers: { Authorization: "Bearer " + token }
+      });
+      data = await r.json();
+      if (!r.ok) throw new Error(data.error || "error");
+    } catch (e) {
+      cuerpo.innerHTML = '<p class="cuenta-vacio">No pudimos cargar tu historial en este momento.<br>Intenta de nuevo en un rato.</p>';
+      return;
+    }
+
+    const rs = data.reservas || [];
+    if (!rs.length) {
+      cuerpo.innerHTML = '<p class="cuenta-vacio">Todavía no tenemos reservas asociadas a este correo.<br><br>Si reservaste con otro, escríbenos a <b>contacto@matchbook.cl</b> y lo vinculamos a tu cuenta.</p>';
+      return;
+    }
+
+    cuerpo.innerHTML =
+      '<p class="cuenta-conteo">' + rs.length + (rs.length === 1 ? ' libro' : ' libros') + ' con nosotros</p>' +
+      '<div class="lib-lista">' + rs.map(function(x){
+        return '<div class="lib">' +
+          '<div class="lib-titulo">' + esc(x.libro) + '</div>' +
+          '<div class="lib-club">' + esc(x.club) + '</div>' +
+          '<div class="lib-meta">' + esc(x.fecha) + ' · ' + esc(x.lugar) + '</div>' +
+        '</div>';
+      }).join('') + '</div>';
+  }
+
   if (window.netlifyIdentity) {
-    window.netlifyIdentity.on("init", user => {
-      if (!user) {
-        window.netlifyIdentity.on("login", () => { document.location.href = "/admin/"; });
-      }
+    window.netlifyIdentity.on("init", function(user){
+      USUARIO = user || null;
+      pintarSesion();
+    });
+    window.netlifyIdentity.on("login", function(user){
+      USUARIO = user;
+      pintarSesion();
+      window.netlifyIdentity.close();
+      if (esAdmin(user)) document.location.href = "/admin/";
+    });
+    window.netlifyIdentity.on("logout", function(){
+      USUARIO = null;
+      pintarSesion();
     });
   }
 </script>
