@@ -98,6 +98,13 @@
   .logo{display:flex;align-items:center;gap:10px;text-decoration:none;font-family:var(--serif);font-weight:600;font-size:1.25rem;color:#000}
   .logo svg{height:34px;width:34px}
   .logo img{height:38px;width:auto;display:block}
+  /* En celular el logo horizontal aprieta demasiado al lado de los botones:
+     queda solo el símbolo celeste. */
+  .logo-simbolo{display:none}
+  @media(max-width:560px){
+    .logo img{display:none}
+    .logo-simbolo{display:block;height:36px;width:36px}
+  }
   .nav-links{display:none;gap:26px;font-weight:800;font-size:.93rem}
   .nav-links a{text-decoration:none;opacity:.8}
   .nav-links a:hover{opacity:1;color:var(--hoja)}
@@ -568,7 +575,10 @@
 
 <nav>
   <div class="nav-inner">
-    <a class="logo" href="#"><img src="logo-horizontal.png" alt="Matchbook"></a>
+    <a class="logo" href="#">
+      <img src="logo-horizontal.png" alt="Matchbook">
+      <svg class="logo-simbolo" viewBox="0 0 250.2 250.2" role="img" aria-label="Matchbook"><use href="#mb-icon"/></svg>
+    </a>
     <div class="nav-links">
       <a href="#clubes">Los libros</a>
       <a href="#ritual">El ritual</a>
@@ -1723,6 +1733,15 @@
     }
 
     cuerpo.innerHTML = html;
+
+    // Si el archivo de una portada no existe, cae a la tarjeta con el título
+    cuerpo.querySelectorAll(".lib-tapa img, .prox-tapa img").forEach(function(img){
+      img.addEventListener("error", function(){
+        const caja = img.parentElement;
+        caja.classList.add("sin-img");
+        caja.innerHTML = "<span>" + esc(img.getAttribute("alt") || "") + "</span>";
+      });
+    });
   }
 
   if (window.netlifyIdentity) {
