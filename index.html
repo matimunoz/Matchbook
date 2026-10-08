@@ -491,8 +491,23 @@
   .lib-tapa.sin-img{display:flex;align-items:center;justify-content:center;border:1px solid rgba(94,122,82,.3);padding:9px}
   .lib-tapa.sin-img span{font-family:var(--serif);font-style:italic;font-size:.72rem;color:var(--noche);line-height:1.3;text-align:center}
   .lib-titulo{font-family:var(--serif);font-weight:600;font-size:.8rem;color:var(--noche);line-height:1.3;margin-top:8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-  .lib-meta{font-size:.68rem;color:var(--tinta-suave);margin-top:2px;display:flex;align-items:center;gap:4px}
-  .lib-punto{width:5px;height:5px;border-radius:50%;background:var(--hoja);flex-shrink:0}
+  .lib-meta{font-size:.68rem;color:var(--tinta-suave);margin-top:3px;line-height:1.45}
+  .lib-punto{width:5px;height:5px;border-radius:50%;background:var(--hoja);display:inline-block;margin-right:5px;vertical-align:1px}
+
+  /* Sesiones ya pagadas que todavía no ocurren */
+  .prox-seccion{font-family:var(--serif);font-weight:700;color:var(--noche);font-size:1.05rem;margin-bottom:12px}
+  .prox-lista{display:flex;flex-direction:column;gap:11px;margin-bottom:26px}
+  .prox{display:flex;gap:13px;background:rgba(245,169,59,.13);border:1px solid rgba(245,169,59,.55);border-radius:14px;padding:12px}
+  .prox-tapa{width:58px;flex-shrink:0;aspect-ratio:2/3;border-radius:3px;overflow:hidden;box-shadow:0 1px 5px rgba(19,41,63,.22);background:#FFFDF7}
+  .prox-tapa img{width:100%;height:100%;object-fit:cover;display:block}
+  .prox-tapa.sin-img{display:flex;align-items:center;justify-content:center;padding:5px;border:1px solid rgba(94,122,82,.3)}
+  .prox-tapa.sin-img span{font-family:var(--serif);font-style:italic;font-size:.54rem;color:var(--noche);text-align:center;line-height:1.25}
+  .prox-info{min-width:0;flex:1}
+  .prox-badge{font-size:.62rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:#8A5410;margin-bottom:3px}
+  .prox-libro{font-family:var(--serif);font-weight:700;font-size:1rem;color:var(--noche);line-height:1.25}
+  .prox-club{font-size:.66rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;margin-top:2px}
+  .prox-cuando{font-family:var(--serif);font-size:.86rem;color:var(--noche);margin-top:7px;font-weight:600}
+  .prox-donde{font-family:var(--serif);font-size:.8rem;color:var(--tinta-suave);margin-top:1px}
   .btn-salir{background:none;border:none;cursor:pointer;font-family:var(--sans);font-weight:800;font-size:.86rem;color:var(--tinta-suave);text-decoration:underline;padding:4px;display:block;margin:0 auto}
   .btn-salir:hover{color:#B0492E}
 
@@ -1434,8 +1449,8 @@
     USUARIO = u;
     pintarSesion();
     cerrarAuth();
-    if (esAdmin(u)) { document.location.href = "/admin/"; return; }
-    setTimeout(abrirCuenta, 250);
+    if (esAdmin(u)) document.location.href = "/admin/";
+    // No se abre nada más: el navbar ya muestra su nombre y "Mis lecturas"
   }
 
   async function enviarAuth(){
@@ -1560,9 +1575,13 @@
     }
   }
 
-  function mesDe(fecha){
-    const m = String(fecha).toLowerCase().match(/enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre/);
-    return m ? m[0] : "";
+  // "Sábado 7 de Noviembre, 11:30 hrs" → "7 de noviembre"
+  // Se quita el día de la semana y la hora: en un historial solo estorban.
+  function fechaCorta(fecha){
+    const s = String(fecha || "");
+    const m = s.match(/(\d{1,2})\s+de\s+([A-Za-zÁÉÍÓÚáéíóúñÑ]+)/i);
+    if (m) return m[1] + " de " + m[2].toLowerCase();
+    return s.split(",")[0].trim();
   }
 
   function colorClub(nombre){
@@ -1626,10 +1645,9 @@
         const tapa = x.portada
           ? '<div class="lib-tapa"><img src="' + esc(x.portada) + '" alt="' + esc(x.libro) + '" loading="lazy"></div>'
           : '<div class="lib-tapa sin-img"><span>' + esc(x.libro) + '</span></div>';
-        const mes = mesDe(x.fecha);
         return '<div>' + tapa +
           '<div class="lib-titulo">' + esc(x.libro) + '</div>' +
-          '<div class="lib-meta"><span class="lib-punto" style="background:' + colorClub(x.club) + '"></span>' + esc(mes) + '</div>' +
+          '<div class="lib-meta"><span class="lib-punto" style="background:' + colorClub(x.club) + '"></span>' + esc(fechaCorta(x.fecha)) + '</div>' +
         '</div>';
       }).join('') + '</div>';
   }
@@ -1643,8 +1661,7 @@
       USUARIO = user;
       pintarSesion();
       window.netlifyIdentity.close();
-      if (esAdmin(user)) { document.location.href = "/admin/"; return; }
-      setTimeout(abrirCuenta, 250);   // al entrar, mostrar sus lecturas
+      if (esAdmin(user)) document.location.href = "/admin/";
     });
     window.netlifyIdentity.on("logout", function(){
       USUARIO = null;
