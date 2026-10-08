@@ -470,6 +470,11 @@
   .ses-card:not(.full) .ses-card-cupos{color:var(--hoja)}
   .ses-card.full .ses-card-cupos{color:#B0492E}
   .field.invalid #sesionCards{outline:1.5px solid #B0492E;border-radius:14px}
+  .resumen-datos{background:rgba(94,122,82,.09);border:1px solid rgba(94,122,82,.3);border-radius:14px;padding:13px 15px;margin-bottom:16px;position:relative}
+  .resumen-quien{font-weight:800;font-size:.95rem;color:var(--noche);padding-right:66px}
+  .resumen-contacto{font-family:var(--serif);font-size:.82rem;color:var(--tinta-suave);margin-top:2px;word-break:break-word}
+  .resumen-cambiar{position:absolute;top:12px;right:14px;background:none;border:none;cursor:pointer;font-family:var(--sans);font-weight:800;font-size:.76rem;color:var(--hoja);text-decoration:underline}
+  .resumen-cambiar:hover{color:var(--noche)}
   .pago-nota{font-family:var(--serif);background:rgba(140,203,239,.2);border-radius:14px;padding:14px;font-size:.9rem;color:var(--tinta-suave);margin-bottom:18px}
   .modal .btn{width:100%}
   .confirm{text-align:center;padding:10px 0}
@@ -823,20 +828,27 @@
         <div id="sesionCards" role="radiogroup" aria-labelledby="lbl-sesion"></div>
         <div class="err">Selecciona una sesión con sillas disponibles.</div>
       </div>
-      <div class="field" id="f-nombre">
-        <label for="inNombre">Nombre completo</label>
-        <input id="inNombre" type="text" autocomplete="name" placeholder="Tu nombre">
-        <div class="err">Ingresa tu nombre.</div>
+      <div class="resumen-datos" id="resumenPersonal" hidden>
+        <p class="resumen-quien" id="resumenQuien"></p>
+        <p class="resumen-contacto" id="resumenContacto"></p>
+        <button type="button" class="resumen-cambiar" onclick="mostrarCampos()">Cambiar</button>
       </div>
-      <div class="field" id="f-email">
-        <label for="inEmail">Correo electrónico</label>
-        <input id="inEmail" type="email" autocomplete="email" placeholder="tu@correo.cl">
-        <div class="err">Ingresa un correo válido.</div>
-      </div>
-      <div class="field" id="f-fono">
-        <label for="inFono">Teléfono (WhatsApp)</label>
-        <input id="inFono" type="tel" autocomplete="tel" placeholder="+56 9 ...">
-        <div class="err">Ingresa un teléfono de contacto.</div>
+      <div id="camposPersonales">
+        <div class="field" id="f-nombre">
+          <label for="inNombre">Nombre completo</label>
+          <input id="inNombre" type="text" autocomplete="name" placeholder="Tu nombre">
+          <div class="err">Ingresa tu nombre.</div>
+        </div>
+        <div class="field" id="f-email">
+          <label for="inEmail">Correo electrónico</label>
+          <input id="inEmail" type="email" autocomplete="email" placeholder="tu@correo.cl">
+          <div class="err">Ingresa un correo válido.</div>
+        </div>
+        <div class="field" id="f-fono">
+          <label for="inFono">Teléfono (WhatsApp)</label>
+          <input id="inFono" type="tel" autocomplete="tel" placeholder="+56 9 ...">
+          <div class="err">Ingresa un teléfono de contacto.</div>
+        </div>
       </div>
       <div class="pago-nota">💳 Al continuar serás dirigido al checkout seguro de Mercado Pago (crédito, débito o saldo). Tu silla queda confirmada al completar el pago.</div>
       <button class="btn btn-sol" id="btnSubmit" onclick="submitReserva()">Continuar al pago →</button>
@@ -1219,9 +1231,13 @@
     (firstCard||document.getElementById("inNombre")).focus();
   }
 
-  // Rellena nombre, correo y teléfono si hay sesión iniciada
+  // Con sesión iniciada los datos se rellenan solos y, si están completos,
+  // se colapsan en una línea. El botón "Cambiar" los vuelve a abrir.
   function autocompletarDatos(){
-    if(!USUARIO) return;
+    const campos = document.getElementById("camposPersonales");
+    const resumen = document.getElementById("resumenPersonal");
+    if(!USUARIO){ campos.hidden = false; resumen.hidden = true; return; }
+
     const md = USUARIO.user_metadata || {};
     const nom = document.getElementById("inNombre");
     const mail = document.getElementById("inEmail");
@@ -1229,6 +1245,23 @@
     if(!nom.value && md.full_name) nom.value = md.full_name;
     if(!mail.value) mail.value = USUARIO.email;
     if(!fono.value && md.telefono) fono.value = md.telefono;
+
+    const completo = nom.value.trim().length >= 2 && mail.value.trim() && fono.value.trim().length >= 8;
+    if(completo){
+      document.getElementById("resumenQuien").textContent = nom.value.trim();
+      document.getElementById("resumenContacto").textContent = mail.value.trim() + " · " + fono.value.trim();
+      campos.hidden = true;
+      resumen.hidden = false;
+    } else {
+      campos.hidden = false;
+      resumen.hidden = true;
+    }
+  }
+
+  function mostrarCampos(){
+    document.getElementById("camposPersonales").hidden = false;
+    document.getElementById("resumenPersonal").hidden = true;
+    document.getElementById("inNombre").focus();
   }
   function closeModal(){overlay.classList.remove("open");document.body.style.overflow="";activeModalClubId=null;}
   overlay.addEventListener("click",e=>{if(e.target.id==="overlay")closeModal()});
@@ -1242,12 +1275,13 @@
   async function submitReserva(){
     const club=selClub.value,nombre=inNombre.value.trim(),
           email=inEmail.value.trim(),fono=inFono.value.trim();
-    let ok=true;
-    ok=setInvalid("f-club",!club)&&ok;
-    ok=setInvalid("f-nombre",nombre.length<2)&&ok;
-    ok=setInvalid("f-email",!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))&&ok;
-    ok=setInvalid("f-fono",fono.length<8)&&ok;
-    if(!ok)return;
+    const okNombre = setInvalid("f-nombre", nombre.length<2);
+    const okEmail  = setInvalid("f-email", !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email));
+    const okFono   = setInvalid("f-fono", fono.length<8);
+    const okClub   = setInvalid("f-club", !club);
+    // Si algo personal está mal, se abren los campos para que se vea el error
+    if(!okNombre || !okEmail || !okFono) mostrarCampos();
+    if(!(okClub && okNombre && okEmail && okFono)) return;
     const btn=document.getElementById("btnSubmit");
     btn.disabled=true;btn.innerHTML='<span class="spinner"></span>&nbsp; Apartando…';
     const {c,s}=findSesion(club);
@@ -1584,6 +1618,24 @@
     return s.split(",")[0].trim();
   }
 
+  // Si la sesión todavía aparece publicada en los clubes del mes, es porque no ha ocurrido
+  function esProxima(x){
+    return CLUBS.some(function(c){
+      return c.club === x.club && (c.sesiones || []).some(function(s){ return s.fecha === x.fecha; });
+    });
+  }
+
+  function horaDe(fecha){
+    const m = String(fecha || "").match(/(\d{1,2})[:.](\d{2})/);
+    return m ? m[1] + ":" + m[2] + " hrs" : "";
+  }
+
+  function tapaHTML(x, clase){
+    return x.portada
+      ? '<div class="' + clase + '"><img src="' + esc(x.portada) + '" alt="' + esc(x.libro) + '" loading="lazy"></div>'
+      : '<div class="' + clase + ' sin-img"><span>' + esc(x.libro) + '</span></div>';
+  }
+
   function colorClub(nombre){
     const c = CLUBS.find(function(x){ return x.club === nombre; });
     return (c && c.color) ? c.color : "var(--hoja)";
@@ -1639,17 +1691,38 @@
       return;
     }
 
-    cuerpo.innerHTML =
-      '<p class="cuenta-conteo">' + rs.length + (rs.length === 1 ? ' lectura' : ' lecturas') + ' con nosotros</p>' +
-      '<div class="lib-repisa">' + rs.map(function(x){
-        const tapa = x.portada
-          ? '<div class="lib-tapa"><img src="' + esc(x.portada) + '" alt="' + esc(x.libro) + '" loading="lazy"></div>'
-          : '<div class="lib-tapa sin-img"><span>' + esc(x.libro) + '</span></div>';
-        return '<div>' + tapa +
-          '<div class="lib-titulo">' + esc(x.libro) + '</div>' +
-          '<div class="lib-meta"><span class="lib-punto" style="background:' + colorClub(x.club) + '"></span>' + esc(fechaCorta(x.fecha)) + '</div>' +
-        '</div>';
-      }).join('') + '</div>';
+    const proximas = rs.filter(esProxima);
+    const pasadas  = rs.filter(function(x){ return !esProxima(x); });
+    let html = "";
+
+    if (proximas.length){
+      html += '<p class="prox-seccion">' + (proximas.length === 1 ? 'Tu próxima sesión' : 'Tus próximas sesiones') + '</p>' +
+        '<div class="prox-lista">' + proximas.map(function(x){
+          return '<div class="prox">' + tapaHTML(x, "prox-tapa") +
+            '<div class="prox-info">' +
+              '<div class="prox-badge">Te esperamos</div>' +
+              '<div class="prox-libro">' + esc(x.libro) + '</div>' +
+              '<div class="prox-club" style="color:' + colorClub(x.club) + '">' + esc(x.club) + '</div>' +
+              '<div class="prox-cuando">' + esc(fechaCorta(x.fecha)) + (horaDe(x.fecha) ? ' · ' + esc(horaDe(x.fecha)) : '') + '</div>' +
+              '<div class="prox-donde">' + esc(x.lugar) + '</div>' +
+            '</div></div>';
+        }).join('') + '</div>';
+    }
+
+    if (pasadas.length){
+      html += '<p class="cuenta-conteo">' + pasadas.length + (pasadas.length === 1 ? ' lectura' : ' lecturas') + ' con nosotros</p>' +
+        '<div class="lib-repisa">' + pasadas.map(function(x){
+          return '<div>' + tapaHTML(x, "lib-tapa") +
+            '<div class="lib-titulo">' + esc(x.libro) + '</div>' +
+            '<div class="lib-meta">' +
+              '<span class="lib-punto" style="background:' + colorClub(x.club) + '"></span>' + esc(fechaCorta(x.fecha)) +
+              (horaDe(x.fecha) ? '<br>' + esc(horaDe(x.fecha)) : '') +
+              (x.lugar ? '<br>' + esc(x.lugar) : '') +
+            '</div></div>';
+        }).join('') + '</div>';
+    }
+
+    cuerpo.innerHTML = html;
   }
 
   if (window.netlifyIdentity) {
