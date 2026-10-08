@@ -512,10 +512,12 @@
   /* Sesiones ya pagadas que todavía no ocurren */
   .prox-seccion{font-family:var(--serif);font-weight:700;color:var(--noche);font-size:1.05rem;margin-bottom:12px}
   .prox-lista{display:flex;flex-direction:column;gap:11px;margin-bottom:26px}
-  .prox{display:flex;gap:13px;background:rgba(245,169,59,.13);border:1px solid rgba(245,169,59,.55);border-radius:14px;padding:12px}
-  .prox-tapa{width:58px;flex-shrink:0;aspect-ratio:2/3;border-radius:3px;overflow:hidden;box-shadow:0 1px 5px rgba(19,41,63,.22);background:#FFFDF7}
-  .prox-tapa img{width:100%;height:100%;object-fit:contain;display:block}
-  .prox-tapa.sin-img{display:flex;align-items:center;justify-content:center;padding:5px;border:1px solid rgba(94,122,82,.3)}
+  .prox{display:flex;gap:13px;align-items:flex-start;background:rgba(245,169,59,.13);border:1px solid rgba(245,169,59,.55);border-radius:14px;padding:12px}
+  /* Ancho fijo y alto libre: cada portada conserva su proporción real, así no
+     se recorta ni le quedan franjas en blanco. */
+  .prox-tapa{width:64px;flex-shrink:0;border-radius:3px;overflow:hidden;box-shadow:0 1px 5px rgba(19,41,63,.22);line-height:0}
+  .prox-tapa img{width:100%;height:auto;display:block}
+  .prox-tapa.sin-img{aspect-ratio:2/3;background:#FFFDF7;line-height:1.25;display:flex;align-items:center;justify-content:center;padding:5px;border:1px solid rgba(94,122,82,.3)}
   .prox-tapa.sin-img span{font-family:var(--serif);font-style:italic;font-size:.54rem;color:var(--noche);text-align:center;line-height:1.25}
   .prox-info{min-width:0;flex:1}
   .prox-badge{font-size:.62rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:#8A5410;margin-bottom:3px}
@@ -1743,7 +1745,7 @@
       return;
     }
 
-    lema.textContent = "Un libro termina cuando alguien lo conversa.";
+    lema.textContent = "Un libro empieza cuando alguien lo conversa.";
     lema.classList.remove("es-correo");
 
     const proximas = rs.filter(esProxima);
