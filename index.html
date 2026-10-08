@@ -163,6 +163,8 @@
     font-family:var(--serif);font-style:italic;font-size:.98rem;color:var(--noche);
     background:rgba(251,242,226,.78);border-radius:999px;padding:6px 16px;margin-bottom:18px;
   }
+  /* En celular se parte en dos líneas y se come el espacio del titular */
+  @media(max-width:620px){.eyebrow{display:none}}
   h1{
     font-family:var(--serif);font-weight:600;
     font-size:clamp(2.4rem,5.6vw,3.9rem);line-height:1.08;letter-spacing:-.015em;
@@ -548,6 +550,9 @@
   .auth-pie .btn-salir{margin:0}
   #authForm .pd-err{text-align:center;margin-bottom:10px}
 
+  /* Campo trampa: invisible para personas, los bots lo llenan y se delatan */
+  .trampa{position:absolute!important;left:-9999px!important;width:1px!important;height:1px!important;opacity:0!important;pointer-events:none}
+
   :focus-visible{outline:3px solid var(--ambar);outline-offset:2px}
   @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
 </style>
@@ -735,6 +740,7 @@
     <p class="lead-sub">Recibe el libro del próximo mes en tu correo, sin compromiso.</p>
     <form class="lead-form" id="leadForm">
       <input type="email" id="leadEmail" placeholder="tu@correo.cl" autocomplete="email" aria-label="Tu correo electrónico" required>
+      <input class="trampa" type="text" id="leadWeb" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
       <button type="submit" class="btn btn-sol">Quiero enterarme</button>
     </form>
     <p class="lead-ok" id="leadOk" style="display:none">¡Listo! Te avisaremos cuando anunciemos el próximo libro. 📚</p>
@@ -1325,11 +1331,34 @@
 
     ["inNombre","inEmail","inFono"].forEach(i=>document.getElementById(i).value="");
   }
+  // Momento en que cargó la página: sirve para detectar envíos instantáneos
+  const CARGA_PAGINA = Date.now();
+
+  // Un bot se delata de dos formas: llena el campo trampa, o envía el
+  // formulario en menos de lo que una persona tarda en escribir su correo.
+  function pareceBot(idTrampa){
+    const trampa = document.getElementById(idTrampa);
+    if (trampa && trampa.value.trim()) return true;
+    if (Date.now() - CARGA_PAGINA < 3000) return true;
+    return false;
+  }
+
   // Captura de correo (boletín)
   document.getElementById("leadForm").addEventListener("submit", async (e)=>{
     e.preventDefault();
     const email = document.getElementById("leadEmail").value.trim();
     if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return;
+
+    const okVisual = ()=>{
+      document.getElementById("leadForm").style.display = "none";
+      document.querySelector("#lead .lead-nota").style.display = "none";
+      document.getElementById("leadOk").style.display = "block";
+    };
+
+    // Al bot se le muestra el mismo "listo" pero no se guarda nada, así no
+    // descubre que fue filtrado y no vuelve a intentar con otra variante.
+    if (pareceBot("leadWeb")) { okVisual(); return; }
+
     const btn = e.target.querySelector("button");
     btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>&nbsp; Enviando…';
     try {
@@ -1338,9 +1367,7 @@
         body: JSON.stringify({tipo:"newsletter", email})
       });
     } catch(err){ console.warn("Newsletter:", err); }
-    document.getElementById("leadForm").style.display = "none";
-    document.querySelector("#lead .lead-nota").style.display = "none";
-    document.getElementById("leadOk").style.display = "block";
+    okVisual();
   });
 
   loadData();
@@ -1692,11 +1719,23 @@
     try { localStorage.setItem(claveCache(), JSON.stringify({ts:Date.now(), reservas:reservas})); } catch(e){}
   }
 
-  // Al cargar la página con sesión se pide en segundo plano, así ya está listo
+  // Al cargar la página con sesión se pide en segundo plano, así ya está listo.
+  // Se guarda la promesa: si abren el modal mientras va en camino, se engancha
+  // a esa misma llamada en vez de disparar otra.
+  let LECTURAS_EN_VUELO = null;
+
   function precargarLecturas(){
-    pedirReservas()
-      .then(function(d){ if(d && d.reservas) guardarCacheLecturas(d.reservas); })
-      .catch(function(){});
+    LECTURAS_EN_VUELO = pedirReservas()
+      .then(function(d){
+        if (d && d.reservas) guardarCacheLecturas(d.reservas);
+        return d;
+      })
+      .catch(function(e){
+        console.warn("Precarga de lecturas:", e.message);
+        LECTURAS_EN_VUELO = null;
+        return null;
+      });
+    return LECTURAS_EN_VUELO;
   }
 
   async function abrirCuenta(){
@@ -1710,7 +1749,17 @@
     if (guardado && guardado.length) pintarLecturas(guardado);
     else cuerpo.innerHTML = '<p class="cuenta-vacio"><span class="spinner" style="border-color:rgba(94,122,82,.25);border-top-color:var(--hoja)"></span></p>';
 
-    // 2. Se pide lo actual. Apps Script duerme cuando lleva rato sin uso y la
+    // 2. Si la precarga va en camino, se espera esa misma llamada
+    if (LECTURAS_EN_VUELO) {
+      const enVuelo = await LECTURAS_EN_VUELO;
+      if (enVuelo && enVuelo.reservas) {
+        guardarCacheLecturas(enVuelo.reservas);
+        pintarLecturas(enVuelo.reservas);
+        return;
+      }
+    }
+
+    // 3. Si no, se pide ahora. Apps Script duerme cuando lleva rato sin uso y la
     //    primera llamada puede pasarse de los 10s que aguanta Netlify.
     let data;
     try {
