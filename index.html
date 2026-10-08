@@ -493,13 +493,16 @@
   @keyframes spin{to{transform:rotate(360deg)}}
 
   /* ---------- MIS LECTURAS ---------- */
-  .cuenta-mail{font-family:var(--serif);font-style:italic;color:var(--tinta-suave);font-size:.9rem;margin-bottom:18px;word-break:break-all}
+  .cuenta-lema{font-family:var(--serif);font-style:italic;color:var(--hoja);font-size:.95rem;margin-bottom:20px;line-height:1.4}
+  .cuenta-lema.es-correo{color:var(--tinta-suave);font-size:.9rem;word-break:break-all}
   .cuenta-conteo{font-family:var(--serif);font-weight:700;color:var(--noche);font-size:1.05rem;margin-bottom:14px}
   .cuenta-vacio{font-family:var(--serif);color:var(--tinta-suave);font-size:.95rem;line-height:1.6;text-align:center;padding:14px 0}
   .lib-repisa{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}
   @media(max-width:420px){.lib-repisa{grid-template-columns:repeat(2,1fr)}}
   .lib-tapa{aspect-ratio:2/3;border-radius:4px;box-shadow:0 2px 7px rgba(19,41,63,.2);overflow:hidden;background:#FFFDF7}
-  .lib-tapa img{width:100%;height:100%;object-fit:cover;display:block}
+  /* contain y no cover: las portadas no vienen todas en 2:3 y recortarlas
+     se come los títulos. Mejor que sobre fondo a que falte libro. */
+  .lib-tapa img{width:100%;height:100%;object-fit:contain;display:block}
   .lib-tapa.sin-img{display:flex;align-items:center;justify-content:center;border:1px solid rgba(94,122,82,.3);padding:9px}
   .lib-tapa.sin-img span{font-family:var(--serif);font-style:italic;font-size:.72rem;color:var(--noche);line-height:1.3;text-align:center}
   .lib-titulo{font-family:var(--serif);font-weight:600;font-size:.8rem;color:var(--noche);line-height:1.3;margin-top:8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
@@ -511,7 +514,7 @@
   .prox-lista{display:flex;flex-direction:column;gap:11px;margin-bottom:26px}
   .prox{display:flex;gap:13px;background:rgba(245,169,59,.13);border:1px solid rgba(245,169,59,.55);border-radius:14px;padding:12px}
   .prox-tapa{width:58px;flex-shrink:0;aspect-ratio:2/3;border-radius:3px;overflow:hidden;box-shadow:0 1px 5px rgba(19,41,63,.22);background:#FFFDF7}
-  .prox-tapa img{width:100%;height:100%;object-fit:cover;display:block}
+  .prox-tapa img{width:100%;height:100%;object-fit:contain;display:block}
   .prox-tapa.sin-img{display:flex;align-items:center;justify-content:center;padding:5px;border:1px solid rgba(94,122,82,.3)}
   .prox-tapa.sin-img span{font-family:var(--serif);font-style:italic;font-size:.54rem;color:var(--noche);text-align:center;line-height:1.25}
   .prox-info{min-width:0;flex:1}
@@ -879,7 +882,7 @@
   <div class="modal">
     <button class="modal-close" onclick="cerrarCuenta()" aria-label="Cerrar">×</button>
     <h3 id="cuentaTitle">Mis lecturas</h3>
-    <p class="cuenta-mail" id="cuentaMail"></p>
+    <p class="cuenta-lema" id="cuentaLema"></p>
     <div id="cuentaDatos"></div>
     <div id="cuentaCuerpo"></div>
     <div class="cuenta-pie">
@@ -1493,8 +1496,8 @@
     USUARIO = u;
     pintarSesion();
     cerrarAuth();
-    if (esAdmin(u)) document.location.href = "/admin/";
-    // No se abre nada más: el navbar ya muestra su nombre y "Mis lecturas"
+    if (esAdmin(u)) { document.location.href = "/admin/"; return; }
+    precargarLecturas();   // queda listo para cuando abra "Mis lecturas"
   }
 
   async function enviarAuth(){
@@ -1668,38 +1671,80 @@
     return data;
   }
 
+  // ---------- Memoria local del historial ----------
+  // Pedirle el historial al Apps Script toma segundos. Se guarda lo último que
+  // respondió para que al reabrir el modal aparezca de inmediato.
+  function claveCache(){ return "mb_lecturas_" + (USUARIO ? USUARIO.email : ""); }
+
+  function leerCacheLecturas(){
+    try {
+      const raw = localStorage.getItem(claveCache());
+      if(!raw) return null;
+      const g = JSON.parse(raw);
+      if(Date.now() - g.ts > 86400000) return null;   // un día
+      return g.reservas;
+    } catch(e){ return null; }
+  }
+
+  function guardarCacheLecturas(reservas){
+    try { localStorage.setItem(claveCache(), JSON.stringify({ts:Date.now(), reservas:reservas})); } catch(e){}
+  }
+
+  // Al cargar la página con sesión se pide en segundo plano, así ya está listo
+  function precargarLecturas(){
+    pedirReservas()
+      .then(function(d){ if(d && d.reservas) guardarCacheLecturas(d.reservas); })
+      .catch(function(){});
+  }
+
   async function abrirCuenta(){
     const cuerpo = document.getElementById("cuentaCuerpo");
-    document.getElementById("cuentaMail").textContent = USUARIO.email;
     document.getElementById("cuentaDatos").innerHTML = bloqueDatos();
-    cuerpo.innerHTML = '<p class="cuenta-vacio"><span class="spinner" style="border-color:rgba(94,122,82,.25);border-top-color:var(--hoja)"></span></p>';
     document.getElementById("overlayCuenta").classList.add("open");
     document.body.style.overflow = "hidden";
 
-    // Apps Script duerme cuando lleva rato sin uso y la primera llamada puede pasarse
-    // de los 10s que aguanta Netlify. La segunda, ya despierto, responde rápido.
+    // 1. Lo guardado de antes se pinta al instante
+    const guardado = leerCacheLecturas();
+    if (guardado && guardado.length) pintarLecturas(guardado);
+    else cuerpo.innerHTML = '<p class="cuenta-vacio"><span class="spinner" style="border-color:rgba(94,122,82,.25);border-top-color:var(--hoja)"></span></p>';
+
+    // 2. Se pide lo actual. Apps Script duerme cuando lleva rato sin uso y la
+    //    primera llamada puede pasarse de los 10s que aguanta Netlify.
     let data;
     try {
       data = await pedirReservas();
     } catch (e1) {
       console.warn("Mis lecturas, intento 1:", e1.message);
-      cuerpo.innerHTML = '<p class="cuenta-vacio">' +
+      if (!guardado) cuerpo.innerHTML = '<p class="cuenta-vacio">' +
         '<span class="spinner" style="border-color:rgba(94,122,82,.25);border-top-color:var(--hoja)"></span>' +
         '<br><br>Despertando el archivo…<br>La primera vez del día puede tardar.</p>';
       try {
         data = await pedirReservas();
       } catch (e2) {
         console.warn("Mis lecturas, intento 2:", e2.message);
-        cuerpo.innerHTML = '<p class="cuenta-vacio">No pudimos cargar tus lecturas en este momento.<br>Intenta de nuevo en un rato.</p>';
+        // Si había algo guardado se deja a la vista en vez de mostrar un error
+        if (!guardado) cuerpo.innerHTML = '<p class="cuenta-vacio">No pudimos cargar tus lecturas en este momento.<br>Intenta de nuevo en un rato.</p>';
         return;
       }
     }
 
-    const rs = data.reservas || [];
+    guardarCacheLecturas(data.reservas || []);
+    pintarLecturas(data.reservas || []);
+  }
+
+  function pintarLecturas(rs){
+    const cuerpo = document.getElementById("cuentaCuerpo");
+    const lema = document.getElementById("cuentaLema");
+
     if (!rs.length) {
+      lema.textContent = USUARIO.email;
+      lema.classList.add("es-correo");
       cuerpo.innerHTML = '<p class="cuenta-vacio">Todavía no tenemos lecturas asociadas a este correo.<br><br>Si reservaste con otro, escríbenos a <b>contacto@matchbook.cl</b> y lo vinculamos a tu cuenta.</p>';
       return;
     }
+
+    lema.textContent = "Un libro termina cuando alguien lo conversa.";
+    lema.classList.remove("es-correo");
 
     const proximas = rs.filter(esProxima);
     const pasadas  = rs.filter(function(x){ return !esProxima(x); });
@@ -1748,6 +1793,7 @@
     window.netlifyIdentity.on("init", function(user){
       USUARIO = user || null;
       pintarSesion();
+      if (USUARIO) precargarLecturas();
     });
     window.netlifyIdentity.on("login", function(user){
       USUARIO = user;
