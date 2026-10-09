@@ -115,6 +115,15 @@
             "nombre": "Matías",
             "foto": "/portadas/mati.jpg"
           }
+        },
+        {
+          "cuposTotal": 10,
+          "fecha": "Viernes 27 de Noviembre, 18:30 hrs",
+          "lugar": "La Pastora Coffe, Antonio Varas",
+          "moderador": {
+            "nombre": "Matías",
+            "foto": "/portadas/mati.jpg"
+          }
         }
       ],
       "club": "Utopías de Bolsillo",
