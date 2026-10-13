@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Conversemos del futuro 🌿</title>
+<meta name="robots" content="noindex">
+<link rel="apple-touch-icon" href="/alyn/icons/icon-180.png">
+<meta name="theme-color" content="#EBF5ED">
+
+<style>
+  :root {
+    color-scheme: only light;
+    --bg: #EBF5ED;
+    --card: #FFFFFF;
+    --g1: #2A5040;
+    --g2: #45856A;
+    --g3: #78B896;
+    --g4: #C0DECA;
+    --g5: #EAF5EE;
+    --t1: #1C3A2C;
+    --t2: #466355;
+    --t3: #8AADA0;
+    --shadow: 0 6px 32px rgba(42,80,64,0.12);
+    --shadow-lg: 0 12px 48px rgba(42,80,64,0.18);
+    --r: 20px;
+    --rsm: 12px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+    min-height: 100vh;
+    padding: 34px 16px calc(44px + env(safe-area-inset-bottom));
+    color: var(--t1);
+  }
+  .wrap { max-width: 520px; margin: 0 auto; }
+
+  /* ── Encabezado ── */
+  .header { text-align: center; margin-bottom: 26px; }
+  .header-deco { font-size: 2rem; display: block; margin-bottom: 10px; }
+  .header h1 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1.85rem; font-weight: normal; color: var(--g1);
+    line-height: 1.25; margin-bottom: 6px;
+  }
+  .header p { font-size: 0.83rem; color: var(--t3); }
+
+  /* ── Botones ── */
+  .btn {
+    width: 100%; border: none; border-radius: 50px;
+    padding: 16px 22px; font-size: 1rem; font-weight: 600;
+    font-family: inherit; cursor: pointer;
+    background: var(--g2); color: #fff;
+    box-shadow: 0 4px 16px rgba(69,133,106,0.22);
+    transition: background .2s, transform .12s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .btn:hover { background: var(--g1); }
+  .btn:active { transform: scale(.98); }
+  .btn-soft {
+    background: transparent; color: var(--g2);
+    border: 1.5px solid var(--g4); box-shadow: none;
+  }
+  .btn-soft:hover { background: var(--g5); border-color: var(--g3); }
+  .btn-sm { padding: 11px 16px; font-size: .84rem; }
+
+  .row { display: flex; gap: 9px; margin-top: 10px; }
+  .row .btn { flex: 1; }
+
+  /* ── Elegir tema ── */
+  .pick-title {
+    font-size: .7rem; font-weight: 700; letter-spacing: .1em;
+    text-transform: uppercase; color: var(--t2);
+    margin: 26px 0 13px; display: flex; align-items: center; gap: 10px;
+  }
+  .pick-title::after { content:''; flex:1; height:1px; background: var(--g4); }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--card); border: 1.5px solid var(--g4);
+    border-radius: 50px; padding: 9px 15px;
+    font-size: .84rem; font-family: inherit; color: var(--t2);
+    cursor: pointer; transition: border-color .2s, background .2s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .chip:hover { border-color: var(--g3); background: var(--g5); }
+
+  /* ── Tarjeta de tema ── */
+  .tema-card {
+    background: linear-gradient(145deg, var(--g1) 0%, var(--g2) 120%);
+    color: #fff; border-radius: var(--r);
+    padding: 40px 28px; text-align: center;
+    box-shadow: var(--shadow-lg); margin-bottom: 16px;
+    animation: pop .55s cubic-bezier(.34,1.35,.64,1) both;
+  }
+  .tema-card .em { font-size: 3rem; display: block; margin-bottom: 12px; }
+  .tema-card .et { font-size: .68rem; letter-spacing: .14em; text-transform: uppercase; opacity: .75; }
+  .tema-card h2 { font-family: Georgia, serif; font-size: 2rem; font-weight: normal; margin-top: 4px; }
+
+  @keyframes pop {
+    from { opacity: 0; transform: scale(.92) translateY(12px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+  }
+  @media (prefers-reduced-motion: reduce) { .tema-card, .q-card { animation: none; } }
+
+  /* ── Tarjeta de pregunta ── */
+  .q-card {
+    background: var(--card); border-radius: var(--r);
+    border: 1.5px solid var(--g4); box-shadow: var(--shadow-lg);
+    padding: 26px 24px 24px;
+    animation: pop .5s cubic-bezier(.34,1.3,.64,1) both;
+  }
+
+  .q-top {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 10px; margin-bottom: 18px;
+  }
+  .q-tema { font-size: .72rem; color: var(--t3); }
+  .q-nivel {
+    font-size: .64rem; font-weight: 700; letter-spacing: .08em;
+    text-transform: uppercase; padding: 4px 10px; border-radius: 50px;
+  }
+  .n-ligera   { background: #E8F4EC; color: #2A5040; }
+  .n-media    { background: #FDF4E3; color: #7A5A1E; }
+  .n-profunda { background: #F3E8F2; color: #6B3A63; }
+
+  .q-turno {
+    text-align: center; font-size: .74rem; color: var(--t3);
+    margin-bottom: 8px;
+  }
+  .q-turno b { color: var(--g2); font-weight: 600; }
+
+  .q-text {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1.42rem; line-height: 1.5; color: var(--t1);
+    text-align: center; text-wrap: balance;
+    margin-bottom: 22px;
+  }
+
+  /* Adivinar primero */
+  .guess {
+    background: var(--g5); border-radius: var(--rsm);
+    border: 1px dashed var(--g4);
+    padding: 15px 16px; text-align: center; margin-bottom: 14px;
+  }
+  .guess p { font-size: .84rem; color: var(--t2); line-height: 1.5; margin-bottom: 11px; }
+  .guess b { color: var(--g1); }
+
+  /* Guardar */
+  .save-box { margin-top: 12px; }
+  .save-box textarea {
+    width: 100%; border: 1.5px solid var(--g4); border-radius: var(--rsm);
+    padding: 11px 13px; font-size: .9rem;
+    font-family: Georgia, 'Times New Roman', serif;
+    color: var(--t1); background: var(--g5); resize: vertical;
+    min-height: 74px; line-height: 1.6;
+  }
+  .save-box textarea:focus { outline: none; border-color: var(--g2); }
+  .save-hint { font-size: .72rem; color: var(--t3); margin-bottom: 7px; }
+  .save-ok {
+    font-size: .82rem; color: var(--g2); text-align: center;
+    padding: 9px; display: none;
+  }
+
+  /* Cierre de sesión */
+  .cierre {
+    background: var(--card); border-radius: var(--r);
+    border: 1.5px solid var(--g4); box-shadow: var(--shadow);
+    padding: 28px 24px; text-align: center; margin-top: 16px;
+  }
+  .cierre h3 { font-family: Georgia, serif; font-size: 1.25rem; font-weight: normal; color: var(--g1); margin-bottom: 8px; }
+  .cierre p { font-size: .84rem; color: var(--t3); line-height: 1.55; margin-bottom: 16px; }
+
+  /* Acuerdos guardados */
+  .acuerdos { margin-top: 30px; }
+  .ac-toggle {
+    display: flex; align-items: center; gap: 12px;
+    background: var(--card); border-radius: var(--r);
+    border: 1.5px solid var(--g4); box-shadow: 0 2px 10px rgba(42,80,64,.07);
+    padding: 14px 17px; cursor: pointer; user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .ac-toggle.open { border-color: var(--g3); }
+  .ac-icon {
+    width: 34px; height: 34px; flex-shrink: 0; border-radius: 50%;
+    background: var(--g5); display: flex; align-items: center;
+    justify-content: center; font-size: 1rem;
+  }
+  .ac-text { flex: 1; min-width: 0; }
+  .ac-title { font-family: Georgia, serif; font-size: .98rem; color: var(--g1); display: block; }
+  .ac-sub { font-size: .72rem; color: var(--t3); margin-top: 2px; display: block; }
+  .ac-chev { font-size: .78rem; color: var(--t3); transition: transform .25s; }
+  .ac-toggle.open .ac-chev { transform: rotate(180deg); }
+
+  .ac-list { display: none; margin-top: 10px; }
+  .ac-list.open { display: flex; flex-direction: column; gap: 9px; }
+  .ac-item {
+    background: var(--card); border-radius: var(--rsm);
+    border-left: 3px solid var(--g3); padding: 13px 15px;
+    box-shadow: 0 2px 8px rgba(42,80,64,.06);
+  }
+  .ac-q { font-size: .7rem; color: var(--t3); margin-bottom: 5px; }
+  .ac-t { font-family: Georgia, serif; font-size: .92rem; line-height: 1.55; color: var(--t1); white-space: pre-wrap; }
+  .ac-f { font-size: .68rem; color: var(--t3); margin-top: 6px; }
+  .ac-empty { text-align: center; color: var(--t3); font-size: .84rem; padding: 22px; }
+
+  .foot { margin-top: 30px; text-align: center; font-size: .76rem; }
+  .foot a { color: var(--t3); text-decoration: none; border-bottom: 1px solid var(--g4); }
+  .foot a:hover { color: var(--g2); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="header">
+    <span class="header-deco">🌿</span>
+    <h1>Conversemos del futuro</h1>
+    <p>un tema, varias preguntas, los dos</p>
+  </header>
+
+  <div id="stage"></div>
+
+  <div class="acuerdos">
+    <div class="ac-toggle" id="acToggle" onclick="toggleAcuerdos()">
+      <span class="ac-icon">🤝</span>
+      <span class="ac-text">
+        <span class="ac-title">Nuestros acuerdos</span>
+        <span class="ac-sub" id="acSub"></span>
+      </span>
+      <span class="ac-chev">▼</span>
+    </div>
+    <div class="ac-list" id="acList"></div>
+  </div>
+
+  <div class="foot"><a href="/alyn/">Volver al inicio 💚</a></div>
+</div>
+
+<!-- Formulario oculto: lo que guardan queda registrado -->
+<form name="conversemos" data-netlify="true" netlify-honeypot="bot-field" hidden>
+  <input type="hidden" name="form-name" value="conversemos" />
+  <input type="text" name="bot-field" />
+  <input type="text" name="texto" />
+  <input type="text" name="tipo" />
+  <input type="text" name="tema" />
+  <input type="text" name="pregunta" />
+  <input type="text" name="fecha" />
+</form>
+
+<script src="preguntas.js"></script>
+<script>
+  // ── Estado de la sesión ─────────────────────────────────────────────
+  const NIVELES = ['ligera', 'ligera', 'media', 'media', 'profunda'];
+  const TURNOS  = ['Alyn', 'Matías', 'los dos'];
+
+  let tema = null;     // tema en curso
+  let paso = 0;        // cuántas preguntas llevan en este tema
+  let actual = null;   // { texto, nivel, turno }
+
+  // ── Memoria: no repetir hasta agotar ────────────────────────────────
+  function vistas() {
+    try { return JSON.parse(localStorage.getItem('futuro_vistas') || '[]'); }
+    catch (e) { return []; }
+  }
+  function marcarVista(id) {
+    const v = vistas();
+    if (!v.includes(id)) { v.push(id); localStorage.setItem('futuro_vistas', JSON.stringify(v)); }
+  }
+  function idDe(t, nivel, texto) { return t.id + '|' + nivel + '|' + texto.slice(0, 24); }
+
+  function elegirPregunta(t, nivel) {
+    const v = vistas();
+    let pool = t[nivel].filter(q => !v.includes(idDe(t, nivel, q)));
+    if (pool.length === 0) pool = t[nivel];   // ya las vieron todas: se reinicia
+    return pool[Math.floor(Math.random() * pool.length)];
+  }
+
+  // ── Pantallas ───────────────────────────────────────────────────────
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, c =>
+      ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+  }
+
+  function pintarInicio() {
+    tema = null; paso = 0; actual = null;
+    document.getElementById('stage').innerHTML = `
+      <button class="btn" onclick="sacarTema()">Sacar un tema al azar 🎲</button>
+      <div class="pick-title">O eligan uno</div>
+      <div class="chips">
+        ${TEMAS.map(t => `<button class="chip" onclick="abrirTema('${t.id}')">${t.emoji} ${t.nombre}</button>`).join('')}
+      </div>`;
+  }
+
+  function sacarTema() {
+    abrirTema(TEMAS[Math.floor(Math.random() * TEMAS.length)].id);
+  }
+
+  function abrirTema(id) {
+    tema = TEMAS.find(t => t.id === id);
+    paso = 0;
+    document.getElementById('stage').innerHTML = `
+      <div class="tema-card">
+        <span class="em">${tema.emoji}</span>
+        <div class="et">El tema de hoy</div>
+        <h2>${tema.nombre}</h2>
+      </div>
+      <button class="btn" onclick="siguiente()">Empezar</button>
+      <div class="row"><button class="btn btn-soft btn-sm" onclick="pintarInicio()">Otro tema</button></div>`;
+  }
+
+  function siguiente() {
+    const nivel = NIVELES[Math.min(paso, NIVELES.length - 1)];
+    const texto = elegirPregunta(tema, nivel);
+    const turno = TURNOS[paso % TURNOS.length];
+    marcarVista(idDe(tema, nivel, texto));
+    actual = { texto, nivel, turno };
+    paso++;
+    pintarPregunta();
+  }
+
+  function pintarPregunta() {
+    const { texto, nivel, turno } = actual;
+
+    // La tarjeta se dibuja una sola vez por pregunta; después solo cambia
+    // su parte inferior, para que el texto no salte ni se vuelva a animar.
+    document.getElementById('stage').innerHTML = `
+      <div class="q-card">
+        <div class="q-top">
+          <span class="q-tema">${tema.emoji} ${tema.nombre}</span>
+          <span class="q-nivel n-${nivel}">${nivel}</span>
+        </div>
+        <div class="q-turno">${turno === 'los dos' ? 'Responden <b>los dos</b>' : 'Responde <b>' + turno + '</b>'}</div>
+        <p class="q-text">${esc(texto)}</p>
+        <div id="qBottom"></div>
+      </div>
+      <div id="cierreZona"></div>`;
+    pintarAdivinanza();
+  }
+
+  function pintarAdivinanza() {
+    const turno = actual.turno;
+    const otro = turno === 'Alyn' ? 'Matías' : (turno === 'Matías' ? 'Alyn' : null);
+    if (!otro) { pintarAcciones(); return; }
+    document.getElementById('qBottom').innerHTML = `
+      <div class="guess">
+        <p>Antes de que responda — <b>${otro}</b>, di en voz alta qué crees que va a contestar.</p>
+        <button class="btn btn-soft btn-sm" onclick="pintarAcciones()">Ya dije, que responda</button>
+      </div>`;
+  }
+
+  function pintarAcciones() {
+    document.getElementById('qBottom').innerHTML = `
+      <div class="row">
+        <button class="btn btn-soft btn-sm" onclick="abrirGuardar('respuesta')">Guardar respuesta</button>
+        <button class="btn btn-soft btn-sm" onclick="abrirGuardar('acuerdo')">Es un acuerdo 🤝</button>
+      </div>
+      <div class="row">
+        <button class="btn btn-soft btn-sm" onclick="siguiente()">Paso</button>
+        <button class="btn btn-sm" onclick="siguiente()">Siguiente pregunta</button>
+      </div>
+      <div class="row"><button class="btn btn-soft btn-sm" onclick="pintarInicio()">Cambiar de tema</button></div>
+      <div id="guardarZona"></div>`;
+    if (paso >= 5) document.getElementById('cierreZona').innerHTML = bloqueCierre();
+  }
+
+  function bloqueCierre() {
+    return `
+      <div class="cierre">
+        <h3>Llevan ${paso} preguntas</h3>
+        <p>Buen momento para cerrar, o para seguir si están enganchados.</p>
+        <button class="btn btn-soft btn-sm" onclick="pintarInicio()">Lo dejamos acá 🌿</button>
+      </div>`;
+  }
+
+  // ── Guardar respuesta o acuerdo ─────────────────────────────────────
+  function abrirGuardar(tipo) {
+    const zona = document.getElementById('guardarZona');
+    zona.innerHTML = `
+      <div class="save-box">
+        <p class="save-hint">${tipo === 'acuerdo'
+          ? 'Escriban en qué quedaron. Va a quedar guardado en "Nuestros acuerdos".'
+          : 'Escribe lo que respondió, para volver a leerlo más adelante.'}</p>
+        <textarea id="saveText" placeholder="${tipo === 'acuerdo' ? 'Quedamos en que…' : 'Dijo que…'}"></textarea>
+        <div class="row">
+          <button class="btn btn-soft btn-sm" onclick="document.getElementById('guardarZona').innerHTML=''">Cancelar</button>
+          <button class="btn btn-sm" onclick="guardar('${tipo}')">Guardar</button>
+        </div>
+        <div class="save-ok" id="saveOk"></div>
+      </div>`;
+    document.getElementById('saveText').focus();
+  }
+
+  async function guardar(tipo) {
+    const texto = document.getElementById('saveText').value.trim();
+    if (!texto) return;
+    const ok = document.getElementById('saveOk');
+    ok.style.display = 'block';
+    ok.textContent = '📨 Guardando…';
+
+    const registro = {
+      tipo, texto,
+      tema: tema.nombre,
+      pregunta: actual.texto,
+      fecha: fechaHoy(),
+    };
+
+    const guardados = leerGuardados();
+    guardados.push(registro);
+    localStorage.setItem('futuro_guardados', JSON.stringify(guardados));
+
+    try {
+      await fetch('/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ 'form-name': 'conversemos', ...registro }).toString()
+      });
+    } catch (e) { /* queda guardado local igual */ }
+
+    ok.textContent = tipo === 'acuerdo' ? '🤝 Acuerdo guardado' : '✅ Respuesta guardada';
+    renderAcuerdos();
+    // Puede que ya hayan avanzado de pregunta, así que la zona quizá no exista
+    setTimeout(() => {
+      const z = document.getElementById('guardarZona');
+      if (z) z.innerHTML = '';
+    }, 1600);
+  }
+
+  function leerGuardados() {
+    try { return JSON.parse(localStorage.getItem('futuro_guardados') || '[]'); }
+    catch (e) { return []; }
+  }
+
+  function fechaHoy() {
+    const d = new Date();
+    const m = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+    return `${d.getDate()} de ${m[d.getMonth()]} de ${d.getFullYear()}`;
+  }
+
+  // ── Acuerdos guardados ──────────────────────────────────────────────
+  function toggleAcuerdos() {
+    const abierto = document.getElementById('acList').classList.toggle('open');
+    document.getElementById('acToggle').classList.toggle('open', abierto);
+  }
+
+  function renderAcuerdos() {
+    const todos = leerGuardados();
+    const acuerdos = todos.filter(r => r.tipo === 'acuerdo');
+    const otros = todos.filter(r => r.tipo !== 'acuerdo');
+
+    document.getElementById('acSub').textContent = todos.length === 0
+      ? 'Todavía no guardan nada'
+      : `${acuerdos.length} ${acuerdos.length === 1 ? 'acuerdo' : 'acuerdos'} · ${otros.length} ${otros.length === 1 ? 'respuesta' : 'respuestas'}`;
+
+    const lista = document.getElementById('acList');
+    if (todos.length === 0) {
+      lista.innerHTML = `<div class="ac-empty">Lo que guarden va a aparecer acá ✨</div>`;
+      return;
+    }
+    lista.innerHTML = [...todos].reverse().map(r => `
+      <div class="ac-item">
+        <div class="ac-q">${r.tipo === 'acuerdo' ? '🤝' : '💬'} ${esc(r.tema)} · ${esc(r.pregunta)}</div>
+        <div class="ac-t">${esc(r.texto)}</div>
+        <div class="ac-f">${esc(r.fecha)}</div>
+      </div>`).join('');
+  }
+
+  // ── Init ────────────────────────────────────────────────────────────
+  pintarInicio();
+  renderAcuerdos();
+</script>
+</body>
+</html>
