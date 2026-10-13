@@ -1,0 +1,13 @@
+{
+  "name": "Para Alyn",
+  "short_name": "Alyn 💚",
+  "start_url": "/alyn/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#EBF5ED",
+  "theme_color": "#EBF5ED",
+  "icons": [
+    { "src": "/alyn/icons/icon-180.png", "sizes": "180x180", "type": "image/png" },
+    { "src": "/alyn/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

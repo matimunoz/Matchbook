@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Para Alyn 💚</title>
+<meta name="robots" content="noindex">
+
+<link rel="manifest" href="/alyn/manifest.json">
+<link rel="apple-touch-icon" href="/alyn/icons/icon-180.png">
+<meta name="theme-color" content="#EBF5ED">
+<meta name="apple-mobile-web-app-title" content="Alyn 💚">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+
+<style>
+  :root {
+    color-scheme: only light;
+    --bg: #EBF5ED;
+    --card: #FFFFFF;
+    --g1: #2A5040;
+    --g2: #45856A;
+    --g3: #78B896;
+    --g4: #C0DECA;
+    --g5: #EAF5EE;
+    --t1: #1C3A2C;
+    --t2: #466355;
+    --t3: #8AADA0;
+    --shadow: 0 6px 32px rgba(42,80,64,0.12);
+    --r: 18px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+    min-height: 100vh;
+    padding: 44px 16px calc(40px + env(safe-area-inset-bottom));
+    color: var(--t1);
+  }
+
+  .wrap { max-width: 480px; margin: 0 auto; }
+
+  /* ── Encabezado ── */
+  .header { text-align: center; margin-bottom: 32px; }
+  .header-deco { font-size: 2.2rem; display: block; margin-bottom: 12px; }
+  .header h1 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1.95rem; font-weight: normal;
+    color: var(--g1); margin-bottom: 7px;
+  }
+  .header p { font-size: 0.85rem; color: var(--t3); letter-spacing: 0.02em; }
+
+  /* ── Tarjetas ── */
+  .grid { display: flex; flex-direction: column; gap: 12px; }
+
+  .tile {
+    display: flex; align-items: center; gap: 14px;
+    background: var(--card);
+    border-radius: var(--r);
+    border: 1.5px solid var(--g4);
+    box-shadow: var(--shadow);
+    padding: 17px 18px;
+    text-decoration: none; color: inherit;
+    -webkit-tap-highlight-color: transparent;
+    transition: border-color 0.2s, transform 0.12s;
+    animation: rise 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .tile:active { transform: scale(0.985); background: var(--g5); }
+  .tile:hover { border-color: var(--g3); }
+
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @media (prefers-reduced-motion: reduce) { .tile { animation: none; } }
+
+  .tile-icon {
+    width: 46px; height: 46px; flex-shrink: 0;
+    border-radius: 50%; background: var(--g5);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.35rem;
+  }
+  .tile-text { flex: 1; min-width: 0; display: block; }
+  .tile-title {
+    display: block;
+    font-family: Georgia, serif; font-size: 1.08rem;
+    color: var(--g1); line-height: 1.25;
+  }
+  .tile-sub {
+    display: block;
+    font-size: 0.76rem; color: var(--t3); margin-top: 3px; line-height: 1.4;
+  }
+  .tile-arrow { font-size: 0.85rem; color: var(--g3); flex-shrink: 0; }
+
+  /* ── Aviso de instalación ── */
+  .install {
+    margin-top: 26px;
+    background: var(--g5);
+    border: 1px dashed var(--g4);
+    border-radius: 14px;
+    padding: 14px 16px;
+    font-size: 0.78rem; color: var(--t2); line-height: 1.55;
+    display: flex; gap: 11px; align-items: flex-start;
+  }
+  .install-icon { font-size: 1.1rem; flex-shrink: 0; }
+  .install b { color: var(--g1); font-weight: 600; }
+  .install button {
+    background: none; border: none; padding: 0; margin-top: 7px;
+    font-family: inherit; font-size: 0.74rem; color: var(--t3);
+    text-decoration: underline; cursor: pointer;
+  }
+
+  .foot {
+    margin-top: 32px; text-align: center;
+    font-family: Georgia, serif; font-size: 0.82rem;
+    color: var(--t3); font-style: italic;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="header">
+    <span class="header-deco">💚</span>
+    <h1>Para Alyn</h1>
+    <p>todo lo que fui escribiendo para ti</p>
+  </header>
+
+  <div class="grid">
+
+    <a class="tile" href="/momentos/" style="animation-delay:.05s">
+      <span class="tile-icon">🌿</span>
+      <span class="tile-text">
+        <span class="tile-title">100 Momentos</span>
+        <span class="tile-sub">Un recuerdo nuestro, cada día</span>
+      </span>
+      <span class="tile-arrow">›</span>
+    </a>
+
+    <a class="tile" href="/razones/" style="animation-delay:.12s">
+      <span class="tile-icon">💚</span>
+      <span class="tile-text">
+        <span class="tile-title">100 Razones</span>
+        <span class="tile-sub">Por las que me gustas, cuando lo necesites</span>
+      </span>
+      <span class="tile-arrow">›</span>
+    </a>
+
+    <a class="tile" href="/carta/" style="animation-delay:.19s">
+      <span class="tile-icon">💌</span>
+      <span class="tile-text">
+        <span class="tile-title">Dos meses</span>
+        <span class="tile-sub">Una carta para ti</span>
+      </span>
+      <span class="tile-arrow">›</span>
+    </a>
+
+    <a class="tile" href="/lectoravip/" style="animation-delay:.26s">
+      <span class="tile-icon">🗓️</span>
+      <span class="tile-text">
+        <span class="tile-title">Tengamos una cita</span>
+        <span class="tile-sub">Elige el panorama y la agendamos</span>
+      </span>
+      <span class="tile-arrow">›</span>
+    </a>
+
+  </div>
+
+  <div class="install" id="install">
+    <span class="install-icon">📲</span>
+    <span>
+      <b>Guárdame en tu pantalla de inicio.</b><br>
+      Toca <b>Compartir</b> y luego <b>Añadir a pantalla de inicio</b>.
+      Así entras siempre desde el mismo lugar y no se pierde tu racha.
+      <br><button onclick="ocultarAviso()">Ya lo hice, no mostrar más</button>
+    </span>
+  </div>
+
+  <p class="foot">— y me faltan páginas 💚</p>
+
+</div>
+
+<script>
+  // El aviso no se muestra si ya la abrió desde la pantalla de inicio,
+  // ni si ella misma lo descartó.
+  (function () {
+    const instalada = window.matchMedia('(display-mode: standalone)').matches
+                   || window.navigator.standalone === true;
+    let oculto = false;
+    try { oculto = localStorage.getItem('alyn_instalada') === '1'; } catch (e) {}
+    if (instalada || oculto) document.getElementById('install').style.display = 'none';
+  })();
+
+  function ocultarAviso() {
+    try { localStorage.setItem('alyn_instalada', '1'); } catch (e) {}
+    document.getElementById('install').style.display = 'none';
+  }
+</script>
+</body>
+</html>

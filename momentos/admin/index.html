@@ -151,6 +151,19 @@
   .setup-card a { color: var(--g2); }
   .field { margin-bottom: 16px; }
 
+  /* ── Reserva de contenido ── */
+  .buffer {
+    border-radius: 12px; padding: 13px 15px; margin-bottom: 18px;
+    font-size: 0.84rem; line-height: 1.5;
+    display: flex; gap: 11px; align-items: flex-start;
+  }
+  .buffer-icon { font-size: 1.1rem; flex-shrink: 0; }
+  .buffer b { font-weight: 700; }
+  .buffer small { display: block; margin-top: 3px; opacity: 0.8; font-size: 0.76rem; }
+  .buffer.ok     { background: #E8F4EC; color: #2A5040; border: 1px solid #C0DECA; }
+  .buffer.warn   { background: #FDF4E3; color: #7A5A1E; border: 1px solid #EBD9AE; }
+  .buffer.danger { background: #FBEAEA; color: #8A3A3A; border: 1px solid #EFC9C9; }
+
   .status-dot {
     display: inline-block; width: 8px; height: 8px; border-radius: 50%;
     background: var(--g3); margin-right: 6px;
@@ -195,6 +208,8 @@
         <div class="progress-bar"><div class="progress-fill" id="progFill" style="width:0%"></div></div>
         <div class="progress-label" id="progLabel">— / 100</div>
       </div>
+
+      <div class="buffer" id="buffer"></div>
 
       <div class="section-title">Momentos</div>
       <div id="momentList"></div>
@@ -370,8 +385,82 @@
     );
   }
 
+  // ── Reserva de contenido ───────────────────────────────────────────
+  // El admin no puede saber cuántos lleva Alyn (eso vive en su teléfono),
+  // así que se estima: tú anotas en qué momento va y, como abre uno por día,
+  // se descuenta un día por cada día transcurrido desde entonces.
+  function hoyISO() {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  }
+
+  function diasEntre(desde, hasta) {
+    const [y1,m1,d1] = desde.split('-').map(Number);
+    const [y2,m2,d2] = hasta.split('-').map(Number);
+    return Math.round((new Date(y2,m2-1,d2) - new Date(y1,m1-1,d1)) / 86400000);
+  }
+
+  function getMarca() {
+    try { return JSON.parse(localStorage.getItem('m_alynVaEn') || 'null'); }
+    catch (e) { return null; }
+  }
+
+  function setMarca() {
+    const val = parseInt(document.getElementById('bufInput').value);
+    if (isNaN(val) || val < 0) return;
+    localStorage.setItem('m_alynVaEn', JSON.stringify({ visto: val, fecha: hoyISO() }));
+    renderBuffer();
+  }
+
+  function renderBuffer() {
+    const box     = document.getElementById('buffer');
+    const escritos = momentos.filter(m => m !== null).length;
+    const marca    = getMarca();
+
+    if (!marca) {
+      box.className = 'buffer ok';
+      box.innerHTML = `
+        <span class="buffer-icon">📊</span>
+        <span>
+          <b>¿En qué momento va Alyn?</b>
+          <small>Anótalo una vez y te aviso cuántos días de contenido le quedan.</small>
+          <span style="display:flex;gap:6px;margin-top:8px;align-items:center">
+            <input id="bufInput" type="number" min="0" placeholder="26"
+                   style="width:84px;padding:6px 9px;font-size:0.84rem" />
+            <button class="btn btn-ghost btn-sm" onclick="setMarca()">Guardar</button>
+          </span>
+        </span>`;
+      return;
+    }
+
+    const estimado = Math.min(escritos, marca.visto + Math.max(0, diasEntre(marca.fecha, hoyISO())));
+    const quedan   = Math.max(0, escritos - estimado);
+
+    let clase, icono, titulo;
+    if (quedan === 0)      { clase = 'danger'; icono = '🌱'; titulo = 'Se quedó sin momentos'; }
+    else if (quedan <= 3)  { clase = 'warn';   icono = '⚠️'; titulo = `Le quedan ~${quedan} ${quedan === 1 ? 'día' : 'días'}`; }
+    else                   { clase = 'ok';     icono = '✅'; titulo = `Le quedan ~${quedan} días de contenido`; }
+
+    box.className = 'buffer ' + clase;
+    box.innerHTML = `
+      <span class="buffer-icon">${icono}</span>
+      <span>
+        <b>${titulo}</b>
+        <small>
+          ${escritos} escritos · va en el ~${estimado} (anotado: ${marca.visto} el ${marca.fecha})
+          ${quedan === 0 ? '<br>Está viendo el 🌱. Escribe más para que vuelva a aparecerle uno.' : ''}
+        </small>
+        <span style="display:flex;gap:6px;margin-top:8px;align-items:center">
+          <input id="bufInput" type="number" min="0" placeholder="${estimado}"
+                 style="width:84px;padding:6px 9px;font-size:0.84rem" />
+          <button class="btn btn-ghost btn-sm" onclick="setMarca()">Corregir</button>
+        </span>
+      </span>`;
+  }
+
   // ── Render ─────────────────────────────────────────────────────────
   function renderList() {
+    renderBuffer();
     const total   = momentos.length;
     const written = momentos.filter(m => m !== null).length;
     document.getElementById('progFill').style.width  = (written / 100 * 100) + '%';
