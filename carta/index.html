@@ -3,15 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dos meses 💚</title>
+<title>Hipnotizados por nuestros sueños 💚</title>
 <meta name="robots" content="noindex">
 <link rel="apple-touch-icon" href="/alyn/icons/icon-180.png">
 <meta name="theme-color" content="#EBF5ED">
 
 <!-- Cómo se ve el link al mandarlo por WhatsApp -->
 <meta property="og:type" content="article">
-<meta property="og:title" content="Dos meses 💚">
-<meta property="og:description" content="Una carta para ti.">
+<meta property="og:title" content="Hipnotizados por nuestros sueños 💚">
+<meta property="og:description" content="Mis palabras hacia ti.">
 <meta property="og:image" content="https://matchbook.cl/carta/img/futuro.webp">
 <meta property="og:url" content="https://matchbook.cl/carta/">
 <meta name="twitter:card" content="summary_large_image">
@@ -125,6 +125,49 @@
     font-style: italic;
   }
 
+  /* ── Música ── */
+  .player { margin-bottom: 26px; text-align: center; }
+  .player-hint {
+    font-family: Georgia, serif; font-style: italic;
+    font-size: 0.82rem; color: var(--t3); margin-bottom: 11px;
+  }
+  .player iframe {
+    border-radius: 14px; display: block; width: 100%;
+    box-shadow: var(--shadow);
+  }
+
+  /* ── Referencia a la carta de Pierre ── */
+  .note-toggle {
+    background: none; border: none; padding: 0; cursor: pointer;
+    font-family: Georgia, serif; font-style: italic;
+    font-size: 0.86rem; color: var(--g2);
+    border-bottom: 1px solid var(--g4);
+    margin: -8px 0 22px;
+  }
+  .note-toggle:hover { color: var(--g1); border-color: var(--g3); }
+
+  .note {
+    margin: 0 0 24px; padding: 18px 20px;
+    background: var(--g5); border-left: 3px solid var(--g3);
+    border-radius: 0 var(--rsm) var(--rsm) 0;
+    animation: rise 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .note p {
+    font-size: 0.97rem !important; line-height: 1.75 !important;
+    color: var(--t2); margin-bottom: 10px !important;
+  }
+  .note cite {
+    font-size: 0.76rem; color: var(--t3); font-style: normal;
+    display: block;
+  }
+
+  /* ── Fecha ── */
+  .dateline {
+    margin-top: 22px;
+    font-family: Georgia, serif; font-style: italic;
+    font-size: 0.84rem; color: var(--t3);
+  }
+
   /* ── Aparición suave ── */
   .fade {
     opacity: 0; transform: translateY(14px);
@@ -132,8 +175,19 @@
   }
   @keyframes rise { to { opacity: 1; transform: translateY(0); } }
 
+  /* Los párrafos se van revelando a medida que ella baja */
+  .letter p.salutation,
+  .letter > p,
+  .closing > p {
+    opacity: 0; transform: translateY(16px);
+    transition: opacity 0.85s ease, transform 0.85s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .letter p.visible,
+  .closing p.visible { opacity: 1; transform: translateY(0); }
+
   @media (prefers-reduced-motion: reduce) {
     .fade { animation: none; opacity: 1; transform: none; }
+    .letter p, .closing p { opacity: 1 !important; transform: none !important; transition: none; }
   }
 
   @media (max-width: 420px) {
@@ -147,9 +201,17 @@
 
   <header class="header fade" style="animation-delay:.05s">
     <span class="header-deco">💚</span>
-    <h1>Dos meses</h1>
-    <p>una carta para ti</p>
+    <h1>Hipnotizados por nuestros sueños</h1>
+    <p>mis palabras hacia ti</p>
   </header>
+
+  <div class="player fade" style="animation-delay:.18s">
+    <p class="player-hint">Ponle play mientras lees 💚</p>
+    <iframe src="https://open.spotify.com/embed/track/6ToFxXRBtl5TJFEyIoYK3f?utm_source=generator"
+            height="152" frameborder="0" loading="lazy"
+            allow="encrypted-media; clipboard-write; fullscreen; picture-in-picture"
+            title="Mirrors — Justin Timberlake"></iframe>
+  </div>
 
   <div class="letter fade" style="animation-delay:.3s">
 
@@ -159,7 +221,14 @@
 
     <p>Te seré directo, nunca había sentido tanto en tan poco tiempo, lo cual siento no solo ha sido una elección, sino que también una respuesta natural a irte conociendo.</p>
 
-    <p>Si te dediqué la carta de Pierre a Marie Curie, fue porque yo también quiero hacerte esa promesa: que sigamos hipnotizados por nuestros sueños. El que soñamos como familia, el que soñamos espiritualmente y el que soñamos con nuestro trabajo.</p>
+    <p>Si te dediqué la carta de Pierre a Marie Curie, fue porque yo también quiero hacerte esa promesa: que sigamos hipnotizados por nuestros sueños. En nuestro caso, el que soñamos como familia, el que soñamos espiritualmente y el que soñamos con nuestra profesión.</p>
+
+    <button class="note-toggle" id="noteBtn" onclick="verNota()">leer esa carta</button>
+
+    <blockquote class="note" id="note" hidden>
+      <p>«Sería, sin embargo, hermoso pasar la vida uno al lado del otro, hipnotizados en nuestros sueños: tu sueño patriótico, nuestro sueño humanitario y nuestro sueño científico.»</p>
+      <cite>Pierre Curie a Marie Skłodowska, agosto de 1894</cite>
+    </blockquote>
 
     <p><span class="lead">Sueño con una familia contigo.</span> Me encantaría pasar el resto de mi vida a tu lado, porque veo en ti no solo a una madre de amor inmenso, que cuidaría con el corazón a nuestros futuros niños, sino también a la esposa con quien quiero vivir cada hora del día: compartir un desayuno antes de que empiece la jornada, recorrer ciudades en ese auto que nunca imaginé tener, robarle al tiempo una siesta mientras los niños duermen y brindar con un vino cuando el día, por agitado que haya sido, por fin se calme.</p>
 
@@ -172,6 +241,7 @@
     <div class="closing">
       <p>Eres todo lo que quiero, hoy y siempre.<br>Y cada vez que busque mi reflejo, espero encontrarte a ti.</p>
       <p class="sign">Felices dos meses.<br>Te amo.</p>
+      <p class="dateline">Concón, 13 de octubre</p>
     </div>
 
   </div>
@@ -186,5 +256,39 @@
   </div>
 
 </div>
+
+<script>
+  // La carta de Pierre a Marie, solo si ella quiere leerla
+  function verNota() {
+    const nota = document.getElementById('note');
+    const btn  = document.getElementById('noteBtn');
+    const abrir = nota.hidden;
+    nota.hidden = !abrir;
+    btn.textContent = abrir ? 'cerrar' : 'leer esa carta';
+  }
+
+  // Los párrafos se revelan a medida que ella baja, para que la carta
+  // se sienta leída y no entregada de golpe.
+  (function () {
+    const parrafos = document.querySelectorAll('.letter > p, .closing > p');
+    const suave = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (!suave || !('IntersectionObserver' in window)) {
+      parrafos.forEach(p => p.classList.add('visible'));
+      return;
+    }
+
+    const obs = new IntersectionObserver((entradas) => {
+      entradas.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          obs.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -8% 0px' });
+
+    parrafos.forEach(p => obs.observe(p));
+  })();
+</script>
 </body>
 </html>
