@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dos meses 💚</title>
+<meta name="robots" content="noindex">
+
+<style>
+  /* Paleta fija: se ve igual aunque el celular esté en modo oscuro */
+  :root {
+    color-scheme: only light;
+    --bg: #EBF5ED;
+    --card: #FFFFFF;
+    --g1: #2A5040;
+    --g2: #45856A;
+    --g3: #78B896;
+    --g4: #C0DECA;
+    --g5: #EAF5EE;
+    --t1: #1C3A2C;
+    --t2: #466355;
+    --t3: #8AADA0;
+    --shadow: 0 6px 32px rgba(42,80,64,0.12);
+    --shadow-lg: 0 14px 54px rgba(42,80,64,0.16);
+    --r: 20px;
+    --rsm: 12px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+    min-height: 100vh;
+    padding: 44px 16px 64px;
+    color: var(--t1);
+  }
+
+  .wrap { max-width: 540px; margin: 0 auto; }
+
+  /* ── Encabezado ── */
+  .header { text-align: center; margin-bottom: 30px; }
+  .header-deco { font-size: 2.1rem; display: block; margin-bottom: 12px; }
+  .header h1 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 2.1rem; font-weight: normal;
+    color: var(--g1); margin-bottom: 7px; letter-spacing: 0.01em;
+  }
+  .header p {
+    font-size: 0.84rem; color: var(--t3);
+    letter-spacing: 0.06em; text-transform: lowercase;
+  }
+
+  /* ── Carta ── */
+  .letter {
+    background: var(--card);
+    border-radius: var(--r);
+    box-shadow: var(--shadow-lg);
+    border: 1.5px solid var(--g4);
+    padding: 42px 34px 38px;
+  }
+
+  .salutation {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1.32rem; color: var(--g1);
+    margin-bottom: 24px;
+  }
+
+  .letter p {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1.06rem; line-height: 1.92;
+    color: var(--t2);
+    margin-bottom: 22px;
+    text-wrap: pretty;
+  }
+
+  /* Las tres frases que abren cada sueño, apenas destacadas */
+  .letter p .lead { color: var(--g1); }
+
+  .closing {
+    margin-top: 32px; padding-top: 26px;
+    border-top: 1px solid var(--g4);
+    text-align: center;
+  }
+  .closing p {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1.06rem; line-height: 1.85;
+    color: var(--t2); margin-bottom: 20px;
+  }
+  .sign {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1.42rem; line-height: 1.5;
+    color: var(--g1); margin: 0;
+  }
+
+  /* ── Foto ── */
+  .photo-block { margin-top: 30px; }
+  .photo-frame {
+    background: var(--card);
+    border-radius: var(--r);
+    box-shadow: var(--shadow-lg);
+    border: 1.5px solid var(--g4);
+    padding: 14px 14px 0;
+    overflow: hidden;
+  }
+  .photo-frame img {
+    width: 100%; display: block;
+    border-radius: 14px;
+  }
+  .photo-caption {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 0.88rem; line-height: 1.6;
+    color: var(--t3); text-align: center;
+    padding: 16px 10px 18px;
+    font-style: italic;
+  }
+
+  /* ── Aparición suave ── */
+  .fade {
+    opacity: 0; transform: translateY(14px);
+    animation: rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+  @keyframes rise { to { opacity: 1; transform: translateY(0); } }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fade { animation: none; opacity: 1; transform: none; }
+  }
+
+  @media (max-width: 420px) {
+    .letter { padding: 34px 24px 30px; }
+    .letter p { font-size: 1.02rem; line-height: 1.85; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="header fade" style="animation-delay:.05s">
+    <span class="header-deco">💚</span>
+    <h1>Dos meses</h1>
+    <p>una carta para ti</p>
+  </header>
+
+  <div class="letter fade" style="animation-delay:.3s">
+
+    <p class="salutation">Amor mío:</p>
+
+    <p>Últimamente te he regalado más cosas que se pueden tocar que cosas que se pueden sentir. Por eso esta vez quiero darte algo que para mí vale muchísimo más: mis palabras.</p>
+
+    <p>Te seré directo, nunca había sentido tanto en tan poco tiempo, lo cual siento no solo ha sido una elección, sino que también una respuesta natural a irte conociendo.</p>
+
+    <p>Si te dediqué la carta de Pierre a Marie Curie, fue porque yo también quiero hacerte esa promesa: que sigamos hipnotizados por nuestros sueños. El que soñamos como familia, el que soñamos espiritualmente y el que soñamos con nuestro trabajo.</p>
+
+    <p><span class="lead">Sueño con una familia contigo.</span> Me encantaría pasar el resto de mi vida a tu lado, porque veo en ti no solo a una madre de amor inmenso, que cuidaría con el corazón a nuestros futuros niños, sino también a la esposa con quien quiero vivir cada hora del día: compartir un desayuno antes de que empiece la jornada, recorrer ciudades en ese auto que nunca imaginé tener, robarle al tiempo una siesta mientras los niños duermen y brindar con un vino cuando el día, por agitado que haya sido, por fin se calme.</p>
+
+    <p><span class="lead">Sueño también con crecer en la fe a tu lado.</span> Tú me devolviste la mirada amable hacia la religión, esa que yo había dejado guardada, y me hiciste recordar que Dios ha estado presente en nuestros caminos. No es casualidad que, en un mundo tan lleno de caos, los dos nos sintamos tan afortunados (y no solo de habernos conocido).</p>
+
+    <p><span class="lead">Y sueño con seguir desarrollando nuestra vocación,</span> la que en tu caso admiro profundamente. Me conmueve cómo te entregas a tus pacientes más allá de lo que te piden: cómo celebras con ellos cuando terminan su proceso, cómo te sientas a armar un puzzle con ellos por más horas de las correspondientes, o cómo siempre los tratas por el solo hecho de querer verlos sonreír.</p>
+
+    <p>No puedo dejar de notar que te reflejas en mi corazón. Cuando te miro es como mirarme en un espejo: me reconozco en ti, y me gusta la versión de mí que aparece a tu lado. Sé que aún nos queda mucho por conocer, por aprender y por mejorar, pero quiero que todo ese camino sea con tu mano en la mía. Porque lo que siento por ti es puro, intenso y honesto.</p>
+
+    <div class="closing">
+      <p>Eres todo lo que quiero, hoy y siempre.<br>Y cada vez que busque mi reflejo, espero encontrarte a ti.</p>
+      <p class="sign">Felices dos meses.<br>Te amo.</p>
+    </div>
+
+  </div>
+
+  <div class="photo-block fade" style="animation-delay:.6s">
+    <figure class="photo-frame">
+      <img src="img/futuro.webp" alt="Los dos con dos niños, sentados juntos en una terraza con luz de tarde" />
+      <figcaption class="photo-caption">
+        Una foto que nos mandaron nuestras versiones de un futuro posible.
+      </figcaption>
+    </figure>
+  </div>
+
+</div>
+</body>
+</html>
