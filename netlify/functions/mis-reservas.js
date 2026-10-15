@@ -25,10 +25,16 @@ exports.handler = async (event, context) => {
     return json(500, { error: "El historial no está configurado todavía." });
   }
 
+  // El nombre va además del correo: el histórico anterior a la web tiene muchas
+  // filas sin correo, y ahí el único enganche posible es el nombre completo.
+  // Ambos salen del token verificado, nunca de lo que mande el navegador.
+  const nombre = (user.user_metadata && user.user_metadata.full_name) || "";
+
   const url = APPS_SCRIPT_URL
     + "?action=misreservas"
     + "&secret=" + encodeURIComponent(APPS_SCRIPT_SECRET)
-    + "&email=" + encodeURIComponent(user.email.trim().toLowerCase());
+    + "&email=" + encodeURIComponent(user.email.trim().toLowerCase())
+    + "&nombre=" + encodeURIComponent(nombre.trim());
 
   try {
     const r = await fetch(url, { redirect: "follow" });
