@@ -1931,14 +1931,12 @@
 
   // El año puede venir del Apps Script, o estar escrito dentro de la fecha.
   // Si no está en ninguna parte, esa lectura simplemente no se filtra por año.
-  // Para el historial basta el mes: el día exacto de hace dos años no le
-  // dice nada a nadie. El año sí se conserva, que es lo que distingue.
+  // Para el historial basta el mes. El año no va acá: lo cubren los chips de
+  // año, y repetirlo en cada fila alarga la línea sin aportar.
   function mesCorto(fecha){
     const s = String(fecha || "");
     const m = s.match(/\d{1,2}\s+de\s+([A-Za-zÁÉÍÓÚáéíóúñÑ]+)/i);
-    const a = s.match(/\b(19|20)\d{2}\b/);
-    if (!m) return s.split(",")[0].trim();
-    return m[1].toLowerCase() + (a ? " de " + a[0] : "");
+    return m ? m[1].toLowerCase() : s.split(",")[0].trim();
   }
 
   function anioDe(x){
