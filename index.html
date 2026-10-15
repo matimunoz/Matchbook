@@ -1744,12 +1744,15 @@
     }
   }
 
-  // "Sábado 7 de Noviembre, 11:30 hrs" → "7 de noviembre"
+  // "Sábado 7 de Noviembre, 11:30 hrs"            → "7 de noviembre"
+  // "domingo 8 de septiembre de 2025, 11:30 hrs"  → "8 de septiembre de 2025"
   // Se quita el día de la semana y la hora: en un historial solo estorban.
+  // El año se conserva cuando viene, porque distingue lecturas de años distintos.
   function fechaCorta(fecha){
     const s = String(fecha || "");
     const m = s.match(/(\d{1,2})\s+de\s+([A-Za-zÁÉÍÓÚáéíóúñÑ]+)/i);
-    if (m) return m[1] + " de " + m[2].toLowerCase();
+    const a = s.match(/\b(19|20)\d{2}\b/);
+    if (m) return m[1] + " de " + m[2].toLowerCase() + (a ? " de " + a[0] : "");
     return s.split(",")[0].trim();
   }
 
@@ -1928,6 +1931,16 @@
 
   // El año puede venir del Apps Script, o estar escrito dentro de la fecha.
   // Si no está en ninguna parte, esa lectura simplemente no se filtra por año.
+  // Para el historial basta el mes: el día exacto de hace dos años no le
+  // dice nada a nadie. El año sí se conserva, que es lo que distingue.
+  function mesCorto(fecha){
+    const s = String(fecha || "");
+    const m = s.match(/\d{1,2}\s+de\s+([A-Za-zÁÉÍÓÚáéíóúñÑ]+)/i);
+    const a = s.match(/\b(19|20)\d{2}\b/);
+    if (!m) return s.split(",")[0].trim();
+    return m[1].toLowerCase() + (a ? " de " + a[0] : "");
+  }
+
   function anioDe(x){
     if(x.anio) return String(x.anio).trim();
     const m = String(x.fecha || "").match(/\b(19|20)\d{2}\b/);
@@ -2008,7 +2021,7 @@
     cont.innerHTML = items.map(function(x){
       // Varias filas del histórico vienen sin fecha o sin lugar: se arma la
       // línea solo con lo que existe, para no dejar separadores huérfanos.
-      const partes = [x.club, fechaCorta(x.fecha), x.lugar]
+      const partes = [x.club, mesCorto(x.fecha), x.lugar]
         .map(function(p){ return String(p || "").trim(); })
         .filter(Boolean);
       return '<div class="lib-item">' +
