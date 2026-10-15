@@ -1201,11 +1201,21 @@
   }
 
   function equalizeDescriptions(){
-    const ds = document.querySelectorAll('.curaduria');
+    // Se iguala el bloque completo (descripción + preguntas): si solo se
+    // igualara la descripción, las preguntas desalinearían las fechas.
+    const ds = document.querySelectorAll('.club-intro');
     ds.forEach(d => d.style.minHeight = '');
     let max = 0;
     ds.forEach(d => { max = Math.max(max, d.offsetHeight); });
     ds.forEach(d => { d.style.minHeight = max + 'px'; });
+  }
+
+  function preguntasHtml(preguntas){
+    const ps = (preguntas || []).filter(function(p){ return p && String(p).trim(); });
+    if(!ps.length) return "";
+    return '<ul class="preguntas">' +
+      ps.map(function(p){ return '<li>' + esc(p) + '</li>'; }).join('') +
+      '</ul>';
   }
 
   function renderClubs(){
