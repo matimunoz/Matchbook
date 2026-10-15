@@ -541,6 +541,7 @@
   .lib-mini.sin-img span{font-family:var(--serif);font-style:italic;font-size:.49rem;color:var(--noche);text-align:center}
   .lib-datos{min-width:0;flex:1}
   .lib-t{font-family:var(--serif);font-weight:700;font-size:.97rem;color:var(--noche);line-height:1.28}
+  .lib-a{font-family:var(--serif);font-style:italic;font-size:.82rem;color:var(--tinta-suave);opacity:.85;margin-top:1px;line-height:1.3}
   .lib-m{font-size:.75rem;color:var(--tinta-suave);margin-top:4px;line-height:1.45}
   .lib-punto{width:6px;height:6px;border-radius:50%;background:var(--hoja);display:inline-block;margin-right:6px;vertical-align:1px}
 
@@ -1782,6 +1783,20 @@
       : '<div class="' + clase + ' sin-img"><span>' + esc(x.libro) + '</span></div>';
   }
 
+  // El autor no viene en los datos, pero las portadas nuevas se llaman
+  // "Titulo - Autor.ext", así que sale de ahí. Si no, se busca el libro
+  // entre los clubes publicados, que sí traen autor.
+  function autorDe(x){
+    const archivo = String(x.portada || "").split("/").pop();
+    const base = archivo.replace(/\.(png|jpe?g|webp)$/i, "");
+    const corte = base.lastIndexOf(" - ");
+    if(corte > 0) return base.slice(corte + 3).trim();
+
+    const t = String(x.libro || "").trim().toLowerCase();
+    const c = CLUBS.find(function(k){ return String(k.titulo || "").trim().toLowerCase() === t; });
+    return (c && c.autor) ? String(c.autor).trim() : "";
+  }
+
   function colorClub(nombre){
     const c = CLUBS.find(function(x){ return x.club === nombre; });
     return (c && c.color) ? c.color : "var(--hoja)";
@@ -2039,10 +2054,12 @@
       const partes = [x.club, mesCorto(x.fecha), x.lugar]
         .map(function(p){ return String(p || "").trim(); })
         .filter(Boolean);
+      const autor = autorDe(x);
       return '<div class="lib-item">' +
         tapaHTML(x, "lib-mini") +
         '<div class="lib-datos">' +
           '<div class="lib-t">' + esc(x.libro) + '</div>' +
+          (autor ? '<div class="lib-a">de ' + esc(autor) + '</div>' : '') +
           (partes.length
             ? '<div class="lib-m"><span class="lib-punto" style="background:' + colorClub(x.club) + '"></span>' + esc(partes.join(" · ")) + '</div>'
             : '') +
@@ -2054,11 +2071,17 @@
   // Si el archivo de una portada no existe, cae a la tarjeta con el título
   function activarRespaldoPortadas(raiz){
     raiz.querySelectorAll(".lib-mini img, .prox-tapa img").forEach(function(img){
-      img.addEventListener("error", function(){
+      const caer = function(){
         const caja = img.parentElement;
+        if(!caja || caja.classList.contains("sin-img")) return;
+        console.warn("Portada que no carga:", img.getAttribute("src"));
         caja.classList.add("sin-img");
         caja.innerHTML = "<span>" + esc(img.getAttribute("alt") || "") + "</span>";
-      });
+      };
+      img.addEventListener("error", caer);
+      // Si la imagen ya falló antes de enganchar el listener (404 en caché),
+      // el evento no se vuelve a emitir y quedaría un recuadro en blanco.
+      if(img.complete && img.naturalWidth === 0) caer();
     });
   }
 
