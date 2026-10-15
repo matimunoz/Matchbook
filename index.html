@@ -500,6 +500,7 @@
   .cuenta-conteo{font-family:var(--serif);font-weight:700;color:var(--noche);font-size:1.05rem;margin-bottom:14px}
   .cuenta-vacio{font-family:var(--serif);color:var(--tinta-suave);font-size:.95rem;line-height:1.6;text-align:center;padding:14px 0}
   .filtros{display:flex;flex-wrap:wrap;gap:7px;margin:-6px 0 16px}
+  .filtros-anio{margin-top:-10px}
   .chip{
     font-family:var(--sans);font-weight:800;font-size:.72rem;cursor:pointer;
     background:none;border:1.5px solid rgba(94,122,82,.3);border-radius:999px;
@@ -1920,51 +1921,86 @@
     activarRespaldoPortadas(cuerpo);
   }
 
-  // ---------- Filtro por club ----------
+  // ---------- Filtros ----------
   let PASADAS = [];
   let FILTRO_CLUB = "";
+  let FILTRO_ANIO = "";
 
-  function chipsHtml(){
-    const cuenta = {};
-    PASADAS.forEach(function(x){
-      const k = String(x.club || "").trim();
-      if(k) cuenta[k] = (cuenta[k] || 0) + 1;
-    });
-    const clubes = Object.keys(cuenta).sort(function(a,b){ return cuenta[b] - cuenta[a]; });
-    if(clubes.length < 2) return "";   // con un solo club el filtro no aporta
-
-    const chip = function(valor, etiqueta, n, color){
-      return '<button class="chip" data-club="' + esc(valor) + '"' +
-        (color ? ' style="--club:' + esc(color) + '"' : '') +
-        ' onclick="filtrarClub(this.dataset.club)">' + esc(etiqueta) +
-        ' <b>' + n + '</b></button>';
-    };
-
-    return '<div class="filtros">' +
-      chip("", "Todas", PASADAS.length, "") +
-      clubes.map(function(c){ return chip(c, c, cuenta[c], colorClub(c)); }).join('') +
-      '</div>';
+  // El año puede venir del Apps Script, o estar escrito dentro de la fecha.
+  // Si no está en ninguna parte, esa lectura simplemente no se filtra por año.
+  function anioDe(x){
+    if(x.anio) return String(x.anio).trim();
+    const m = String(x.fecha || "").match(/\b(19|20)\d{2}\b/);
+    return m ? m[0] : "";
   }
 
-  function filtrarClub(club){
-    FILTRO_CLUB = club || "";
+  function chipHtml(tipo, valor, etiqueta, n, color){
+    return '<button class="chip" data-tipo="' + tipo + '" data-valor="' + esc(valor) + '"' +
+      (color ? ' style="--club:' + esc(color) + '"' : '') +
+      ' onclick="filtrar(this.dataset.tipo, this.dataset.valor)">' + esc(etiqueta) +
+      ' <b>' + n + '</b></button>';
+  }
+
+  function chipsHtml(){
+    let html = "";
+
+    const porClub = {};
+    PASADAS.forEach(function(x){
+      const k = String(x.club || "").trim();
+      if(k) porClub[k] = (porClub[k] || 0) + 1;
+    });
+    const clubes = Object.keys(porClub).sort(function(a,b){ return porClub[b] - porClub[a]; });
+    if(clubes.length >= 2){   // con un solo club el filtro no aporta
+      html += '<div class="filtros">' +
+        chipHtml("club", "", "Todas", PASADAS.length, "") +
+        clubes.map(function(c){ return chipHtml("club", c, c, porClub[c], colorClub(c)); }).join('') +
+        '</div>';
+    }
+
+    const porAnio = {};
+    PASADAS.forEach(function(x){
+      const a = anioDe(x);
+      if(a) porAnio[a] = (porAnio[a] || 0) + 1;
+    });
+    const anios = Object.keys(porAnio).sort().reverse();
+    if(anios.length >= 2){
+      html += '<div class="filtros filtros-anio">' +
+        chipHtml("anio", "", "Todos los años", PASADAS.length, "") +
+        anios.map(function(a){ return chipHtml("anio", a, a, porAnio[a], ""); }).join('') +
+        '</div>';
+    }
+
+    return html;
+  }
+
+  function filtrar(tipo, valor){
+    if(tipo === "club") FILTRO_CLUB = valor || "";
+    else FILTRO_ANIO = valor || "";
     pintarListaPasadas();
   }
 
   function pintarListaPasadas(){
-    const items = FILTRO_CLUB
-      ? PASADAS.filter(function(x){ return String(x.club || "").trim() === FILTRO_CLUB; })
-      : PASADAS;
+    const items = PASADAS.filter(function(x){
+      if(FILTRO_CLUB && String(x.club || "").trim() !== FILTRO_CLUB) return false;
+      if(FILTRO_ANIO && anioDe(x) !== FILTRO_ANIO) return false;
+      return true;
+    });
 
     document.querySelectorAll("#cuentaCuerpo .chip").forEach(function(b){
-      b.classList.toggle("activo", (b.dataset.club || "") === FILTRO_CLUB);
+      const activo = b.dataset.tipo === "club"
+        ? (b.dataset.valor || "") === FILTRO_CLUB
+        : (b.dataset.valor || "") === FILTRO_ANIO;
+      b.classList.toggle("activo", activo);
     });
 
     const titulo = document.getElementById("conteoPasadas");
     if(titulo){
-      titulo.textContent = FILTRO_CLUB
-        ? items.length + (items.length === 1 ? " lectura en " : " lecturas en ") + FILTRO_CLUB
-        : items.length + (items.length === 1 ? " lectura" : " lecturas") + " con nosotros";
+      const n = items.length;
+      let t = n + (n === 1 ? " lectura" : " lecturas");
+      if(FILTRO_CLUB) t += " en " + FILTRO_CLUB;
+      if(FILTRO_ANIO) t += " el " + FILTRO_ANIO;
+      if(!FILTRO_CLUB && !FILTRO_ANIO) t += " con nosotros";
+      titulo.textContent = t;
     }
 
     const cont = document.getElementById("listaPasadas");
