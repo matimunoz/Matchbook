@@ -59,7 +59,14 @@
       "curaduria": "Cada mes votamos por un libro distinto y exploramos nuevos mundos. Este mes: Una novela épica sobre la familia, la tierra y la supervivencia, que retrata la lucha entre la adversidad, la ambición y los valores que nos sostienen.",
       "titulo": "La Buena Tierra",
       "mpLink": " https://mpago.la/2R9WruX",
-      "portada": "/portadas/dcca63a5f0864ff21df1b71a53e3d63f.webp"
+      "portada": "/portadas/dcca63a5f0864ff21df1b71a53e3d63f.webp",
+      "sobreElLibro": "Una historia sobre la familia, la ambición y nuestra relación con la tierra. A través de la vida de un campesino chino, exploraremos cómo la riqueza, la pobreza y las transformaciones sociales ponen a prueba nuestros valores.",
+      "preguntas": [
+        "¿Cómo cambia nuestra identidad cuando alcanzamos la prosperidad?",
+        "¿Qué estamos dispuestos a sacrificar por nuestra familia?",
+        "¿Puede la riqueza alejarnos de nuestras raíces?"
+      ],
+      "sobreElClub": "Un espacio para descubrir nuevas lecturas y explorar distintos géneros, autores e historias. ¡Leemos de todo! Cada mes elegimos democráticamente nuestra próxima lectura, a partir del catálogo disponible en la Biblioteca Santiago Severín de Valparaíso."
     },
     {
       "autor": "Yanis Varoufakis",
@@ -100,7 +107,14 @@
       "curaduria": "Cada mes leemos un libro para nuestro desarrollo integral. Este mes: Yanis Varoufakis, economista y político griego, nos expone que el capitalismo ya fue reemplazado. Empresas como Amazon o Google serían los nuevos señores feudales: los vendedores les pagan arriendo por sus plataformas, y los usuarios trabajan gratis para ellas cada día.",
       "titulo": "Tecnofeudalismo",
       "mpLink": "https://mpago.la/1eHGFXB",
-      "portada": "/portadas/tecnofeudalismo.webp"
+      "portada": "/portadas/tecnofeudalismo.webp",
+      "sobreElLibro": "¿Y si el capitalismo estuviera siendo reemplazado por una nueva forma de feudalismo? Exploraremos la provocadora tesis de Varoufakis sobre el poder de las grandes plataformas digitales y cómo están transformando nuestra economía y sociedad.",
+      "preguntas": [
+        "¿Quiénes son los nuevos señores feudales?",
+        "¿Cómo se enriquecen las grandes plataformas con nuestra actividad digital?",
+        "¿Estamos viviendo el fin del capitalismo o simplemente su evolución?"
+      ],
+      "sobreElClub": "Un club de lectura enfocado en el desarrollo personal y profesional. Leemos libros de no ficción que nos invitan a aprender, cuestionar nuestras ideas y comprender mejor el mundo. Cada trimestre votamos y planificamos juntos nuestras próximas lecturas."
     },
     {
       "autor": "Aldous Huxley",
@@ -130,7 +144,14 @@
       "curaduria": "Cada mes leemos una utopía distinta para imaginar otros mundos posibles. Este mes: La isla, de Aldous Huxley, la última novela del autor de Un mundo feliz y su respuesta esperanzadora: una sociedad que intenta unir ciencia, espiritualidad y bienestar.",
       "titulo": "La Isla",
       "mpLink": " https://mpago.la/2R9WruX",
-      "portada": "/portadas/laisla.webp"
+      "portada": "/portadas/laisla.webp",
+      "sobreElLibro": "¿Cómo sería una sociedad diseñada para que sus habitantes vivieran plenamente? En su última novela, Huxley imagina una comunidad que combina ciencia, espiritualidad y educación para construir una forma distinta de vivir. Una utopía que nos invita a cuestionar nuestro propio mundo.",
+      "preguntas": [
+        "¿Qué necesitamos realmente para vivir una buena vida?",
+        "¿Podemos construir una sociedad que priorice el bienestar sobre el consumo?",
+        "¿Por qué resulta tan difícil proteger una utopía?"
+      ],
+      "sobreElClub": "Todos conocemos las distopías, pero ¿qué hay de las utopías? En este club exploramos las obras de grandes autores que se atrevieron a imaginar sociedades diferentes. Un espacio para cuestionar nuestro presente y conversar sobre el mundo que deseamos construir."
     }
   ],
   "testimonios": [

@@ -550,6 +550,37 @@
   .auth-pie .btn-salir{margin:0}
   #authForm .pd-err{text-align:center;margin-bottom:10px}
 
+  /* ---------- POP-UP INFORMATIVO DEL CLUB ---------- */
+  .saber-mas{
+    align-self:flex-start;background:none;border:none;cursor:pointer;padding:0;
+    font-family:var(--sans);font-weight:800;font-size:.84rem;color:var(--club);
+    text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1.5px;
+  }
+  .saber-mas:hover{opacity:.72}
+  #infoModal{--club:var(--hoja);border-top:5px solid var(--club)}
+  .info-cab{display:flex;gap:16px;align-items:flex-start;margin-bottom:22px;padding-right:28px}
+  .info-portada{width:84px;flex-shrink:0;border-radius:4px 10px 10px 4px;box-shadow:-5px 9px 20px rgba(19,41,63,.26)}
+  .info-cab-txt{min-width:0;flex:1}
+  .info-club{
+    display:inline-block;font-weight:800;font-size:.66rem;letter-spacing:.13em;text-transform:uppercase;
+    color:var(--club);background:color-mix(in srgb, var(--club) 16%, transparent);
+    padding:4px 13px;border-radius:999px;margin-bottom:7px;
+  }
+  #infoModal h3{font-size:1.4rem;line-height:1.2;margin-bottom:2px}
+  .info-autor{font-family:var(--serif);font-style:italic;color:var(--tinta-suave);font-size:.9rem}
+  .info-titulo{
+    font-family:var(--sans);font-weight:800;font-size:.72rem;letter-spacing:.11em;text-transform:uppercase;
+    color:var(--club);margin:22px 0 9px;
+  }
+  .info-texto{font-family:var(--serif);font-size:.96rem;line-height:1.62;color:var(--tinta-suave)}
+  .info-preguntas{list-style:none;display:flex;flex-direction:column;gap:11px;margin-top:4px}
+  .info-preguntas li{
+    font-family:var(--serif);font-size:.95rem;line-height:1.45;color:var(--noche);
+    border-left:3px solid var(--club);padding-left:13px;
+  }
+  .info-sep{border:none;border-top:1px dashed rgba(94,122,82,.4);margin:26px 0 0}
+  #infoReservar{margin-top:26px}
+
   /* Campo trampa: invisible para personas, los bots lo llenan y se delatan */
   .trampa{position:absolute!important;left:-9999px!important;width:1px!important;height:1px!important;opacity:0!important;pointer-events:none}
 
@@ -899,6 +930,23 @@
   </div>
 </div>
 
+<!-- MODAL INFORMATIVO DEL CLUB -->
+<div class="modal-overlay" id="overlayInfo" role="dialog" aria-modal="true" aria-labelledby="infoLibro">
+  <div class="modal" id="infoModal">
+    <button class="modal-close" onclick="cerrarInfo()" aria-label="Cerrar">×</button>
+    <div class="info-cab">
+      <img class="info-portada" id="infoPortada" src="" alt="">
+      <div class="info-cab-txt">
+        <span class="info-club" id="infoClub"></span>
+        <h3 id="infoLibro"></h3>
+        <p class="info-autor" id="infoAutor"></p>
+      </div>
+    </div>
+    <div id="infoCuerpo"></div>
+    <button class="btn btn-sol" id="infoReservar">Reservar silla</button>
+  </div>
+</div>
+
 <!-- MODAL ENTRAR / CREAR CUENTA -->
 <div class="modal-overlay" id="overlayAuth" role="dialog" aria-modal="true" aria-labelledby="authTitle">
   <div class="modal">
@@ -1198,6 +1246,7 @@
             <div class="club-nombre">${esc(c.club)}</div>
             <div class="autor">de ${esc(c.autor)}</div>
             <p class="curaduria">${esc(c.curaduria)}</p>
+            ${c.sobreElLibro ? `<button class="saber-mas" onclick="abrirInfo('${c.id}')">¿De qué conversaremos? →</button>` : ""}
           </div>
           <div class="sesiones">${sesiones}</div>
           <div class="precio-row">
@@ -1241,6 +1290,52 @@
       card.addEventListener("keydown",e=>{if(e.key===" "||e.key==="Enter"){e.preventDefault();card.click();}});
     });
   }
+  // Pop-up informativo: de qué va el libro del mes y de qué va el club
+  function abrirInfo(id){
+    const c = CLUBS.find(x => x.id === id);
+    if(!c) return;
+    const color = c.color || "#5E7A52";
+
+    document.getElementById("infoModal").style.setProperty("--club", color);
+    document.getElementById("infoPortada").src = c.portada || "";
+    document.getElementById("infoPortada").alt = "Portada de " + c.titulo;
+    document.getElementById("infoClub").textContent = c.club;
+    document.getElementById("infoLibro").textContent = c.titulo;
+    document.getElementById("infoAutor").textContent = "de " + c.autor;
+
+    let html = "";
+    if(c.sobreElLibro){
+      html += '<p class="info-titulo">¿De qué conversaremos?</p>' +
+              '<p class="info-texto">' + esc(c.sobreElLibro) + '</p>';
+    }
+    const pregs = (c.preguntas || []).filter(function(p){ return p && String(p).trim(); });
+    if(pregs.length){
+      html += '<p class="info-titulo">' + (pregs.length === 3 ? 'Tres preguntas para conversar' : 'Preguntas para conversar') + '</p>' +
+              '<ul class="info-preguntas">' + pregs.map(function(p){ return '<li>' + esc(p) + '</li>'; }).join('') + '</ul>';
+    }
+    if(c.sobreElClub){
+      html += '<hr class="info-sep">' +
+              '<p class="info-titulo">Conoce nuestro club</p>' +
+              '<p class="info-texto">' + esc(c.sobreElClub) + '</p>';
+    }
+    document.getElementById("infoCuerpo").innerHTML = html;
+
+    // El botón lleva directo a reservar en este mismo club
+    const dispTotal = c.sesiones.reduce(function(a,s){ return a + (s.cuposTotal - s.cuposTomados); }, 0);
+    const btn = document.getElementById("infoReservar");
+    btn.disabled = dispTotal <= 0;
+    btn.textContent = dispTotal <= 0 ? "Mesas completas" : "Reservar silla";
+    btn.onclick = function(){ cerrarInfo(); openModal(id); };
+
+    document.getElementById("overlayInfo").classList.add("open");
+    document.body.style.overflow = "hidden";
+  }
+
+  function cerrarInfo(){
+    document.getElementById("overlayInfo").classList.remove("open");
+    document.body.style.overflow = "";
+  }
+
   function openModal(id){
     if(!id){ document.getElementById("clubes").scrollIntoView({behavior:"smooth"}); return; }
     activeModalClubId = id;
@@ -1289,7 +1384,8 @@
   overlayCuenta.addEventListener("click",e=>{if(e.target.id==="overlayCuenta")cerrarCuenta()});
   overlayDatos.addEventListener("click",e=>{if(e.target.id==="overlayDatos")cerrarDatos()});
   overlayAuth.addEventListener("click",e=>{if(e.target.id==="overlayAuth")cerrarAuth()});
-  document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeModal();cerrarCuenta();cerrarDatos();cerrarAuth();}});
+  overlayInfo.addEventListener("click",e=>{if(e.target.id==="overlayInfo")cerrarInfo()});
+  document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeModal();cerrarCuenta();cerrarDatos();cerrarAuth();cerrarInfo();}});
   overlayAuth.addEventListener("keydown",e=>{if(e.key==="Enter")enviarAuth();});
   const setInvalid=(id,bad)=>{document.getElementById(id).classList.toggle("invalid",bad);return !bad};
 
