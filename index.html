@@ -1243,10 +1243,14 @@
         </div>
         <div class="club-body">
           <div class="club-top">
-            <div class="club-nombre">${esc(c.club)}</div>
+            ${c.sobreElClub
+              ? `<button class="club-nombre con-info" onclick="abrirInfo('${c.id}')" title="Conoce el club">${esc(c.club)}<span class="info-i" aria-hidden="true">i</span></button>`
+              : `<div class="club-nombre">${esc(c.club)}</div>`}
             <div class="autor">de ${esc(c.autor)}</div>
-            <p class="curaduria">${esc(c.curaduria)}</p>
-            ${c.sobreElLibro ? `<button class="saber-mas" onclick="abrirInfo('${c.id}')">¿De qué conversaremos? →</button>` : ""}
+            <div class="club-intro">
+              <p class="curaduria">${esc(c.curaduria)}</p>
+              ${preguntasHtml(c.preguntas)}
+            </div>
           </div>
           <div class="sesiones">${sesiones}</div>
           <div class="precio-row">
