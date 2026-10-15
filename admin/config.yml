@@ -52,14 +52,13 @@ collections:
               - { label: "Autor", name: "autor", widget: "string" }
               - { label: "Descripción / Curaduría", name: "curaduria", widget: "text", hint: "El texto corto que se ve en la tarjeta del club." }
 
-              - { label: "¿De qué conversaremos?", name: "sobreElLibro", widget: "text", required: false, hint: "Se ve en el pop-up. Habla del libro de este mes, así que cámbialo junto con el libro." }
-              - label: "Tres preguntas para conversar"
+              - label: "Preguntas para conversar"
                 name: "preguntas"
                 widget: "list"
                 required: false
                 label_singular: "Pregunta"
-                hint: "También es del libro del mes. Lo habitual son tres."
-              - { label: "Conoce nuestro club", name: "sobreElClub", widget: "text", required: false, hint: "Describe el club en general, no el libro. Esto casi nunca cambia: déjalo igual mes a mes." }
+                hint: "Se ven en la tarjeta, bajo la descripción. Son del libro del mes, así que cámbialas junto con el libro. Lo habitual son tres."
+              - { label: "Conoce nuestro club", name: "sobreElClub", widget: "text", required: false, hint: "Se abre al tocar el nombre del club en la tarjeta. Describe el club en general, no el libro del mes: esto casi nunca cambia." }
               - { label: "Precio en pesos (CLP)", name: "precio", widget: "number", value_type: "int", min: 0 }
               - { label: "Portada del libro", name: "portada", widget: "image", hint: "Sube una imagen vertical (proporción 2:3)." }
               - { label: "Link de pago (Mercado Pago)", name: "mpLink", widget: "string" }
