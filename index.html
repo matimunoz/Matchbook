@@ -499,8 +499,16 @@
   .cuenta-lema.es-correo{color:var(--tinta-suave);font-size:.9rem;word-break:break-all}
   .cuenta-conteo{font-family:var(--serif);font-weight:700;color:var(--noche);font-size:1.05rem;margin-bottom:14px}
   .cuenta-vacio{font-family:var(--serif);color:var(--tinta-suave);font-size:.95rem;line-height:1.6;text-align:center;padding:14px 0}
-  .filtros{display:flex;flex-wrap:wrap;gap:7px;margin:-6px 0 16px}
-  .filtros-anio{margin-top:-10px}
+  .lecturas-cab{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  .lecturas-cab .cuenta-conteo{margin-bottom:0}
+  .sel-anio{
+    font-family:var(--sans);font-weight:800;font-size:.74rem;color:var(--tinta-suave);
+    background:#FFFDF7;border:1.5px solid rgba(94,122,82,.3);border-radius:999px;
+    padding:6px 11px;cursor:pointer;
+  }
+  .sel-anio:hover{border-color:var(--hoja);color:var(--hoja)}
+  .sel-anio.activo{border-color:var(--hoja);color:var(--hoja);background:rgba(94,122,82,.1)}
+  .filtros{display:flex;flex-wrap:wrap;gap:7px;margin:12px 0 16px}
   .chip{
     font-family:var(--sans);font-weight:800;font-size:.72rem;cursor:pointer;
     background:none;border:1.5px solid rgba(94,122,82,.3);border-radius:999px;
@@ -1914,7 +1922,10 @@
     if (pasadas.length){
       PASADAS = pasadas;
       FILTRO_CLUB = "";
-      html += '<p class="cuenta-conteo" id="conteoPasadas"></p>' +
+      html += '<div class="lecturas-cab">' +
+                '<p class="cuenta-conteo" id="conteoPasadas"></p>' +
+                selectAnioHtml() +
+              '</div>' +
               chipsHtml() +
               '<div class="lib-lista" id="listaPasadas"></div>';
     }
@@ -1968,20 +1979,27 @@
         '</div>';
     }
 
+    return html;
+  }
+
+  // El año va en un desplegable y no en chips: es un filtro secundario, y dos
+  // filas de botones iguales compiten entre sí en vez de jerarquizar.
+  function selectAnioHtml(){
     const porAnio = {};
     PASADAS.forEach(function(x){
       const a = anioDe(x);
       if(a) porAnio[a] = (porAnio[a] || 0) + 1;
     });
     const anios = Object.keys(porAnio).sort().reverse();
-    if(anios.length >= 2){
-      html += '<div class="filtros filtros-anio">' +
-        chipHtml("anio", "", "Todos los años", PASADAS.length, "") +
-        anios.map(function(a){ return chipHtml("anio", a, a, porAnio[a], ""); }).join('') +
-        '</div>';
-    }
+    if(anios.length < 2) return "";
 
-    return html;
+    return '<select class="sel-anio" id="selAnio" aria-label="Filtrar por año"' +
+      ' onchange="filtrar(\'anio\', this.value)">' +
+      '<option value="">Todos los años</option>' +
+      anios.map(function(a){
+        return '<option value="' + esc(a) + '">' + esc(a) + ' · ' + porAnio[a] + '</option>';
+      }).join('') +
+      '</select>';
   }
 
   function filtrar(tipo, valor){
@@ -1998,11 +2016,10 @@
     });
 
     document.querySelectorAll("#cuentaCuerpo .chip").forEach(function(b){
-      const activo = b.dataset.tipo === "club"
-        ? (b.dataset.valor || "") === FILTRO_CLUB
-        : (b.dataset.valor || "") === FILTRO_ANIO;
-      b.classList.toggle("activo", activo);
+      b.classList.toggle("activo", (b.dataset.valor || "") === FILTRO_CLUB);
     });
+    const sel = document.getElementById("selAnio");
+    if(sel) sel.classList.toggle("activo", !!FILTRO_ANIO);
 
     const titulo = document.getElementById("conteoPasadas");
     if(titulo){
