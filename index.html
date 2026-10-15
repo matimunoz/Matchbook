@@ -499,17 +499,28 @@
   .cuenta-lema.es-correo{color:var(--tinta-suave);font-size:.9rem;word-break:break-all}
   .cuenta-conteo{font-family:var(--serif);font-weight:700;color:var(--noche);font-size:1.05rem;margin-bottom:14px}
   .cuenta-vacio{font-family:var(--serif);color:var(--tinta-suave);font-size:.95rem;line-height:1.6;text-align:center;padding:14px 0}
-  .lib-repisa{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}
-  @media(max-width:420px){.lib-repisa{grid-template-columns:repeat(2,1fr)}}
-  .lib-tapa{aspect-ratio:2/3;border-radius:4px;box-shadow:0 2px 7px rgba(19,41,63,.2);overflow:hidden;background:#FFFDF7}
-  /* contain y no cover: las portadas no vienen todas en 2:3 y recortarlas
-     se come los títulos. Mejor que sobre fondo a que falte libro. */
-  .lib-tapa img{width:100%;height:100%;object-fit:contain;display:block}
-  .lib-tapa.sin-img{display:flex;align-items:center;justify-content:center;border:1px solid rgba(94,122,82,.3);padding:9px}
-  .lib-tapa.sin-img span{font-family:var(--serif);font-style:italic;font-size:.72rem;color:var(--noche);line-height:1.3;text-align:center}
-  .lib-titulo{font-family:var(--serif);font-weight:600;font-size:.8rem;color:var(--noche);line-height:1.3;margin-top:8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-  .lib-meta{font-size:.68rem;color:var(--tinta-suave);margin-top:3px;line-height:1.45}
-  .lib-punto{width:5px;height:5px;border-radius:50%;background:var(--hoja);display:inline-block;margin-right:5px;vertical-align:1px}
+  /* Lista y no grilla: con 15+ libros la grilla obliga a leer en zigzag, y las
+     portadas de distinta proporción nunca calzan entre sí. */
+  .lib-lista{display:flex;flex-direction:column;margin-bottom:6px}
+  .lib-item{
+    display:flex;gap:15px;align-items:center;padding:13px 2px;
+    border-bottom:1px solid rgba(94,122,82,.16);
+  }
+  .lib-item:last-child{border-bottom:none}
+  .lib-mini{
+    width:46px;flex-shrink:0;border-radius:3px;overflow:hidden;line-height:0;
+    box-shadow:0 2px 8px rgba(19,41,63,.22);
+  }
+  .lib-mini img{width:100%;height:auto;display:block}
+  .lib-mini.sin-img{
+    aspect-ratio:2/3;background:#FFFDF7;border:1px solid rgba(94,122,82,.3);
+    display:flex;align-items:center;justify-content:center;padding:4px;line-height:1.15;
+  }
+  .lib-mini.sin-img span{font-family:var(--serif);font-style:italic;font-size:.49rem;color:var(--noche);text-align:center}
+  .lib-datos{min-width:0;flex:1}
+  .lib-t{font-family:var(--serif);font-weight:700;font-size:.97rem;color:var(--noche);line-height:1.28}
+  .lib-m{font-size:.75rem;color:var(--tinta-suave);margin-top:4px;line-height:1.45}
+  .lib-punto{width:6px;height:6px;border-radius:50%;background:var(--hoja);display:inline-block;margin-right:6px;vertical-align:1px}
 
   /* Sesiones ya pagadas que todavía no ocurren */
   .prox-seccion{font-family:var(--serif);font-weight:700;color:var(--noche);font-size:1.05rem;margin-bottom:12px}
@@ -1885,13 +1896,19 @@
 
     if (pasadas.length){
       html += '<p class="cuenta-conteo">' + pasadas.length + (pasadas.length === 1 ? ' lectura' : ' lecturas') + ' con nosotros</p>' +
-        '<div class="lib-repisa">' + pasadas.map(function(x){
-          return '<div>' + tapaHTML(x, "lib-tapa") +
-            '<div class="lib-titulo">' + esc(x.libro) + '</div>' +
-            '<div class="lib-meta">' +
-              '<span class="lib-punto" style="background:' + colorClub(x.club) + '"></span>' + esc(fechaCorta(x.fecha)) +
-              (horaDe(x.fecha) ? '<br>' + esc(horaDe(x.fecha)) : '') +
-              (x.lugar ? '<br>' + esc(x.lugar) : '') +
+        '<div class="lib-lista">' + pasadas.map(function(x){
+          // Varias filas del histórico vienen sin fecha o sin lugar: se arma la
+          // línea solo con lo que existe, para no dejar separadores huérfanos.
+          const partes = [x.club, fechaCorta(x.fecha), x.lugar]
+            .map(function(p){ return String(p || "").trim(); })
+            .filter(Boolean);
+          return '<div class="lib-item">' +
+            tapaHTML(x, "lib-mini") +
+            '<div class="lib-datos">' +
+              '<div class="lib-t">' + esc(x.libro) + '</div>' +
+              (partes.length
+                ? '<div class="lib-m"><span class="lib-punto" style="background:' + colorClub(x.club) + '"></span>' + esc(partes.join(" · ")) + '</div>'
+                : '') +
             '</div></div>';
         }).join('') + '</div>';
     }
@@ -1899,7 +1916,7 @@
     cuerpo.innerHTML = html;
 
     // Si el archivo de una portada no existe, cae a la tarjeta con el título
-    cuerpo.querySelectorAll(".lib-tapa img, .prox-tapa img").forEach(function(img){
+    cuerpo.querySelectorAll(".lib-mini img, .prox-tapa img").forEach(function(img){
       img.addEventListener("error", function(){
         const caja = img.parentElement;
         caja.classList.add("sin-img");
