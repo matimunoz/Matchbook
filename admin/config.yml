@@ -52,12 +52,6 @@ collections:
               - { label: "Autor", name: "autor", widget: "string" }
               - { label: "Descripción / Curaduría", name: "curaduria", widget: "text", hint: "El texto corto que se ve en la tarjeta del club." }
 
-              - label: "Preguntas para conversar"
-                name: "preguntas"
-                widget: "list"
-                required: false
-                label_singular: "Pregunta"
-                hint: "Se ven en la tarjeta, bajo la descripción. Son del libro del mes, así que cámbialas junto con el libro. Lo habitual son tres."
               - { label: "Conoce nuestro club", name: "sobreElClub", widget: "text", required: false, hint: "Se abre al tocar el nombre del club en la tarjeta. Describe el club en general, no el libro del mes: esto casi nunca cambia." }
               - { label: "Precio en pesos (CLP)", name: "precio", widget: "number", value_type: "int", min: 0 }
               - { label: "Portada del libro", name: "portada", widget: "image", hint: "Sube una imagen vertical (proporción 2:3)." }
