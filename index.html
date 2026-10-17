@@ -496,7 +496,8 @@
   .invita-fila input{flex:1 1 auto;min-width:0;text-transform:uppercase;letter-spacing:.06em}
   /* El texto guía no se grita: solo lo escrito va en mayúsculas. */
   .invita-fila input::placeholder{text-transform:none;letter-spacing:normal}
-  .btn-invita{flex:0 0 auto;border:1.5px solid var(--hoja);background:#fff;color:var(--hoja);border-radius:14px;padding:0 20px;cursor:pointer;font-family:var(--sans);font-weight:800;font-size:.86rem;transition:background .15s,color .15s}
+  /* min-width fijo: así el botón no se encoge al aparecer el spinner. */
+  .btn-invita{flex:0 0 auto;min-width:96px;border:1.5px solid var(--hoja);background:#fff;color:var(--hoja);border-radius:14px;padding:0 20px;cursor:pointer;font-family:var(--sans);font-weight:800;font-size:.86rem;transition:background .15s,color .15s}
   .btn-invita:hover:not(:disabled){background:var(--hoja);color:#fff}
   .btn-invita:disabled{opacity:.55;cursor:default}
   .invita-ok{display:flex;align-items:center;gap:12px;background:rgba(94,122,82,.12);border:1px solid rgba(94,122,82,.35);border-radius:14px;padding:13px 15px}
@@ -960,10 +961,10 @@
             <input id="inCodigo" type="text" aria-label="Código de invitación" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="Escríbelo aquí">
             <button type="button" class="btn-invita" id="btnInvita" onclick="aplicarCodigo()">Aplicar</button>
           </div>
-          <div class="err">Ese código no es válido o ya no está activo.</div>
+          <div class="err" role="alert">Ese código no es válido o ya no está activo.</div>
         </div>
         <div class="invita-ok" id="invitaOk" hidden>
-          <span>🎟️ <b>Invitación aplicada.</b> Tu silla va por nuestra cuenta: no hay nada que pagar.</span>
+          <span>🎟️ <b id="invitaCual"></b> aplicado. Tu silla va por nuestra cuenta: no hay nada que pagar.</span>
           <button type="button" onclick="quitarCodigo()">Quitar</button>
         </div>
       </div>
@@ -976,6 +977,7 @@
       <p id="confirmDetail"></p>
       <p id="confirmPaso">Completa el pago para encender tu fósforo:</p>
       <a class="btn btn-sol" id="btnPagar" href="#" target="_blank" rel="noopener" style="display:inline-block;margin-top:12px;text-decoration:none">Pagar con Mercado Pago</a>
+      <button class="btn btn-sol" id="btnListo" onclick="closeModal()" style="display:none;margin-top:12px">Listo, nos vemos</button>
       <p id="confirmNota" style="font-size:.84rem;margin-top:12px;font-style:italic">Si el pago no se completa en 24 horas, la silla vuelve a abrirse para otra persona.</p>
     </div>
   </div>
@@ -1505,9 +1507,14 @@
     btn.disabled = false; btn.textContent = "Aplicar";
 
     if(ok === null){ fallar("No pudimos verificar el código ahora. Intenta de nuevo."); return; }
-    if(!ok){ fallar("Ese código no es válido o ya no está activo."); input.select(); return; }
+    if(!ok){
+      fallar("Ese código no es válido o ya no está activo. Si prefieres pagar, desmarca la casilla.");
+      input.select();
+      return;
+    }
 
-    INVITACION = codigo.toUpperCase();
+    INVITACION = codigo.trim().toUpperCase();
+    document.getElementById("invitaCual").textContent = INVITACION;
     campo.hidden = true;
     document.getElementById("invitaOk").hidden = false;
     pintarModoPago();
@@ -1518,7 +1525,18 @@
     if(e.key === "Enter"){ e.preventDefault(); aplicarCodigo(); }
   });
 
+  // Al corregir lo escrito se apaga el rojo: el error era del intento anterior.
+  document.getElementById("inCodigo").addEventListener("input", ()=>{
+    document.getElementById("f-codigo").classList.remove("invalid");
+  });
+
   async function submitReserva(){
+    // Si escribieron un código y no alcanzaron a apretar "Aplicar", se aplica
+    // acá. Nadie debería terminar pagando por no haber visto ese botón.
+    if(!INVITACION && document.getElementById("inCodigo").value.trim()){
+      await aplicarCodigo();
+      if(!INVITACION){ document.getElementById("inCodigo").focus(); return; }
+    }
     const club=selClub.value,nombre=inNombre.value.trim(),
           email=inEmail.value.trim(),fono=inFono.value.trim();
     const okNombre = setInvalid("f-nombre", nombre.length<2);
@@ -1549,6 +1567,7 @@
     document.getElementById("confirmTitulo").textContent = invitado ? "¡Nos vemos en la mesa!" : "¡Tu silla está apartada!";
     document.getElementById("confirmPaso").style.display = invitado ? "none" : "";
     btnPagar.style.display = invitado ? "none" : "inline-block";
+    document.getElementById("btnListo").style.display = invitado ? "inline-block" : "none";
     document.getElementById("confirmNota").textContent = invitado
       ? "Tu silla ya está confirmada. Te escribiremos antes de la sesión con los últimos detalles."
       : "Si el pago no se completa en 24 horas, la silla vuelve a abrirse para otra persona.";
