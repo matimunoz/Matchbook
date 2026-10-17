@@ -2114,8 +2114,20 @@
   // Si no está en ninguna parte, esa lectura simplemente no se filtra por año.
   // Para el historial basta el mes. El año no va acá: lo cubren los chips de
   // año, y repetirlo en cada fila alarga la línea sin aportar.
+  const MESES_ES = ["enero","febrero","marzo","abril","mayo","junio","julio",
+                    "agosto","septiembre","octubre","noviembre","diciembre"];
+
+  // En el histórico algunas celdas de fecha son dato de calendario, no texto,
+  // y llegan como "2026-06-28T04:00:00.000Z". Sin esto se imprimían tal cual.
+  function mesDeISO(s){
+    const m = String(s).match(/^(\d{4})-(\d{2})-(\d{2})T/);
+    return m ? (MESES_ES[parseInt(m[2], 10) - 1] || "") : "";
+  }
+
   function mesCorto(fecha){
     const s = String(fecha || "");
+    const iso = mesDeISO(s);
+    if (iso) return iso;
     const m = s.match(/\d{1,2}\s+de\s+([A-Za-zÁÉÍÓÚáéíóúñÑ]+)/i);
     return m ? m[1].toLowerCase() : s.split(",")[0].trim();
   }
