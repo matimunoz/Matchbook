@@ -1513,7 +1513,10 @@
       return;
     }
 
-    INVITACION = codigo.trim().toUpperCase();
+    // Se guarda normalizado para que en la planilla siempre quede escrito
+    // igual, lo hayan tipeado con tilde, sin tilde o en minúsculas.
+    INVITACION = codigo.normalize("NFD").replace(/[̀-ͯ]/g, "")
+                       .toUpperCase().replace(/[^A-Z0-9]/g, "");
     document.getElementById("invitaCual").textContent = INVITACION;
     campo.hidden = true;
     document.getElementById("invitaOk").hidden = false;
