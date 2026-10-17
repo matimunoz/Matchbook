@@ -1438,10 +1438,14 @@
   // escribieron es válido, y él responde sí o no sin decir cuál es.
   let INVITACION = null;   // el código ya validado, o null si se paga normal
 
-  function abrirInvita(){
-    document.getElementById("invitaAbrir").hidden = true;
-    document.getElementById("f-codigo").hidden = false;
-    document.getElementById("inCodigo").focus();
+  // La casilla habilita el campo; al desmarcarla se borra lo que hubiera.
+  function toggleInvita(activa){
+    if(activa){
+      document.getElementById("f-codigo").hidden = false;
+      document.getElementById("inCodigo").focus();
+    } else {
+      reiniciarInvita();
+    }
   }
 
   function reiniciarInvita(){
@@ -1450,11 +1454,15 @@
     campo.hidden = true;
     campo.classList.remove("invalid");
     document.getElementById("inCodigo").value = "";
-    document.getElementById("invitaAbrir").hidden = false;
+    document.getElementById("chkInvita").checked = false;
     document.getElementById("invitaOk").hidden = true;
     pintarModoPago();
   }
-  function quitarCodigo(){ reiniciarInvita(); document.getElementById("inCodigo").focus(); }
+
+  function quitarCodigo(){
+    reiniciarInvita();
+    document.getElementById("chkInvita").focus();
+  }
 
   // Deja la nota y el botón coherentes con el modo: pagando o invitado.
   function pintarModoPago(){
