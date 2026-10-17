@@ -485,6 +485,24 @@
   .resumen-cambiar{position:absolute;top:12px;right:14px;background:none;border:none;cursor:pointer;font-family:var(--sans);font-weight:800;font-size:.76rem;color:var(--hoja);text-decoration:underline}
   .resumen-cambiar:hover{color:var(--noche)}
   .pago-nota{font-family:var(--serif);background:rgba(140,203,239,.2);border-radius:14px;padding:14px;font-size:.9rem;color:var(--tinta-suave);margin-bottom:18px}
+  /* ---------- Código de invitación ---------- */
+  /* Va detrás de un enlace: quien viene a pagar no tiene por qué verlo. */
+  .invita{margin-bottom:18px}
+  .invita-check{display:flex;align-items:center;gap:10px;cursor:pointer;font-family:var(--sans);font-weight:800;font-size:.86rem;color:var(--noche);user-select:none}
+  .invita-check input{flex:0 0 auto;width:18px;height:18px;margin:0;accent-color:var(--hoja);cursor:pointer}
+  .invita-check:hover span{color:var(--hoja)}
+  .invita-check + .invita-campo{margin-top:12px}
+  .invita-fila{display:flex;gap:8px;align-items:stretch}
+  .invita-fila input{flex:1 1 auto;min-width:0;text-transform:uppercase;letter-spacing:.06em}
+  /* El texto guía no se grita: solo lo escrito va en mayúsculas. */
+  .invita-fila input::placeholder{text-transform:none;letter-spacing:normal}
+  .btn-invita{flex:0 0 auto;border:1.5px solid var(--hoja);background:#fff;color:var(--hoja);border-radius:14px;padding:0 20px;cursor:pointer;font-family:var(--sans);font-weight:800;font-size:.86rem;transition:background .15s,color .15s}
+  .btn-invita:hover:not(:disabled){background:var(--hoja);color:#fff}
+  .btn-invita:disabled{opacity:.55;cursor:default}
+  .invita-ok{display:flex;align-items:center;gap:12px;background:rgba(94,122,82,.12);border:1px solid rgba(94,122,82,.35);border-radius:14px;padding:13px 15px}
+  .invita-ok span{flex:1;font-family:var(--serif);font-size:.9rem;color:var(--noche)}
+  .invita-ok button{flex:0 0 auto;background:none;border:none;cursor:pointer;font-family:var(--sans);font-weight:800;font-size:.76rem;color:var(--hoja);text-decoration:underline}
+  .invita-ok button:hover{color:var(--noche)}
   .modal .btn{width:100%}
   .confirm{text-align:center;padding:10px 0}
   .confirm svg{margin:0 auto 14px;width:62px;height:62px}
@@ -932,16 +950,34 @@
           <div class="err">Ingresa un teléfono de contacto.</div>
         </div>
       </div>
-      <div class="pago-nota">💳 Al continuar serás dirigido al checkout seguro de Mercado Pago (crédito, débito o saldo). Tu silla queda confirmada al completar el pago.</div>
+      <div class="invita">
+        <label class="invita-check">
+          <input type="checkbox" id="chkInvita" onchange="toggleInvita(this.checked)">
+          <span>Tengo un código de invitación</span>
+        </label>
+        <div class="field invita-campo" id="f-codigo" hidden style="margin-bottom:0">
+          <label for="inCodigo">Código de invitación</label>
+          <div class="invita-fila">
+            <input id="inCodigo" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="Escríbelo aquí">
+            <button type="button" class="btn-invita" id="btnInvita" onclick="aplicarCodigo()">Aplicar</button>
+          </div>
+          <div class="err">Ese código no es válido o ya no está activo.</div>
+        </div>
+        <div class="invita-ok" id="invitaOk" hidden>
+          <span>🎟️ <b>Invitación aplicada.</b> Tu silla va por nuestra cuenta: no hay nada que pagar.</span>
+          <button type="button" onclick="quitarCodigo()">Quitar</button>
+        </div>
+      </div>
+      <div class="pago-nota" id="pagoNota">💳 Al continuar serás dirigido al checkout seguro de Mercado Pago (crédito, débito o saldo). Tu silla queda confirmada al completar el pago.</div>
       <button class="btn btn-sol" id="btnSubmit" onclick="submitReserva()">Continuar al pago →</button>
     </div>
     <div id="confirmView" class="confirm" style="display:none">
       <svg><use href="#mb-icon"/></svg>
-      <h3>¡Tu silla está apartada!</h3>
+      <h3 id="confirmTitulo">¡Tu silla está apartada!</h3>
       <p id="confirmDetail"></p>
-      <p>Completa el pago para encender tu fósforo:</p>
+      <p id="confirmPaso">Completa el pago para encender tu fósforo:</p>
       <a class="btn btn-sol" id="btnPagar" href="#" target="_blank" rel="noopener" style="display:inline-block;margin-top:12px;text-decoration:none">Pagar con Mercado Pago</a>
-      <p style="font-size:.84rem;margin-top:12px;font-style:italic">Si el pago no se completa en 24 horas, la silla vuelve a abrirse para otra persona.</p>
+      <p id="confirmNota" style="font-size:.84rem;margin-top:12px;font-style:italic">Si el pago no se completa en 24 horas, la silla vuelve a abrirse para otra persona.</p>
     </div>
   </div>
 </div>
@@ -1346,6 +1382,7 @@
     if(!id){ document.getElementById("clubes").scrollIntoView({behavior:"smooth"}); return; }
     activeModalClubId = id;
     fillSesionCards(id);
+    reiniciarInvita();
     formView.style.display="block";confirmView.style.display="none";
     overlay.classList.add("open");document.body.style.overflow="hidden";
     autocompletarDatos();
@@ -1395,6 +1432,85 @@
   overlayAuth.addEventListener("keydown",e=>{if(e.key==="Enter")enviarAuth();});
   const setInvalid=(id,bad)=>{document.getElementById(id).classList.toggle("invalid",bad);return !bad};
 
+  // ---------- Código de invitación ----------
+  // El código no vive en esta página: si estuviera acá, cualquiera lo leería en
+  // el código fuente. Acá solo le preguntamos al Apps Script si el que
+  // escribieron es válido, y él responde sí o no sin decir cuál es.
+  let INVITACION = null;   // el código ya validado, o null si se paga normal
+
+  function abrirInvita(){
+    document.getElementById("invitaAbrir").hidden = true;
+    document.getElementById("f-codigo").hidden = false;
+    document.getElementById("inCodigo").focus();
+  }
+
+  function reiniciarInvita(){
+    INVITACION = null;
+    const campo = document.getElementById("f-codigo");
+    campo.hidden = true;
+    campo.classList.remove("invalid");
+    document.getElementById("inCodigo").value = "";
+    document.getElementById("invitaAbrir").hidden = false;
+    document.getElementById("invitaOk").hidden = true;
+    pintarModoPago();
+  }
+  function quitarCodigo(){ reiniciarInvita(); document.getElementById("inCodigo").focus(); }
+
+  // Deja la nota y el botón coherentes con el modo: pagando o invitado.
+  function pintarModoPago(){
+    const nota = document.getElementById("pagoNota");
+    const btn  = document.getElementById("btnSubmit");
+    // Con invitación la nota del pago sobra: lo dice el recuadro verde de arriba.
+    nota.style.display = INVITACION ? "none" : "";
+    btn.textContent = INVITACION ? "Confirmar mi silla →" : "Continuar al pago →";
+  }
+
+  // true / false según el Apps Script; null si no alcanzó a responder.
+  function validarCodigo(codigo){
+    return new Promise(resolve=>{
+      const cb = "mbCod_" + Math.random().toString(36).slice(2);
+      const sc = document.createElement("script");
+      let listo = false;
+      const limpiar = ()=>{ window[cb]=()=>{}; sc.remove(); };
+      window[cb] = d => { listo=true; resolve(!!(d && d.valido)); limpiar(); };
+      sc.onerror = ()=>{ if(!listo){ resolve(null); limpiar(); } };
+      sc.src = APPS_SCRIPT_URL + "?action=validarcodigo&callback=" + cb
+             + "&codigo=" + encodeURIComponent(codigo) + "&_=" + Date.now();
+      document.head.appendChild(sc);
+      setTimeout(()=>{ if(!listo){ resolve(null); limpiar(); } }, 12000);
+    });
+  }
+
+  async function aplicarCodigo(){
+    const campo = document.getElementById("f-codigo");
+    const input = document.getElementById("inCodigo");
+    const btn   = document.getElementById("btnInvita");
+    const err   = campo.querySelector(".err");
+    const codigo = input.value.trim();
+
+    const fallar = msg => { err.textContent = msg; campo.classList.add("invalid"); };
+
+    if(!codigo){ fallar("Escribe el código que te pasaron."); input.focus(); return; }
+
+    campo.classList.remove("invalid");
+    btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>';
+    const ok = await validarCodigo(codigo);
+    btn.disabled = false; btn.textContent = "Aplicar";
+
+    if(ok === null){ fallar("No pudimos verificar el código ahora. Intenta de nuevo."); return; }
+    if(!ok){ fallar("Ese código no es válido o ya no está activo."); input.select(); return; }
+
+    INVITACION = codigo.toUpperCase();
+    campo.hidden = true;
+    document.getElementById("invitaOk").hidden = false;
+    pintarModoPago();
+  }
+
+  // Enter dentro del código aplica el código; no envía la reserva.
+  document.getElementById("inCodigo").addEventListener("keydown", e=>{
+    if(e.key === "Enter"){ e.preventDefault(); aplicarCodigo(); }
+  });
+
   async function submitReserva(){
     const club=selClub.value,nombre=inNombre.value.trim(),
           email=inEmail.value.trim(),fono=inFono.value.trim();
@@ -1414,14 +1530,24 @@
         method:"POST",
         mode:"no-cors",
         headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({nombre,email,telefono:fono,club:c.club,libro:c.titulo,fecha:s.fecha,lugar:s.lugar,codigo:code,precio:clp(c.precio)})
+        body:JSON.stringify({nombre,email,telefono:fono,club:c.club,libro:c.titulo,fecha:s.fecha,lugar:s.lugar,codigo:code,
+                             precio: INVITACION ? ("INVITACIÓN · " + INVITACION) : clp(c.precio)})
       });
     } catch(e){ console.warn("Formspree:",e) }
     s.cuposTomados++;renderClubs();
     confirmDetail.textContent=`${nombre.split(" ")[0]}, apartamos tu silla en ${c.club} para "${c.titulo}" (${s.fecha}).`;
+
+    // Al invitado no se le pide pagar: se le cierra la reserva ahí mismo.
+    const invitado = !!INVITACION;
+    document.getElementById("confirmTitulo").textContent = invitado ? "¡Nos vemos en la mesa!" : "¡Tu silla está apartada!";
+    document.getElementById("confirmPaso").style.display = invitado ? "none" : "";
+    btnPagar.style.display = invitado ? "none" : "inline-block";
+    document.getElementById("confirmNota").textContent = invitado
+      ? "Tu silla ya está confirmada. Te escribiremos antes de la sesión con los últimos detalles."
+      : "Si el pago no se completa en 24 horas, la silla vuelve a abrirse para otra persona.";
     btnPagar.href=c.mpLink;
     formView.style.display="none";confirmView.style.display="block";
-    btn.disabled=false;btn.textContent="Continuar al pago →";
+    btn.disabled=false;pintarModoPago();
 
     // Guarda nombre y teléfono en la cuenta para no volver a pedirlos
     if(USUARIO && window.netlifyIdentity){
