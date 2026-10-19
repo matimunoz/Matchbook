@@ -256,9 +256,9 @@ const DIAS_SEM = 'lunes|martes|miércoles|jueves|viernes|sábado|domingo';
 // Un "Varios días en Marzo" no tiene dónde ponerse, así que queda fuera.
 //
 // Los míos abren con "Un 5 de agosto" y los de ella con "Sábado 12 de
-// septiembre": el "Un" y el día de la semana son los dos opcionales,
-// pero el día y el mes tienen que estar.
-const ABRE = `^\\s*(?:Un[ao]?\\s+)?(?:(?:${DIAS_SEM})\\s+)?(\\d{1,2})\\s+de\\s+`;
+// septiembre" o "Un día jueves 2 de julio": el "Un", el "día" y el día
+// de la semana son todos opcionales, pero el día y el mes tienen que estar.
+const ABRE = `^\\s*(?:Un[ao]?\\s+)?(?:d[ií]a\\s+)?(?:(?:${DIAS_SEM})\\s+)?(\\d{1,2})\\s+de\\s+`;
 
 function fechaDe(texto) {
   const m = texto.match(new RegExp(ABRE + `(\\p{L}+)`, 'iu'));
@@ -276,7 +276,8 @@ function armar(mes, dia) {
 // Se le quita la fecha al texto, que ya se muestra arriba
 function sinFecha(texto) {
   const t = texto
-    .replace(new RegExp(ABRE + `\\p{L}+,?\\s*`, 'iu'), '')
+    // Ella a veces cierra la fecha con dos puntos en vez de coma
+    .replace(new RegExp(ABRE + `\\p{L}+[,:;.]?\\s*`, 'iu'), '')
     .replace(/^\s*Varios días en \p{L}+,?\s*/iu, '')
     // La etiqueta ya dice que no se sabe el día; repetirlo sobra
     .replace(/^\s*No s[eé] (?:qu[eé]|que) d[ií]a fue (?:este|[eé]ste),?\s*(?:pero\s*)?/iu, '')
