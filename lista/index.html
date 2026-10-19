@@ -33,14 +33,21 @@
   .header p { font-size: .83rem; color: var(--t3); }
 
   /* ── Progreso ── */
-  .prog { margin-bottom: 22px; }
-  .prog-row {
-    display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px;
-  }
+  .prog { margin-bottom: 20px; }
+  .prog-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
   .prog-row span { font-size: .72rem; color: var(--t2); letter-spacing: .04em; text-transform: uppercase; font-weight: 600; }
   .prog-row strong { font-family: Georgia, serif; font-size: 1.05rem; color: var(--g1); font-weight: normal; }
   .prog-bar { height: 6px; background: var(--g4); border-radius: 3px; overflow: hidden; }
   .prog-fill { height: 100%; background: var(--g2); border-radius: 3px; transition: width .7s cubic-bezier(.34,1.2,.64,1); }
+
+  /* ── Aviso de conexión ── */
+  .aviso {
+    border-radius: var(--rsm); padding: 12px 15px; margin-bottom: 18px;
+    font-size: .8rem; line-height: 1.5; display: none;
+  }
+  .aviso.on { display: block; }
+  .aviso.local  { background: #FDF4E3; color: #7A5A1E; border: 1px solid #EBD9AE; }
+  .aviso.caido  { background: #FBEAEA; color: #8A3A3A; border: 1px solid #EFC9C9; }
 
   /* ── Filtros ── */
   .filtros { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 18px; }
@@ -53,16 +60,15 @@
   .filtro.on { border-color: var(--g2); background: var(--g5); color: var(--g1); font-weight: 600; }
 
   /* ── Items ── */
-  .items { display: flex; flex-direction: column; gap: 8px; }
+  .items { display: flex; flex-direction: column; gap: 8px; min-height: 60px; }
   .item {
     display: flex; align-items: flex-start; gap: 12px;
     background: var(--card); border-radius: var(--rsm);
     border: 1.5px solid var(--g4); padding: 13px 15px;
     box-shadow: 0 2px 8px rgba(42,80,64,.05);
-    animation: fadeIn .3s ease both;
   }
-  @keyframes fadeIn { from { opacity:0; transform: translateY(6px); } to { opacity:1; transform:none; } }
   .item.listo { background: var(--g5); border-color: var(--g3); }
+  .item.enviando { opacity: .5; }
 
   .check {
     width: 24px; height: 24px; flex-shrink: 0; margin-top: 1px;
@@ -76,13 +82,18 @@
   .item.listo .check { background: var(--g2); border-color: var(--g2); }
 
   .item-cuerpo { flex: 1; min-width: 0; }
-  .item-texto {
-    font-family: Georgia, serif; font-size: .97rem; line-height: 1.45; color: var(--t1);
-  }
+  .item-texto { font-family: Georgia, serif; font-size: .97rem; line-height: 1.45; color: var(--t1); }
   .item.listo .item-texto { color: var(--t3); text-decoration: line-through; }
   .item-meta { font-size: .68rem; color: var(--t3); margin-top: 4px; }
 
-  .vacio { text-align: center; color: var(--t3); font-size: .85rem; padding: 28px; }
+  .borrar {
+    background: none; border: none; cursor: pointer; padding: 2px 4px;
+    font-size: .9rem; color: var(--g4); flex-shrink: 0; line-height: 1;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .borrar:hover { color: #C97A7A; }
+
+  .vacio, .cargando { text-align: center; color: var(--t3); font-size: .85rem; padding: 28px; }
 
   /* ── Agregar ── */
   .agregar {
@@ -115,6 +126,7 @@
   }
   .btn:hover { background: var(--g1); }
   .btn:active { transform: scale(.98); }
+  .btn:disabled { background: var(--g4); cursor: default; }
   .estado { font-size: .8rem; color: var(--g2); text-align: center; padding: 9px; display: none; }
 
   .foot { margin-top: 30px; text-align: center; font-size: .76rem; }
@@ -136,150 +148,222 @@
     <div class="prog-bar"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
   </div>
 
+  <div class="aviso" id="aviso"></div>
   <div class="filtros" id="filtros"></div>
-  <div class="items" id="items"></div>
+  <div class="items" id="items"><div class="cargando">Cargando…</div></div>
 
   <div class="agregar">
     <h2>➕ Sumar algo</h2>
     <input id="nuevoTexto" type="text" placeholder="Ir a las Torres del Paine" maxlength="120" />
     <select id="nuevaCat"></select>
     <div class="quien" id="quien"></div>
-    <button class="btn" onclick="agregar()">Agregar a la lista</button>
+    <button class="btn" id="btnAgregar" onclick="agregar()">Agregar a la lista</button>
     <div class="estado" id="estado"></div>
   </div>
 
   <div class="foot"><a href="/alyn/">Volver al inicio 💚</a></div>
 </div>
 
-<!-- Formulario oculto: lo que agrega ella te llega a Netlify Forms -->
-<form name="lista" data-netlify="true" netlify-honeypot="bot-field" hidden>
-  <input type="hidden" name="form-name" value="lista" />
-  <input type="text" name="bot-field" />
-  <input type="text" name="cosa" />
-  <input type="text" name="categoria" />
-  <input type="text" name="quien" />
-  <input type="text" name="fecha" />
-</form>
-
 <script src="items.js"></script>
 <script>
-  const CATEGORIAS = ['Viajes', 'Panoramas', 'Libros y películas', 'Comida', 'Casa', 'Otros'];
-  let filtro = 'Todas';
-  let quien = 'Alyn';
+// ══════════════════════════════════════════════════════════════════════
+//  CONEXIÓN CON LA HOJA
+//  Pega acá la URL /exec de la implementación y el mismo TOKEN del script.
+//  Mientras estén vacíos, la página funciona sola en este teléfono.
+// ══════════════════════════════════════════════════════════════════════
+const API_URL = '';
+const TOKEN   = '';
 
-  // ── Estado local ────────────────────────────────────────────────────
-  // ITEMS (items.js) es la lista base del repositorio.
-  // Lo que agregan desde el teléfono se guarda acá y se suma a esa base.
-  function propios() {
-    try { return JSON.parse(localStorage.getItem('lista_propios') || '[]'); }
-    catch (e) { return []; }
-  }
-  function hechos() {
-    try { return JSON.parse(localStorage.getItem('lista_hechos') || '{}'); }
-    catch (e) { return {}; }
-  }
-  function idDe(it) { return (it.texto || '').slice(0, 48); }
+const CATEGORIAS = ['Viajes', 'Panoramas', 'Libros y películas', 'Comida', 'Casa', 'Otros'];
+const compartida = Boolean(API_URL && TOKEN);
 
-  function todos() {
-    const h = hechos();
-    return [...ITEMS, ...propios()].map(it => ({ ...it, listo: !!h[idDe(it)], cuando: h[idDe(it)] }));
-  }
+let lista  = [];
+let filtro = 'Todas';
+let quien  = 'Alyn';
 
-  function esc(s) {
-    return String(s).replace(/[&<>"']/g, c =>
-      ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
-  }
+// ── Llamadas a la hoja (JSONP: Apps Script no permite fetch directo) ──
+function api(params) {
+  return new Promise((resolve, reject) => {
+    const cb = 'cb' + Date.now() + Math.floor(Math.random() * 1000);
+    const s  = document.createElement('script');
+    const corte = setTimeout(() => { limpiar(); reject(new Error('timeout')); }, 15000);
 
-  function fechaHoy() {
-    const d = new Date();
-    const m = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
-    return `${d.getDate()} de ${m[d.getMonth()]} de ${d.getFullYear()}`;
-  }
+    function limpiar() {
+      clearTimeout(corte);
+      delete window[cb];
+      if (s.parentNode) s.parentNode.removeChild(s);
+    }
+    window[cb] = (data) => {
+      limpiar();
+      if (data && data.ok) resolve(data); else reject(new Error((data && data.error) || 'error'));
+    };
+    s.onerror = () => { limpiar(); reject(new Error('sin conexión')); };
+    s.src = API_URL + '?' + new URLSearchParams({ ...params, token: TOKEN, cb }).toString();
+    document.head.appendChild(s);
+  });
+}
 
-  // ── Render ──────────────────────────────────────────────────────────
-  function pintar() {
-    const lista = todos();
-    const listos = lista.filter(i => i.listo).length;
-    const pct = lista.length ? Math.round(listos / lista.length * 100) : 0;
+// ── Modo local, cuando todavía no hay hoja conectada ─────────────────
+function localGuardados() {
+  try { return JSON.parse(localStorage.getItem('lista_local') || 'null'); }
+  catch (e) { return null; }
+}
+function localGuardar() { localStorage.setItem('lista_local', JSON.stringify(lista)); }
 
-    document.getElementById('progTexto').textContent = `${listos} de ${lista.length}`;
-    document.getElementById('progFill').style.width = pct + '%';
+function semilla() {
+  return ITEMS.map((it, i) => ({ id: 's' + i, ...it, hecho: '', hechoPor: '' }));
+}
 
-    // Filtros
-    const cats = ['Todas', ...CATEGORIAS.filter(c => lista.some(i => i.categoria === c))];
-    document.getElementById('filtros').innerHTML = cats.map(c =>
-      `<button class="filtro ${filtro === c ? 'on' : ''}" onclick="setFiltro('${c}')">${c}</button>`
-    ).join('');
+// ── Utilidades ───────────────────────────────────────────────────────
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, c =>
+    ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+}
+function fechaHoy() {
+  const d = new Date();
+  const m = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  return `${d.getDate()} de ${m[d.getMonth()]} de ${d.getFullYear()}`;
+}
+function avisar(clase, texto) {
+  const a = document.getElementById('aviso');
+  a.className = 'aviso on ' + clase;
+  a.innerHTML = texto;
+}
 
-    // Items: pendientes primero, cumplidos al final
-    const visibles = lista.filter(i => filtro === 'Todas' || i.categoria === filtro);
-    const orden = [...visibles.filter(i => !i.listo), ...visibles.filter(i => i.listo)];
+// ── Render ───────────────────────────────────────────────────────────
+function pintar() {
+  const listos = lista.filter(i => i.hecho).length;
+  const pct = lista.length ? Math.round(listos / lista.length * 100) : 0;
+  document.getElementById('progTexto').textContent = `${listos} de ${lista.length}`;
+  document.getElementById('progFill').style.width = pct + '%';
 
-    document.getElementById('items').innerHTML = orden.length === 0
-      ? `<div class="vacio">Nada acá todavía. Sumen algo más abajo ✨</div>`
-      : orden.map(i => `
-        <div class="item ${i.listo ? 'listo' : ''}">
-          <div class="check" onclick="alternar('${esc(idDe(i))}')">${i.listo ? '✓' : ''}</div>
-          <div class="item-cuerpo">
-            <div class="item-texto">${esc(i.texto)}</div>
-            <div class="item-meta">
-              ${esc(i.categoria || 'Otros')}${i.quien ? ' · lo sumó ' + esc(i.quien) : ''}${i.listo && i.cuando ? ' · hecho el ' + esc(i.cuando) : ''}
-            </div>
+  const cats = ['Todas', ...CATEGORIAS.filter(c => lista.some(i => i.categoria === c))];
+  document.getElementById('filtros').innerHTML = cats.map(c =>
+    `<button class="filtro ${filtro === c ? 'on' : ''}" onclick="setFiltro('${c}')">${c}</button>`
+  ).join('');
+
+  const visibles = lista.filter(i => filtro === 'Todas' || i.categoria === filtro);
+  const orden = [...visibles.filter(i => !i.hecho), ...visibles.filter(i => i.hecho)];
+
+  document.getElementById('items').innerHTML = orden.length === 0
+    ? `<div class="vacio">Nada acá todavía. Sumen algo más abajo ✨</div>`
+    : orden.map(i => `
+      <div class="item ${i.hecho ? 'listo' : ''}" id="it-${esc(i.id)}">
+        <div class="check" onclick="alternar('${esc(i.id)}')">${i.hecho ? '✓' : ''}</div>
+        <div class="item-cuerpo">
+          <div class="item-texto">${esc(i.texto)}</div>
+          <div class="item-meta">
+            ${esc(i.categoria || 'Otros')}${i.quien ? ' · lo sumó ' + esc(i.quien) : ''}${i.hecho ? ' · hecho el ' + esc(i.hecho) : ''}
           </div>
-        </div>`).join('');
+        </div>
+        <button class="borrar" onclick="borrar('${esc(i.id)}')" title="Quitar">✕</button>
+      </div>`).join('');
+}
+
+function setFiltro(c) { filtro = c; pintar(); }
+
+// ── Acciones ─────────────────────────────────────────────────────────
+async function alternar(id) {
+  const it = lista.find(x => x.id === id);
+  if (!it) return;
+
+  // Se refleja al tiro y después se confirma contra la hoja
+  const antes = { hecho: it.hecho, hechoPor: it.hechoPor };
+  it.hecho = it.hecho ? '' : fechaHoy();
+  it.hechoPor = it.hecho ? quien : '';
+  pintar();
+
+  if (!compartida) { localGuardar(); return; }
+  try {
+    const r = await api({ accion: 'alternar', id, quien, fecha: fechaHoy() });
+    lista = r.items; pintar();
+  } catch (e) {
+    Object.assign(it, antes); pintar();
+    avisar('caido', 'No se pudo guardar el cambio. Revisa la conexión e inténtalo de nuevo.');
+  }
+}
+
+async function borrar(id) {
+  const it = lista.find(x => x.id === id);
+  if (!it || !confirm(`¿Quitar "${it.texto}" de la lista?`)) return;
+
+  const copia = [...lista];
+  lista = lista.filter(x => x.id !== id);
+  pintar();
+
+  if (!compartida) { localGuardar(); return; }
+  try {
+    const r = await api({ accion: 'borrar', id });
+    lista = r.items; pintar();
+  } catch (e) {
+    lista = copia; pintar();
+    avisar('caido', 'No se pudo quitar. Revisa la conexión e inténtalo de nuevo.');
+  }
+}
+
+async function agregar() {
+  const campo = document.getElementById('nuevoTexto');
+  const texto = campo.value.trim();
+  if (!texto) return;
+  const categoria = document.getElementById('nuevaCat').value;
+
+  const btn = document.getElementById('btnAgregar');
+  const est = document.getElementById('estado');
+  btn.disabled = true;
+  est.style.display = 'block';
+  est.textContent = compartida ? '📨 Guardando…' : '✅ Agregado';
+
+  if (!compartida) {
+    lista.push({ id: 'l' + Date.now(), texto, categoria, quien, hecho: '', hechoPor: '' });
+    localGuardar(); campo.value = ''; pintar();
+    btn.disabled = false;
+    setTimeout(() => { est.style.display = 'none'; }, 2000);
+    return;
   }
 
-  function setFiltro(c) { filtro = c; pintar(); }
-
-  function alternar(id) {
-    const h = hechos();
-    if (h[id]) delete h[id]; else h[id] = fechaHoy();
-    localStorage.setItem('lista_hechos', JSON.stringify(h));
-    pintar();
-  }
-
-  // ── Agregar ─────────────────────────────────────────────────────────
-  function pintarQuien() {
-    document.getElementById('quien').innerHTML = ['Alyn', 'Matías'].map(q =>
-      `<button class="${quien === q ? 'on' : ''}" onclick="setQuien('${q}')">${q}</button>`
-    ).join('');
-  }
-  function setQuien(q) { quien = q; pintarQuien(); }
-
-  async function agregar() {
-    const texto = document.getElementById('nuevoTexto').value.trim();
-    if (!texto) return;
-    const categoria = document.getElementById('nuevaCat').value;
-
-    const nuevo = { texto, categoria, quien };
-    const p = propios();
-    p.push(nuevo);
-    localStorage.setItem('lista_propios', JSON.stringify(p));
-
-    document.getElementById('nuevoTexto').value = '';
-    const est = document.getElementById('estado');
-    est.style.display = 'block';
+  try {
+    const r = await api({ accion: 'agregar', texto, categoria, quien });
+    lista = r.items;
+    campo.value = '';
     est.textContent = '✅ Agregado';
     pintar();
-
-    try {
-      await fetch('/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams({
-          'form-name': 'lista', cosa: texto, categoria, quien, fecha: fechaHoy()
-        }).toString()
-      });
-    } catch (e) { /* queda guardado local igual */ }
-
-    setTimeout(() => { est.style.display = 'none'; }, 2200);
+  } catch (e) {
+    est.textContent = '❌ No se pudo guardar. Inténtalo de nuevo.';
+  } finally {
+    btn.disabled = false;
+    setTimeout(() => { est.style.display = 'none'; }, 2600);
   }
+}
 
-  // ── Init ────────────────────────────────────────────────────────────
+// ── Init ─────────────────────────────────────────────────────────────
+function pintarQuien() {
+  document.getElementById('quien').innerHTML = ['Alyn', 'Matías'].map(q =>
+    `<button class="${quien === q ? 'on' : ''}" onclick="setQuien('${q}')">${q}</button>`
+  ).join('');
+}
+function setQuien(q) { quien = q; pintarQuien(); }
+
+(async function init() {
   document.getElementById('nuevaCat').innerHTML =
     CATEGORIAS.map(c => `<option value="${c}">${c}</option>`).join('');
   pintarQuien();
+
+  if (!compartida) {
+    lista = localGuardados() || semilla();
+    avisar('local', '<b>Lista local.</b> Todavía no está conectada a la hoja compartida, así que lo que agregues acá no le aparece al otro.');
+    pintar();
+    return;
+  }
+
+  try {
+    const r = await api({ accion: 'listar' });
+    lista = r.items.length ? r.items : semilla();
+  } catch (e) {
+    lista = localGuardados() || semilla();
+    avisar('caido', '<b>No pude conectar con la lista compartida.</b> Te muestro la última que tenía guardada.');
+  }
   pintar();
+})();
 </script>
 </body>
 </html>

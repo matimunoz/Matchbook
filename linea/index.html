@@ -24,7 +24,7 @@
   }
   .wrap { max-width: 520px; margin: 0 auto; }
 
-  .header { text-align: center; margin-bottom: 30px; }
+  .header { text-align: center; margin-bottom: 28px; }
   .header-deco { font-size: 2rem; display: block; margin-bottom: 10px; }
   .header h1 {
     font-family: Georgia, 'Times New Roman', serif;
@@ -36,13 +36,18 @@
   .resumen {
     background: linear-gradient(145deg, var(--g1) 0%, var(--g2) 130%);
     color: #fff; border-radius: var(--r);
-    padding: 22px 24px; margin-bottom: 30px;
+    padding: 22px 20px; margin-bottom: 14px;
     display: flex; justify-content: space-around; text-align: center;
     box-shadow: var(--shadow);
   }
-  .resumen div span { display: block; }
-  .r-num { font-family: Georgia, serif; font-size: 1.75rem; line-height: 1.1; }
-  .r-lab { font-size: .66rem; letter-spacing: .09em; text-transform: uppercase; opacity: .8; margin-top: 3px; }
+  .r-num { font-family: Georgia, serif; font-size: 1.7rem; line-height: 1.1; display: block; }
+  .r-lab { font-size: .63rem; letter-spacing: .08em; text-transform: uppercase; opacity: .8; margin-top: 4px; display: block; }
+
+  .nota {
+    background: var(--g5); border: 1px dashed var(--g4); border-radius: var(--rsm);
+    padding: 12px 15px; margin-bottom: 26px;
+    font-size: .79rem; color: var(--t2); line-height: 1.5; text-align: center;
+  }
 
   /* ── Línea ── */
   .linea { position: relative; padding-left: 30px; }
@@ -51,34 +56,42 @@
     width: 2px; background: var(--g4); border-radius: 1px;
   }
 
-  .hito { position: relative; margin-bottom: 20px; }
+  .hito { position: relative; margin-bottom: 18px; }
   .hito::before {
-    content: ''; position: absolute; left: -30px; top: 17px;
+    content: ''; position: absolute; left: -30px; top: 16px;
     width: 16px; height: 16px; border-radius: 50%;
     background: var(--card); border: 3px solid var(--g3);
   }
   .hito.grande::before { border-color: var(--g1); background: var(--g1); }
+  .hito.futuro::before { border-style: dashed; border-color: var(--g4); }
 
   .hito-card {
     background: var(--card); border-radius: var(--rsm);
-    border: 1.5px solid var(--g4); padding: 15px 17px;
+    border: 1.5px solid var(--g4); padding: 14px 16px;
     box-shadow: 0 2px 10px rgba(42,80,64,.06);
   }
   .hito.grande .hito-card { border-color: var(--g3); background: var(--g5); }
+  .hito.futuro .hito-card { border-style: dashed; background: transparent; box-shadow: none; }
 
   .hito-fecha {
-    font-size: .68rem; font-weight: 700; letter-spacing: .08em;
+    font-size: .67rem; font-weight: 700; letter-spacing: .08em;
     text-transform: uppercase; color: var(--g2); margin-bottom: 5px;
   }
+  .hito.futuro .hito-fecha { color: var(--t3); }
   .hito-titulo {
-    font-family: Georgia, serif; font-size: 1.08rem;
-    color: var(--g1); line-height: 1.3; margin-bottom: 5px;
+    font-family: Georgia, serif; font-size: 1.04rem;
+    color: var(--g1); line-height: 1.35; margin-bottom: 5px;
   }
-  .hito-texto { font-size: .85rem; line-height: 1.6; color: var(--t2); }
+  .hito-texto { font-size: .84rem; line-height: 1.6; color: var(--t2); }
+  .hito-mas {
+    background: none; border: none; padding: 0; margin-top: 6px;
+    font-family: Georgia, serif; font-style: italic; font-size: .78rem;
+    color: var(--g2); cursor: pointer; border-bottom: 1px solid var(--g4);
+  }
 
   .anio {
-    font-family: Georgia, serif; font-size: 1.5rem; color: var(--t3);
-    margin: 30px 0 18px -30px; position: relative;
+    font-family: Georgia, serif; font-size: 1.45rem; color: var(--t3);
+    margin: 28px 0 16px -30px; position: relative;
   }
   .anio:first-child { margin-top: 0; }
 
@@ -97,83 +110,94 @@
   </header>
 
   <div class="resumen" id="resumen"></div>
+  <div class="nota" id="nota"></div>
   <div class="linea" id="linea"></div>
 
   <div class="foot"><a href="/alyn/">Volver al inicio 💚</a></div>
 </div>
 
+<script src="/momentos/momentos.js"></script>
 <script>
 // ══════════════════════════════════════════════════════════════════════
-//  FECHAS CLAVE — corrige estas dos, son las únicas que no sé con certeza
+//  FECHAS CLAVE
 // ══════════════════════════════════════════════════════════════════════
-const PRIMERA_CITA = '2025-12-20';   // ← ajústala
-const POLOLEO      = '2026-08-13';   // ← ajústala si no fue ese día
+const POLOLEO = '2026-08-13';   // ← ajústala si no fue ese día
+
+// Momentos que Alyn ya descubrió, por número del admin.
+// La página igual lee su teléfono: si ella abrió más, aparecen solos.
+// Acá solo hace falta mantener lo mínimo para que se vea bien desde
+// cualquier dispositivo.
+const DESCUBIERTOS = [...rango(1, 32), 36, 38];
+function rango(a, b) { const r = []; for (let i = a; i <= b; i++) r.push(i); return r; }
 
 // ══════════════════════════════════════════════════════════════════════
-//  HITOS — agrega, edita o borra los que quieras.
-//  grande: true los destaca en la línea.
+//  HITOS que no son momentos. Agrega los que quieras.
+//  futuro: true los dibuja punteados, como algo que todavía no pasa.
 // ══════════════════════════════════════════════════════════════════════
 const HITOS = [
-  { fecha: PRIMERA_CITA, titulo: `Nuestra primera cita`, grande: true,
-    texto: `El principio de todo.` },
-
-  { fecha: '2026-02-12', titulo: `La primera noche`, grande: true,
-    texto: `Cambié el sillón de posición, abrí el vino, llegaste y no paramos de conversar en horas.` },
-
-  { fecha: '2026-03-15', titulo: `Chistín, el comediante serial`, aprox: true,
-    texto: `Me enviabas cada capítulo casi al segundo. Ahí empecé a pensar que me gustaba compartir ese humor contigo.` },
-
-  { fecha: '2026-04-09', titulo: `Volviste de inmediato`,
-    texto: `Venía de Santiago como si fuese un día normal.` },
-
-  { fecha: '2026-06-27', titulo: `Pink Floyd y el MUT`,
-    texto: `Corrimos lo más que pudimos y llegamos contra todo pronóstico. Después, pizzas para celebrar.` },
-
-  { fecha: '2026-07-08', titulo: `Te dije que te quería`, grande: true,
-    texto: `Después del banana bread. Me lo venía aguantando hacía días, buscando el momento.` },
-
-  { fecha: '2026-07-18', titulo: `El matrimonio de la Cata`,
-    texto: `Terminamos en el grupo VIP, con acceso directo al cumpleaños de doña Marta.` },
-
-  { fecha: '2026-07-19', titulo: `La final del Mundial`,
-    texto: `Sushi, siesta, y las michipillas. Ahí pensé: me encanta esta cotidianidad junto a ella.` },
-
-  { fecha: '2026-07-25', titulo: `La Fiesta de Lectura`, grande: true,
-    texto: `El día que se me ocurrió construirte una aplicación solo para ti.` },
-
-  { fecha: '2026-07-31', titulo: `Conocí a Miguel y Natalia`,
-    texto: `Tus mejores amigos de la infancia. Valoré un montón que me quisieras mostrar.` },
-
-  { fecha: '2026-08-05', titulo: `El Pasaje, Valparaíso`,
-    texto: `Entre libros y risas. Comer rico y leer contigo.` },
-
-  { fecha: '2026-08-09', titulo: `El mirador en Placeres`,
-    texto: `Te llevé la presentación con las razones de por qué tu año no era malo. Andaba con el anillo.` },
-
-  { fecha: POLOLEO, titulo: `Te pedí pololeo`, grande: true,
-    texto: `Unos días después, cuando las cosas andaban mejor.` },
-
-  { fecha: '2026-09-02', titulo: `La víspera de mi cumpleaños`,
-    texto: `Me recibiste con una carta y galletas dubai. Después, Demian The Rat.` },
-
-  { fecha: '2026-09-06', titulo: `Desayuno en Concón`,
-    texto: `Un día soleado y bien regaloneado, con regalos de los dos.` },
-
+  { fecha: POLOLEO,      titulo: `Te pedí pololeo`, grande: true },
   { fecha: '2026-10-13', titulo: `Dos meses`, grande: true,
     texto: `Hipnotizados por nuestros sueños.` },
+  { fecha: '2026-11-13', titulo: `Tres meses`, futuro: true },
 ];
 
-// ── Fechas ────────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════
 const MESES = ['enero','febrero','marzo','abril','mayo','junio',
                'julio','agosto','septiembre','octubre','noviembre','diciembre'];
+const DIAS_SEM = 'lunes|martes|miércoles|jueves|viernes|sábado|domingo';
 
-function aDate(iso) { const [y,m,d] = iso.split('-').map(Number); return new Date(y, m-1, d); }
+// Los momentos traen la fecha dentro del texto: "Un 5 de agosto, …",
+// "Un jueves 25 de junio, …", "Varios días en Marzo, …".
+function fechaDe(texto) {
+  const conDia = texto.match(new RegExp(`^\\s*Un[ao]?\\s+(?:(?:${DIAS_SEM})\\s+)?(\\d{1,2})\\s+de\\s+(\\p{L}+)`, 'iu'));
+  if (conDia) {
+    const mes = MESES.indexOf(conDia[2].toLowerCase());
+    if (mes !== -1) return { iso: armar(mes, +conDia[1]), aprox: false };
+  }
+  const soloMes = texto.match(/\ben\s+(\p{L}+)/iu);
+  if (soloMes) {
+    const mes = MESES.indexOf(soloMes[1].toLowerCase());
+    if (mes !== -1) return { iso: armar(mes, 15), aprox: true };
+  }
+  return null;
+}
+
+// La relación empezó en diciembre de 2025: diciembre es 2025, el resto 2026.
+function armar(mes, dia) {
+  const anio = mes === 11 ? 2025 : 2026;
+  return `${anio}-${String(mes + 1).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
+}
+
+// El titular es un asomo corto; el texto completo va detrás de "leer el recuerdo"
+function titularDe(texto) {
+  const sinFecha = texto
+    .replace(new RegExp(`^\\s*Un[ao]?\\s+(?:(?:${DIAS_SEM})\\s+)?\\d{1,2}\\s+de\\s+\\p{L}+,?\\s*`, 'iu'), '')
+    .replace(/^\s*Varios días en \p{L}+,?\s*/iu, '')
+    .trim();
+
+  const TOPE = 52;
+  const corte = sinFecha.search(/[,.:;]/);
+  let t, cortado = false;
+
+  if (corte > 12 && corte <= TOPE) {
+    t = sinFecha.slice(0, corte);
+  } else {
+    t = sinFecha.slice(0, TOPE);
+    const esp = t.lastIndexOf(' ');
+    if (esp > 22) t = t.slice(0, esp);
+    cortado = sinFecha.length > t.length;
+  }
+
+  t = t.trim();
+  return t.charAt(0).toUpperCase() + t.slice(1) + (cortado ? '…' : '');
+}
+
 function formatear(iso, aprox) {
-  const [y,m,d] = iso.split('-').map(Number);
+  const [y, m, d] = iso.split('-').map(Number);
   return aprox ? `${MESES[m-1]} de ${y}` : `${d} de ${MESES[m-1]}, ${y}`;
 }
+
 function diasDesde(iso) {
-  // En UTC, para que los cambios de hora no se coman un día
   const [y, m, d] = iso.split('-').map(Number);
   const hoy = new Date();
   return Math.round(
@@ -181,51 +205,95 @@ function diasDesde(iso) {
   );
 }
 
-// ── Render ────────────────────────────────────────────────────────────
-function pintarResumen() {
-  const desdeCita = diasDesde(PRIMERA_CITA);
-  const desdePolo = diasDesde(POLOLEO);
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, c =>
+    ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+}
+
+// ── Qué momentos mostrar ─────────────────────────────────────────────
+// Nunca los que ella no ha abierto: eso arruinaría 100 Momentos.
+function vistos() {
+  const porConfig = DESCUBIERTOS.map(n => n - 1);
+  let enSuTelefono = [];
+  try { enSuTelefono = JSON.parse(localStorage.getItem('momentos_seen') || '[]'); } catch (e) {}
+  return new Set([...porConfig, ...enSuTelefono]);
+}
+
+function construir() {
+  const abiertos = vistos();
+  const entradas = [];
+
+  MOMENTOS.forEach((texto, i) => {
+    if (texto === null || !abiertos.has(i)) return;
+    const f = fechaDe(texto);
+    if (!f) return;                     // los que no dicen fecha quedan fuera
+    entradas.push({
+      fecha: f.iso, aprox: f.aprox,
+      titulo: titularDe(texto),
+      texto, momento: i + 1
+    });
+  });
+
+  HITOS.forEach(h => entradas.push({ ...h }));
+  return entradas.sort((a, b) => a.fecha.localeCompare(b.fecha));
+}
+
+// ── Render ───────────────────────────────────────────────────────────
+let ENTRADAS = [];
+
+function pintar() {
+  ENTRADAS = construir();
+  const conMomento = ENTRADAS.filter(e => e.momento).length;
+  const escritos = MOMENTOS.filter(m => m !== null).length;
+  const primera = ENTRADAS.find(e => !e.futuro);
+
   document.getElementById('resumen').innerHTML = `
     <div>
-      <span class="r-num">${desdeCita}</span>
-      <span class="r-lab">días desde la<br>primera cita</span>
+      <span class="r-num">${primera ? diasDesde(primera.fecha) : 0}</span>
+      <span class="r-lab">días desde<br>el principio</span>
     </div>
     <div>
-      <span class="r-num">${desdePolo}</span>
+      <span class="r-num">${diasDesde(POLOLEO)}</span>
       <span class="r-lab">días de<br>pololeo</span>
     </div>
     <div>
-      <span class="r-num">${HITOS.length}</span>
-      <span class="r-lab">momentos<br>en la línea</span>
+      <span class="r-num">${conMomento}</span>
+      <span class="r-lab">recuerdos<br>en la línea</span>
     </div>`;
-}
 
-function pintarLinea() {
-  const ordenados = [...HITOS].sort((a, b) => a.fecha.localeCompare(b.fecha));
-  let anioActual = null;
-  let html = '';
+  const faltan = escritos - conMomento;
+  document.getElementById('nota').innerHTML = faltan > 0
+    ? `Esta línea crece sola: cada momento que descubras aparece acá.<br>Quedan <b>${faltan}</b> esperando su lugar 🌿`
+    : `Están todos los momentos que has descubierto hasta hoy 🌿`;
 
-  ordenados.forEach(h => {
-    const anio = h.fecha.slice(0, 4);
-    if (anio !== anioActual) {
-      anioActual = anio;
-      html += `<div class="anio">${anio}</div>`;
-    }
+  let anio = null, html = '';
+  ENTRADAS.forEach((e, idx) => {
+    const a = e.fecha.slice(0, 4);
+    if (a !== anio) { anio = a; html += `<div class="anio">${a}</div>`; }
+    const clases = ['hito', e.grande ? 'grande' : '', e.futuro ? 'futuro' : ''].join(' ');
     html += `
-      <div class="hito ${h.grande ? 'grande' : ''}">
+      <div class="${clases}">
         <div class="hito-card">
-          <div class="hito-fecha">${formatear(h.fecha, h.aprox)}</div>
-          <div class="hito-titulo">${h.titulo}</div>
-          ${h.texto ? `<div class="hito-texto">${h.texto}</div>` : ''}
+          <div class="hito-fecha">${formatear(e.fecha, e.aprox)}</div>
+          <div class="hito-titulo">${esc(e.titulo)}</div>
+          ${e.texto && !e.momento ? `<div class="hito-texto">${esc(e.texto)}</div>` : ''}
+          ${e.momento ? `
+            <div class="hito-texto" id="tx-${idx}" hidden>${esc(e.texto)}</div>
+            <button class="hito-mas" id="bt-${idx}" onclick="verMas(${idx})">leer el recuerdo</button>` : ''}
         </div>
       </div>`;
   });
-
   document.getElementById('linea').innerHTML = html;
 }
 
-pintarResumen();
-pintarLinea();
+function verMas(idx) {
+  const tx = document.getElementById('tx-' + idx);
+  const bt = document.getElementById('bt-' + idx);
+  tx.hidden = !tx.hidden;
+  bt.textContent = tx.hidden ? 'leer el recuerdo' : 'cerrar';
+}
+
+pintar();
 </script>
 </body>
 </html>
