@@ -150,6 +150,30 @@
   }
   .firma::before { content: '· '; }
 
+  /* ── Un día que contamos los dos: una sola tarjeta, dos voces ── */
+  .ent.ambos::before {
+    background: linear-gradient(135deg, var(--g3) 0 50%, var(--a2) 50% 100%);
+    border-color: var(--card);
+  }
+  .ent.ambos .ent-card {
+    background: linear-gradient(104deg, var(--g5) 0%, #FFFFFF 46%, var(--a4) 100%);
+  }
+  .ent.ambos.abierta .ent-card { border-color: var(--a3); }
+  .ent.ambos.abierta::before { border-color: var(--g5); }
+  .ent.ambos .ent-fecha { color: var(--g2); }
+  .firma.amb { color: var(--a2); }
+
+  /* Cada voz dentro de una tarjeta compartida */
+  .voz { margin-top: 13px; padding-top: 12px; border-top: 1px solid var(--g4); }
+  .voz:first-child { margin-top: 0; padding-top: 0; border-top: none; }
+  .voz-lab {
+    display: block; margin-bottom: 5px;
+    font-size: .63rem; font-weight: 700; letter-spacing: .09em; text-transform: uppercase;
+  }
+  .voz.mio  .voz-lab { color: var(--g2); }
+  .voz.suyo .voz-lab { color: var(--a1); }
+  .voz p { font-family: Georgia, serif; font-size: .88rem; line-height: 1.65; color: var(--t1); }
+
   /* Hito: tarjeta entera, con peso */
   .hito { position: relative; margin: 16px 0; }
   .hito::before {
@@ -232,11 +256,14 @@ const POLOLEO = '2026-08-13';
 // ══════════════════════════════════════════════════════════════════════
 //  HITOS que no son momentos. Se dibujan como tarjeta grande.
 //  Si llevan "momento", se funden con ese recuerdo en vez de duplicarlo.
+//  Si llevan "deAlyn", se funden con el que escribió ella, por su id.
 // ══════════════════════════════════════════════════════════════════════
 const HITOS = [
   { fecha: '2025-12-20', em: '✨', titulo: `Nuestra primera cita`, momento: 19 },
   { fecha: '2026-07-08', em: '💚', titulo: `Te dije que te quería`, momento: 6 },
   { fecha: POLOLEO,      em: '🌿', titulo: `Te pedí pololeo`, momento: 41 },
+  { fecha: '2026-08-24', em: '💞', titulo: `Nos dijimos te amo`,
+    momento: 16, deAlyn: 'dia-del-lector' },
   { fecha: '2026-10-13', em: '💌', titulo: `Dos meses`,
     texto: `Hipnotizados por nuestros sueños.` },
   { fecha: '2026-11-13', em: '🗓️', titulo: `Tres meses`, futuro: true },
@@ -320,8 +347,10 @@ function vistos() {
 
 function construir() {
   const abiertos = vistos();
-  // Un momento que ya es hito no se repite como entrada suelta
+  const SUYOS    = (typeof DE_ALYN === 'undefined' ? [] : DE_ALYN);
+  // Ni un momento ni un recuerdo suyo que ya sea hito se repite como entrada
   const usadosPorHito = new Set(HITOS.filter(h => h.momento).map(h => h.momento - 1));
+  const suyosEnHito   = new Set(HITOS.filter(h => h.deAlyn).map(h => h.deAlyn));
   const entradas = [];
 
   MOMENTOS.forEach((m, i) => {
@@ -338,7 +367,8 @@ function construir() {
   // Los que escribió ella entran siempre: son suyos, no hay nada que
   // reservarle. Van después de los míos para que, cuando los dos contamos
   // el mismo día, el día se lea primero desde mi lado y después del suyo.
-  (typeof DE_ALYN === 'undefined' ? [] : DE_ALYN).forEach(m => {
+  SUYOS.forEach(m => {
+    if (m.id && suyosEnHito.has(m.id)) return;
     const o = norm(m);
     // Si no nombra ningún día, vale la fecha puesta a mano (la del envío)
     const fecha = m.fecha || fechaDe(o.texto);
@@ -351,16 +381,62 @@ function construir() {
 
   HITOS.forEach(h => {
     // El hito siempre aparece: es una fecha que ella ya conoce.
-    // Su recuerdo solo se muestra si además lo descubrió en 100 Momentos.
+    // Mi recuerdo solo se muestra si además lo descubrió en 100 Momentos;
+    // el suyo va siempre, porque es de ella.
     const abierto = h.momento ? abiertos.has(h.momento - 1) : false;
-    const o = abierto ? norm(MOMENTOS[h.momento - 1]) : null;
-    const resumen = h.texto || (o ? o.resumen : '');
-    const texto   = o ? sinFecha(o.texto) : '';
-    entradas.push({ tipo: 'hito', ...h, resumen, texto });
+    const o  = abierto ? norm(MOMENTOS[h.momento - 1]) : null;
+    const su = h.deAlyn ? norm(SUYOS.find(x => x.id === h.deAlyn)) : null;
+
+    const voces = [];
+    if (o)  voces.push({ quien: 'mio',  texto: sinFecha(o.texto) });
+    if (su) voces.push({ quien: 'suyo', texto: sinFecha(su.texto) });
+
+    const resumen = h.texto || (o && o.resumen) || (su && su.resumen) || '';
+    entradas.push({ tipo: 'hito', ...h, resumen, voces });
   });
 
-  entradas.sort((a, b) => a.fecha.localeCompare(b.fecha));
-  return entradas;
+  return fundirVoces(entradas).sort((a, b) => a.fecha.localeCompare(b.fecha));
+}
+
+// Un mismo día que contamos los dos no va dos veces: se funde en una
+// sola entrada con las dos voces adentro. El título y el asomo quedan
+// los míos, que son los que ella ya viene leyendo en 100 Momentos.
+function fundirVoces(entradas) {
+  const porDia = new Map();
+  entradas.forEach(e => {
+    if (e.tipo !== 'ent' && e.tipo !== 'alyn') return;
+    if (!porDia.has(e.fecha)) porDia.set(e.fecha, []);
+    porDia.get(e.fecha).push(e);
+  });
+
+  const fundidos = new Set();
+  const nuevas   = [];
+
+  porDia.forEach(lista => {
+    const mio  = lista.find(e => e.tipo === 'ent');
+    const suyo = lista.find(e => e.tipo === 'alyn');
+    if (!mio || !suyo) return;
+    fundidos.add(mio).add(suyo);
+    nuevas.push({
+      tipo: 'ambos', fecha: mio.fecha,
+      titulo: mio.titulo, resumen: mio.resumen,
+      voces: [
+        { quien: 'mio',  texto: mio.texto },
+        { quien: 'suyo', texto: suyo.texto }
+      ]
+    });
+  });
+
+  return [...entradas.filter(e => !fundidos.has(e)), ...nuevas];
+}
+
+// Las dos voces de una tarjeta compartida
+function vocesHtml(voces) {
+  return (voces || []).map(v => `
+    <div class="voz ${v.quien}">
+      <span class="voz-lab">${v.quien === 'mio' ? 'Yo' : 'Tú'}</span>
+      <p>${esc(v.texto)}</p>
+    </div>`).join('');
 }
 
 // ── Render ───────────────────────────────────────────────────────────
@@ -374,9 +450,11 @@ function pintar() {
 }
 
 function pintarResumen() {
-  // Un hito cuyo momento ella todavía no abre no cuenta como recuerdo
-  const mios  = ENTRADAS.filter(e => e.tipo === 'ent' || (e.momento && e.texto)).length;
-  const suyos = ENTRADAS.filter(e => e.tipo === 'alyn').length;
+  // Un día contado por los dos es una tarjeta, pero son dos recuerdos.
+  // Un hito cuyo momento ella todavía no abre no cuenta como recuerdo.
+  const voz = (e, q) => (e.voces || []).some(v => v.quien === q);
+  const mios  = ENTRADAS.filter(e => e.tipo === 'ent'  || voz(e, 'mio')).length;
+  const suyos = ENTRADAS.filter(e => e.tipo === 'alyn' || voz(e, 'suyo')).length;
   // Solo cuentan los que sí pueden llegar algún día: los sin fecha nunca entran
   const conFecha = MOMENTOS.filter(m => m !== null && fechaDe(norm(m).texto)).length;
   const faltan   = conFecha - mios;
@@ -431,19 +509,27 @@ function pintarLinea() {
             <div class="hito-fecha">${formatear(e.fecha)}</div>
             <div class="hito-tit">${esc(e.titulo)}</div>
             ${e.resumen ? `<div class="hito-res">${esc(e.resumen)}</div>` : ''}
-            ${e.texto ? `<div class="hito-txt">${esc(e.texto)}</div>` : ''}
+            ${(e.voces || []).length
+              ? `<div class="hito-txt">${e.voces.length > 1
+                   ? vocesHtml(e.voces)
+                   : esc(e.voces[0].texto)}</div>`
+              : ''}
           </div>
         </div>`;
     } else {
       // Título y resumen arriba; el recuerdo completo aparece al tocar
-      const suya = e.tipo === 'alyn';
+      const suya  = e.tipo === 'alyn';
+      const ambos = e.tipo === 'ambos';
+      const firma = ambos ? ` <span class="firma amb">lo contamos los dos</span>`
+                  : suya  ? ` <span class="firma">lo escribiste tú</span>`
+                  : '';
       html += `
-        <div class="ent ${suya ? 'suya' : ''}" id="e-${i}" onclick="abrir(${i})">
+        <div class="ent ${suya ? 'suya' : ''}${ambos ? 'ambos' : ''}" id="e-${i}" onclick="abrir(${i})">
           <div class="ent-card">
-            <div class="ent-fecha">${formatear(e.fecha)}${suya ? ` <span class="firma">lo escribiste tú</span>` : ''}</div>
+            <div class="ent-fecha">${formatear(e.fecha)}${firma}</div>
             ${e.titulo ? `<div class="ent-titulo">${esc(e.titulo)}</div>` : ''}
             ${e.resumen ? `<div class="ent-resumen">${esc(e.resumen)}</div>` : ''}
-            <div class="ent-texto">${esc(e.texto)}</div>
+            <div class="ent-texto">${ambos ? vocesHtml(e.voces) : esc(e.texto)}</div>
           </div>
         </div>`;
     }
