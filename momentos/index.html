@@ -786,6 +786,67 @@ function saveState(st) {
   localStorage.setItem('momentos_notifiedMs', JSON.stringify(st.notifiedMs));
 }
 
+// ══════════════════════════════════════════════════════════════════════
+//  SIEMBRA — el progreso no se pierde al cambiar de navegador
+//
+//  Lo que ella descubre vive en el navegador donde lo abrió. Si entra
+//  desde otro (Safari en vez de Chrome, o la app de pantalla de inicio,
+//  que en iOS guarda aparte), arrancaría de cero. Esto le devuelve lo
+//  que ya tenía.
+//
+//  Solo agrega lo que falte: nunca borra ni pisa lo que ya esté guardado.
+// ══════════════════════════════════════════════════════════════════════
+function rango(a, b) { const r = []; for (let i = a; i <= b; i++) r.push(i); return r; }
+
+const YA_DESCUBIERTOS  = [...rango(1, 32), 36, 38];  // números tal como salen en el admin
+const RACHA_AL_MIGRAR  = 7;                          // ← ajústalo a la racha que ella trae
+const PREMIOS_GANADOS  = [10, 25];                   // hitos que ya se ganó
+
+function sembrar() {
+  const seen      = JSON.parse(localStorage.getItem('momentos_seen')      || '[]');
+  const seenDates = JSON.parse(localStorage.getItem('momentos_seenDates') || '{}');
+
+  const faltan = YA_DESCUBIERTOS
+    .map(n => n - 1)
+    .filter(i => MOMENTOS[i] != null && !seen.includes(i));
+
+  if (faltan.length) {
+    // Los últimos van en días seguidos hasta ayer, para conservar la racha.
+    // Los anteriores quedan más atrás, con un hueco, para no inflarla.
+    const racha  = Math.min(RACHA_AL_MIGRAR, faltan.length);
+    const recientes = faltan.slice(faltan.length - racha);
+    const viejos    = faltan.slice(0, faltan.length - racha);
+
+    recientes.forEach((idx, k) => {
+      seen.push(idx);
+      seenDates[idx] = shiftDate(today(), -(racha - k));
+    });
+
+    const finViejos = racha + 3;   // el hueco corta la racha donde corresponde
+    viejos.forEach((idx, k) => {
+      seen.push(idx);
+      seenDates[idx] = shiftDate(today(), -(finViejos + (viejos.length - 1 - k)));
+    });
+
+    // Orden por número de momento, para que el archivo quede coherente
+    seen.sort((a, b) => a - b);
+
+    localStorage.setItem('momentos_seen',      JSON.stringify(seen));
+    localStorage.setItem('momentos_seenDates', JSON.stringify(seenDates));
+
+    // Que pueda abrir uno hoy: se marca el último día, no el de hoy
+    const dias = Object.values(seenDates).filter(Boolean).sort();
+    localStorage.setItem('momentos_lastDate', dias[dias.length - 1]);
+    localStorage.removeItem('momentos_todayIdx');
+  }
+
+  // Premios ganados, que también viven por navegador
+  const ganados = JSON.parse(localStorage.getItem('momentos_msAchieved') || '[]');
+  let sumo = false;
+  PREMIOS_GANADOS.forEach(d => { if (!ganados.includes(d)) { ganados.push(d); sumo = true; } });
+  if (sumo) localStorage.setItem('momentos_msAchieved', JSON.stringify(ganados));
+}
+
 // ── Sincronizar la racha con las fechas reales ───────────────────────
 // Corre en cada carga: recalcula desde seenDates y repara cualquier
 // desfase heredado de las versiones anteriores del contador.
@@ -1234,6 +1295,7 @@ function renderBonusInfo() {
 }
 
 // ── Init ──────────────────────────────────────────────────────────────
+sembrar();
 syncStreak();
 render();
 renderBonusInfo();
