@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Nuestra línea de tiempo 🕰️</title>
+<meta name="robots" content="noindex">
+
+<style>
+  :root {
+    color-scheme: only light;
+    --bg: #EBF5ED; --card: #FFFFFF;
+    --g1: #2A5040; --g2: #45856A; --g3: #78B896; --g4: #C0DECA; --g5: #EAF5EE;
+    --t1: #1C3A2C; --t2: #466355; --t3: #8AADA0;
+    --shadow: 0 6px 32px rgba(42,80,64,.12);
+    --r: 18px; --rsm: 12px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+    min-height: 100vh; color: var(--t1);
+    padding: 34px 16px calc(48px + env(safe-area-inset-bottom));
+  }
+  .wrap { max-width: 520px; margin: 0 auto; }
+
+  .header { text-align: center; margin-bottom: 30px; }
+  .header-deco { font-size: 2rem; display: block; margin-bottom: 10px; }
+  .header h1 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1.9rem; font-weight: normal; color: var(--g1); margin-bottom: 6px;
+  }
+  .header p { font-size: .83rem; color: var(--t3); }
+
+  /* ── Resumen ── */
+  .resumen {
+    background: linear-gradient(145deg, var(--g1) 0%, var(--g2) 130%);
+    color: #fff; border-radius: var(--r);
+    padding: 22px 24px; margin-bottom: 30px;
+    display: flex; justify-content: space-around; text-align: center;
+    box-shadow: var(--shadow);
+  }
+  .resumen div span { display: block; }
+  .r-num { font-family: Georgia, serif; font-size: 1.75rem; line-height: 1.1; }
+  .r-lab { font-size: .66rem; letter-spacing: .09em; text-transform: uppercase; opacity: .8; margin-top: 3px; }
+
+  /* ── Línea ── */
+  .linea { position: relative; padding-left: 30px; }
+  .linea::before {
+    content: ''; position: absolute; left: 7px; top: 6px; bottom: 6px;
+    width: 2px; background: var(--g4); border-radius: 1px;
+  }
+
+  .hito { position: relative; margin-bottom: 20px; }
+  .hito::before {
+    content: ''; position: absolute; left: -30px; top: 17px;
+    width: 16px; height: 16px; border-radius: 50%;
+    background: var(--card); border: 3px solid var(--g3);
+  }
+  .hito.grande::before { border-color: var(--g1); background: var(--g1); }
+
+  .hito-card {
+    background: var(--card); border-radius: var(--rsm);
+    border: 1.5px solid var(--g4); padding: 15px 17px;
+    box-shadow: 0 2px 10px rgba(42,80,64,.06);
+  }
+  .hito.grande .hito-card { border-color: var(--g3); background: var(--g5); }
+
+  .hito-fecha {
+    font-size: .68rem; font-weight: 700; letter-spacing: .08em;
+    text-transform: uppercase; color: var(--g2); margin-bottom: 5px;
+  }
+  .hito-titulo {
+    font-family: Georgia, serif; font-size: 1.08rem;
+    color: var(--g1); line-height: 1.3; margin-bottom: 5px;
+  }
+  .hito-texto { font-size: .85rem; line-height: 1.6; color: var(--t2); }
+
+  .anio {
+    font-family: Georgia, serif; font-size: 1.5rem; color: var(--t3);
+    margin: 30px 0 18px -30px; position: relative;
+  }
+  .anio:first-child { margin-top: 0; }
+
+  .foot { margin-top: 32px; text-align: center; font-size: .76rem; }
+  .foot a { color: var(--t3); text-decoration: none; border-bottom: 1px solid var(--g4); }
+  .foot a:hover { color: var(--g2); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="header">
+    <span class="header-deco">🕰️</span>
+    <h1>Nuestra línea de tiempo</h1>
+    <p>cómo llegamos hasta acá</p>
+  </header>
+
+  <div class="resumen" id="resumen"></div>
+  <div class="linea" id="linea"></div>
+
+  <div class="foot"><a href="/alyn/">Volver al inicio 💚</a></div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════════════════
+//  FECHAS CLAVE — corrige estas dos, son las únicas que no sé con certeza
+// ══════════════════════════════════════════════════════════════════════
+const PRIMERA_CITA = '2025-12-20';   // ← ajústala
+const POLOLEO      = '2026-08-13';   // ← ajústala si no fue ese día
+
+// ══════════════════════════════════════════════════════════════════════
+//  HITOS — agrega, edita o borra los que quieras.
+//  grande: true los destaca en la línea.
+// ══════════════════════════════════════════════════════════════════════
+const HITOS = [
+  { fecha: PRIMERA_CITA, titulo: `Nuestra primera cita`, grande: true,
+    texto: `El principio de todo.` },
+
+  { fecha: '2026-02-12', titulo: `La primera noche`, grande: true,
+    texto: `Cambié el sillón de posición, abrí el vino, llegaste y no paramos de conversar en horas.` },
+
+  { fecha: '2026-03-15', titulo: `Chistín, el comediante serial`, aprox: true,
+    texto: `Me enviabas cada capítulo casi al segundo. Ahí empecé a pensar que me gustaba compartir ese humor contigo.` },
+
+  { fecha: '2026-04-09', titulo: `Volviste de inmediato`,
+    texto: `Venía de Santiago como si fuese un día normal.` },
+
+  { fecha: '2026-06-27', titulo: `Pink Floyd y el MUT`,
+    texto: `Corrimos lo más que pudimos y llegamos contra todo pronóstico. Después, pizzas para celebrar.` },
+
+  { fecha: '2026-07-08', titulo: `Te dije que te quería`, grande: true,
+    texto: `Después del banana bread. Me lo venía aguantando hacía días, buscando el momento.` },
+
+  { fecha: '2026-07-18', titulo: `El matrimonio de la Cata`,
+    texto: `Terminamos en el grupo VIP, con acceso directo al cumpleaños de doña Marta.` },
+
+  { fecha: '2026-07-19', titulo: `La final del Mundial`,
+    texto: `Sushi, siesta, y las michipillas. Ahí pensé: me encanta esta cotidianidad junto a ella.` },
+
+  { fecha: '2026-07-25', titulo: `La Fiesta de Lectura`, grande: true,
+    texto: `El día que se me ocurrió construirte una aplicación solo para ti.` },
+
+  { fecha: '2026-07-31', titulo: `Conocí a Miguel y Natalia`,
+    texto: `Tus mejores amigos de la infancia. Valoré un montón que me quisieras mostrar.` },
+
+  { fecha: '2026-08-05', titulo: `El Pasaje, Valparaíso`,
+    texto: `Entre libros y risas. Comer rico y leer contigo.` },
+
+  { fecha: '2026-08-09', titulo: `El mirador en Placeres`,
+    texto: `Te llevé la presentación con las razones de por qué tu año no era malo. Andaba con el anillo.` },
+
+  { fecha: POLOLEO, titulo: `Te pedí pololeo`, grande: true,
+    texto: `Unos días después, cuando las cosas andaban mejor.` },
+
+  { fecha: '2026-09-02', titulo: `La víspera de mi cumpleaños`,
+    texto: `Me recibiste con una carta y galletas dubai. Después, Demian The Rat.` },
+
+  { fecha: '2026-09-06', titulo: `Desayuno en Concón`,
+    texto: `Un día soleado y bien regaloneado, con regalos de los dos.` },
+
+  { fecha: '2026-10-13', titulo: `Dos meses`, grande: true,
+    texto: `Hipnotizados por nuestros sueños.` },
+];
+
+// ── Fechas ────────────────────────────────────────────────────────────
+const MESES = ['enero','febrero','marzo','abril','mayo','junio',
+               'julio','agosto','septiembre','octubre','noviembre','diciembre'];
+
+function aDate(iso) { const [y,m,d] = iso.split('-').map(Number); return new Date(y, m-1, d); }
+function formatear(iso, aprox) {
+  const [y,m,d] = iso.split('-').map(Number);
+  return aprox ? `${MESES[m-1]} de ${y}` : `${d} de ${MESES[m-1]}, ${y}`;
+}
+function diasDesde(iso) {
+  // En UTC, para que los cambios de hora no se coman un día
+  const [y, m, d] = iso.split('-').map(Number);
+  const hoy = new Date();
+  return Math.round(
+    (Date.UTC(hoy.getFullYear(), hoy.getMonth(), hoy.getDate()) - Date.UTC(y, m - 1, d)) / 86400000
+  );
+}
+
+// ── Render ────────────────────────────────────────────────────────────
+function pintarResumen() {
+  const desdeCita = diasDesde(PRIMERA_CITA);
+  const desdePolo = diasDesde(POLOLEO);
+  document.getElementById('resumen').innerHTML = `
+    <div>
+      <span class="r-num">${desdeCita}</span>
+      <span class="r-lab">días desde la<br>primera cita</span>
+    </div>
+    <div>
+      <span class="r-num">${desdePolo}</span>
+      <span class="r-lab">días de<br>pololeo</span>
+    </div>
+    <div>
+      <span class="r-num">${HITOS.length}</span>
+      <span class="r-lab">momentos<br>en la línea</span>
+    </div>`;
+}
+
+function pintarLinea() {
+  const ordenados = [...HITOS].sort((a, b) => a.fecha.localeCompare(b.fecha));
+  let anioActual = null;
+  let html = '';
+
+  ordenados.forEach(h => {
+    const anio = h.fecha.slice(0, 4);
+    if (anio !== anioActual) {
+      anioActual = anio;
+      html += `<div class="anio">${anio}</div>`;
+    }
+    html += `
+      <div class="hito ${h.grande ? 'grande' : ''}">
+        <div class="hito-card">
+          <div class="hito-fecha">${formatear(h.fecha, h.aprox)}</div>
+          <div class="hito-titulo">${h.titulo}</div>
+          ${h.texto ? `<div class="hito-texto">${h.texto}</div>` : ''}
+        </div>
+      </div>`;
+  });
+
+  document.getElementById('linea').innerHTML = html;
+}
+
+pintarResumen();
+pintarLinea();
+</script>
+</body>
+</html>

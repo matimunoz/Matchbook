@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Cosas por hacer juntos ✅</title>
+<meta name="robots" content="noindex">
+
+<style>
+  :root {
+    color-scheme: only light;
+    --bg: #EBF5ED; --card: #FFFFFF;
+    --g1: #2A5040; --g2: #45856A; --g3: #78B896; --g4: #C0DECA; --g5: #EAF5EE;
+    --t1: #1C3A2C; --t2: #466355; --t3: #8AADA0;
+    --shadow: 0 6px 32px rgba(42,80,64,.12);
+    --r: 18px; --rsm: 12px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+    min-height: 100vh; color: var(--t1);
+    padding: 34px 16px calc(48px + env(safe-area-inset-bottom));
+  }
+  .wrap { max-width: 520px; margin: 0 auto; }
+
+  .header { text-align: center; margin-bottom: 24px; }
+  .header-deco { font-size: 2rem; display: block; margin-bottom: 10px; }
+  .header h1 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1.9rem; font-weight: normal; color: var(--g1); margin-bottom: 6px;
+  }
+  .header p { font-size: .83rem; color: var(--t3); }
+
+  /* ── Progreso ── */
+  .prog { margin-bottom: 22px; }
+  .prog-row {
+    display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px;
+  }
+  .prog-row span { font-size: .72rem; color: var(--t2); letter-spacing: .04em; text-transform: uppercase; font-weight: 600; }
+  .prog-row strong { font-family: Georgia, serif; font-size: 1.05rem; color: var(--g1); font-weight: normal; }
+  .prog-bar { height: 6px; background: var(--g4); border-radius: 3px; overflow: hidden; }
+  .prog-fill { height: 100%; background: var(--g2); border-radius: 3px; transition: width .7s cubic-bezier(.34,1.2,.64,1); }
+
+  /* ── Filtros ── */
+  .filtros { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 18px; }
+  .filtro {
+    background: var(--card); border: 1.5px solid var(--g4); border-radius: 50px;
+    padding: 7px 14px; font-size: .78rem; font-family: inherit; color: var(--t2);
+    cursor: pointer; transition: border-color .2s, background .2s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .filtro.on { border-color: var(--g2); background: var(--g5); color: var(--g1); font-weight: 600; }
+
+  /* ── Items ── */
+  .items { display: flex; flex-direction: column; gap: 8px; }
+  .item {
+    display: flex; align-items: flex-start; gap: 12px;
+    background: var(--card); border-radius: var(--rsm);
+    border: 1.5px solid var(--g4); padding: 13px 15px;
+    box-shadow: 0 2px 8px rgba(42,80,64,.05);
+    animation: fadeIn .3s ease both;
+  }
+  @keyframes fadeIn { from { opacity:0; transform: translateY(6px); } to { opacity:1; transform:none; } }
+  .item.listo { background: var(--g5); border-color: var(--g3); }
+
+  .check {
+    width: 24px; height: 24px; flex-shrink: 0; margin-top: 1px;
+    border-radius: 7px; border: 2px solid var(--g4);
+    background: var(--card); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: .8rem; color: #fff;
+    transition: background .2s, border-color .2s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .item.listo .check { background: var(--g2); border-color: var(--g2); }
+
+  .item-cuerpo { flex: 1; min-width: 0; }
+  .item-texto {
+    font-family: Georgia, serif; font-size: .97rem; line-height: 1.45; color: var(--t1);
+  }
+  .item.listo .item-texto { color: var(--t3); text-decoration: line-through; }
+  .item-meta { font-size: .68rem; color: var(--t3); margin-top: 4px; }
+
+  .vacio { text-align: center; color: var(--t3); font-size: .85rem; padding: 28px; }
+
+  /* ── Agregar ── */
+  .agregar {
+    margin-top: 24px; background: var(--card); border-radius: var(--r);
+    border: 1.5px dashed var(--g4); padding: 20px 22px; box-shadow: var(--shadow);
+  }
+  .agregar h2 {
+    font-size: .72rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+    color: var(--t2); margin-bottom: 13px; display: flex; align-items: center; gap: 10px;
+  }
+  .agregar h2::after { content:''; flex:1; height:1px; background: var(--g4); }
+  .agregar input, .agregar select {
+    width: 100%; border: 1.5px solid var(--g4); border-radius: var(--rsm);
+    padding: 11px 13px; font-size: .92rem; font-family: Georgia, serif;
+    color: var(--t1); background: var(--g5); margin-bottom: 9px;
+  }
+  .agregar input:focus, .agregar select:focus { outline: none; border-color: var(--g2); }
+  .quien { display: flex; gap: 8px; margin-bottom: 11px; }
+  .quien button {
+    flex: 1; border: 1.5px solid var(--g4); background: var(--g5);
+    border-radius: 50px; padding: 9px; font-size: .82rem; font-family: inherit;
+    color: var(--t2); cursor: pointer;
+  }
+  .quien button.on { border-color: var(--g2); background: var(--card); color: var(--g1); font-weight: 600; }
+
+  .btn {
+    width: 100%; background: var(--g2); color: #fff; border: none;
+    border-radius: 50px; padding: 14px; font-size: .95rem; font-weight: 600;
+    font-family: inherit; cursor: pointer; transition: background .2s, transform .12s;
+  }
+  .btn:hover { background: var(--g1); }
+  .btn:active { transform: scale(.98); }
+  .estado { font-size: .8rem; color: var(--g2); text-align: center; padding: 9px; display: none; }
+
+  .foot { margin-top: 30px; text-align: center; font-size: .76rem; }
+  .foot a { color: var(--t3); text-decoration: none; border-bottom: 1px solid var(--g4); }
+  .foot a:hover { color: var(--g2); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="header">
+    <span class="header-deco">✅</span>
+    <h1>Cosas por hacer juntos</h1>
+    <p>los dos podemos sumar acá</p>
+  </header>
+
+  <div class="prog">
+    <div class="prog-row"><span>Cumplidas</span><strong id="progTexto">—</strong></div>
+    <div class="prog-bar"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
+  </div>
+
+  <div class="filtros" id="filtros"></div>
+  <div class="items" id="items"></div>
+
+  <div class="agregar">
+    <h2>➕ Sumar algo</h2>
+    <input id="nuevoTexto" type="text" placeholder="Ir a las Torres del Paine" maxlength="120" />
+    <select id="nuevaCat"></select>
+    <div class="quien" id="quien"></div>
+    <button class="btn" onclick="agregar()">Agregar a la lista</button>
+    <div class="estado" id="estado"></div>
+  </div>
+
+  <div class="foot"><a href="/alyn/">Volver al inicio 💚</a></div>
+</div>
+
+<!-- Formulario oculto: lo que agrega ella te llega a Netlify Forms -->
+<form name="lista" data-netlify="true" netlify-honeypot="bot-field" hidden>
+  <input type="hidden" name="form-name" value="lista" />
+  <input type="text" name="bot-field" />
+  <input type="text" name="cosa" />
+  <input type="text" name="categoria" />
+  <input type="text" name="quien" />
+  <input type="text" name="fecha" />
+</form>
+
+<script src="items.js"></script>
+<script>
+  const CATEGORIAS = ['Viajes', 'Panoramas', 'Libros y películas', 'Comida', 'Casa', 'Otros'];
+  let filtro = 'Todas';
+  let quien = 'Alyn';
+
+  // ── Estado local ────────────────────────────────────────────────────
+  // ITEMS (items.js) es la lista base del repositorio.
+  // Lo que agregan desde el teléfono se guarda acá y se suma a esa base.
+  function propios() {
+    try { return JSON.parse(localStorage.getItem('lista_propios') || '[]'); }
+    catch (e) { return []; }
+  }
+  function hechos() {
+    try { return JSON.parse(localStorage.getItem('lista_hechos') || '{}'); }
+    catch (e) { return {}; }
+  }
+  function idDe(it) { return (it.texto || '').slice(0, 48); }
+
+  function todos() {
+    const h = hechos();
+    return [...ITEMS, ...propios()].map(it => ({ ...it, listo: !!h[idDe(it)], cuando: h[idDe(it)] }));
+  }
+
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, c =>
+      ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+  }
+
+  function fechaHoy() {
+    const d = new Date();
+    const m = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+    return `${d.getDate()} de ${m[d.getMonth()]} de ${d.getFullYear()}`;
+  }
+
+  // ── Render ──────────────────────────────────────────────────────────
+  function pintar() {
+    const lista = todos();
+    const listos = lista.filter(i => i.listo).length;
+    const pct = lista.length ? Math.round(listos / lista.length * 100) : 0;
+
+    document.getElementById('progTexto').textContent = `${listos} de ${lista.length}`;
+    document.getElementById('progFill').style.width = pct + '%';
+
+    // Filtros
+    const cats = ['Todas', ...CATEGORIAS.filter(c => lista.some(i => i.categoria === c))];
+    document.getElementById('filtros').innerHTML = cats.map(c =>
+      `<button class="filtro ${filtro === c ? 'on' : ''}" onclick="setFiltro('${c}')">${c}</button>`
+    ).join('');
+
+    // Items: pendientes primero, cumplidos al final
+    const visibles = lista.filter(i => filtro === 'Todas' || i.categoria === filtro);
+    const orden = [...visibles.filter(i => !i.listo), ...visibles.filter(i => i.listo)];
+
+    document.getElementById('items').innerHTML = orden.length === 0
+      ? `<div class="vacio">Nada acá todavía. Sumen algo más abajo ✨</div>`
+      : orden.map(i => `
+        <div class="item ${i.listo ? 'listo' : ''}">
+          <div class="check" onclick="alternar('${esc(idDe(i))}')">${i.listo ? '✓' : ''}</div>
+          <div class="item-cuerpo">
+            <div class="item-texto">${esc(i.texto)}</div>
+            <div class="item-meta">
+              ${esc(i.categoria || 'Otros')}${i.quien ? ' · lo sumó ' + esc(i.quien) : ''}${i.listo && i.cuando ? ' · hecho el ' + esc(i.cuando) : ''}
+            </div>
+          </div>
+        </div>`).join('');
+  }
+
+  function setFiltro(c) { filtro = c; pintar(); }
+
+  function alternar(id) {
+    const h = hechos();
+    if (h[id]) delete h[id]; else h[id] = fechaHoy();
+    localStorage.setItem('lista_hechos', JSON.stringify(h));
+    pintar();
+  }
+
+  // ── Agregar ─────────────────────────────────────────────────────────
+  function pintarQuien() {
+    document.getElementById('quien').innerHTML = ['Alyn', 'Matías'].map(q =>
+      `<button class="${quien === q ? 'on' : ''}" onclick="setQuien('${q}')">${q}</button>`
+    ).join('');
+  }
+  function setQuien(q) { quien = q; pintarQuien(); }
+
+  async function agregar() {
+    const texto = document.getElementById('nuevoTexto').value.trim();
+    if (!texto) return;
+    const categoria = document.getElementById('nuevaCat').value;
+
+    const nuevo = { texto, categoria, quien };
+    const p = propios();
+    p.push(nuevo);
+    localStorage.setItem('lista_propios', JSON.stringify(p));
+
+    document.getElementById('nuevoTexto').value = '';
+    const est = document.getElementById('estado');
+    est.style.display = 'block';
+    est.textContent = '✅ Agregado';
+    pintar();
+
+    try {
+      await fetch('/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({
+          'form-name': 'lista', cosa: texto, categoria, quien, fecha: fechaHoy()
+        }).toString()
+      });
+    } catch (e) { /* queda guardado local igual */ }
+
+    setTimeout(() => { est.style.display = 'none'; }, 2200);
+  }
+
+  // ── Init ────────────────────────────────────────────────────────────
+  document.getElementById('nuevaCat').innerHTML =
+    CATEGORIAS.map(c => `<option value="${c}">${c}</option>`).join('');
+  pintarQuien();
+  pintar();
+</script>
+</body>
+</html>
