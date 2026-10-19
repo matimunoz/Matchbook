@@ -85,6 +85,19 @@
   .tile:active { transform: scale(0.985); background: var(--g5); }
   .tile:hover { border-color: var(--g3); }
 
+  /* Todavía no disponibles */
+  .tile.bloqueado {
+    opacity: .55; cursor: default; box-shadow: none;
+    border-style: dashed; background: transparent;
+  }
+  .tile.bloqueado:hover  { border-color: var(--g4); }
+  .tile.bloqueado:active { transform: none; background: transparent; }
+  .tile.bloqueado .tile-icon { filter: grayscale(.6); }
+  .tile.bloqueado .tile-sub {
+    font-style: italic; letter-spacing: .02em;
+  }
+  .tile.bloqueado .tile-arrow { font-size: .78rem; }
+
   @keyframes rise {
     from { opacity: 0; transform: translateY(12px); }
     to   { opacity: 1; transform: translateY(0); }
@@ -183,23 +196,23 @@
       <span class="tile-arrow">›</span>
     </a>
 
-    <a class="tile" href="/lista/" style="animation-delay:.33s">
+    <div class="tile bloqueado" style="animation-delay:.33s">
       <span class="tile-icon">✅</span>
       <span class="tile-text">
         <span class="tile-title">Cosas por hacer juntos</span>
-        <span class="tile-sub">Lo que queremos y vamos tachando</span>
+        <span class="tile-sub">Próximamente</span>
       </span>
-      <span class="tile-arrow">›</span>
-    </a>
+      <span class="tile-arrow">🔒</span>
+    </div>
 
-    <a class="tile" href="/linea/" style="animation-delay:.40s">
+    <div class="tile bloqueado" style="animation-delay:.40s">
       <span class="tile-icon">🕰️</span>
       <span class="tile-text">
         <span class="tile-title">Nuestra línea de tiempo</span>
-        <span class="tile-sub">Cómo llegamos hasta acá</span>
+        <span class="tile-sub">Próximamente</span>
       </span>
-      <span class="tile-arrow">›</span>
-    </a>
+      <span class="tile-arrow">🔒</span>
+    </div>
 
   </div>
 
