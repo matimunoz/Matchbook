@@ -798,7 +798,8 @@ function saveState(st) {
 // ══════════════════════════════════════════════════════════════════════
 function rango(a, b) { const r = []; for (let i = a; i <= b; i++) r.push(i); return r; }
 
-const YA_DESCUBIERTOS  = [...rango(1, 32), 36, 38];  // números tal como salen en el admin
+const YA_DESCUBIERTOS  = [...rango(1, 32), 38, 36];  // números tal como salen en el admin
+const DESCUBIERTO_HOY  = 36;                         // ← el que abrió hoy, o null si aún no abre
 const RACHA_AL_MIGRAR  = 7;                          // ← ajústalo a la racha que ella trae
 const PREMIOS_GANADOS  = [10, 25];                   // hitos que ya se ganó
 
@@ -806,23 +807,31 @@ function sembrar() {
   const seen      = JSON.parse(localStorage.getItem('momentos_seen')      || '[]');
   const seenDates = JSON.parse(localStorage.getItem('momentos_seenDates') || '{}');
 
-  const faltan = YA_DESCUBIERTOS
+  let faltan = YA_DESCUBIERTOS
     .map(n => n - 1)
     .filter(i => MOMENTOS[i] != null && !seen.includes(i));
 
+  // El de hoy va último, para que quede fechado hoy
+  const idxHoy = DESCUBIERTO_HOY ? DESCUBIERTO_HOY - 1 : null;
+  if (idxHoy !== null && faltan.includes(idxHoy)) {
+    faltan = [...faltan.filter(i => i !== idxHoy), idxHoy];
+  }
+
   if (faltan.length) {
-    // Los últimos van en días seguidos hasta ayer, para conservar la racha.
+    // Los últimos van en días seguidos, para conservar la racha.
     // Los anteriores quedan más atrás, con un hueco, para no inflarla.
-    const racha  = Math.min(RACHA_AL_MIGRAR, faltan.length);
+    const haceHoy   = idxHoy !== null && faltan[faltan.length - 1] === idxHoy;
+    const desfase   = haceHoy ? 0 : 1;          // termina hoy, o ayer
+    const racha     = Math.min(RACHA_AL_MIGRAR, faltan.length);
     const recientes = faltan.slice(faltan.length - racha);
     const viejos    = faltan.slice(0, faltan.length - racha);
 
     recientes.forEach((idx, k) => {
       seen.push(idx);
-      seenDates[idx] = shiftDate(today(), -(racha - k));
+      seenDates[idx] = shiftDate(today(), -(racha - 1 - k + desfase));
     });
 
-    const finViejos = racha + 3;   // el hueco corta la racha donde corresponde
+    const finViejos = racha + desfase + 2;   // el hueco corta la racha donde corresponde
     viejos.forEach((idx, k) => {
       seen.push(idx);
       seenDates[idx] = shiftDate(today(), -(finViejos + (viejos.length - 1 - k)));
@@ -834,10 +843,15 @@ function sembrar() {
     localStorage.setItem('momentos_seen',      JSON.stringify(seen));
     localStorage.setItem('momentos_seenDates', JSON.stringify(seenDates));
 
-    // Que pueda abrir uno hoy: se marca el último día, no el de hoy
-    const dias = Object.values(seenDates).filter(Boolean).sort();
-    localStorage.setItem('momentos_lastDate', dias[dias.length - 1]);
-    localStorage.removeItem('momentos_todayIdx');
+    if (haceHoy) {
+      // Ya abrió el de hoy: se le muestra ese, no el botón de descubrir
+      localStorage.setItem('momentos_lastDate', today());
+      localStorage.setItem('momentos_todayIdx', String(idxHoy));
+    } else {
+      const dias = Object.values(seenDates).filter(Boolean).sort();
+      localStorage.setItem('momentos_lastDate', dias[dias.length - 1]);
+      localStorage.removeItem('momentos_todayIdx');
+    }
   }
 
   // Premios ganados, que también viven por navegador
