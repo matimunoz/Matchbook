@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -144,15 +144,6 @@
   }
   .hito.abierta .hito-txt { -webkit-line-clamp: unset; color: var(--t1); }
   .hito-card { cursor: pointer; -webkit-tap-highlight-color: transparent; }
-
-  /* ── Sin fecha exacta ── */
-  .sinfecha-tit {
-    position: relative; margin: 26px 0 12px -26px;
-    font-family: Georgia, serif; font-size: 1.1rem; color: var(--t3);
-    display: flex; align-items: center; gap: 10px;
-  }
-  .sinfecha-tit::after { content:''; flex:1; height:1px; background: var(--g4); }
-
   .hito.futuro::before { background: var(--bg); border-style: dashed; border-color: var(--g4); }
   .hito.futuro .hito-card {
     background: transparent; border-style: dashed; border-color: var(--g4); box-shadow: none;
@@ -285,13 +276,11 @@ function construir() {
   const usadosPorHito = new Set(HITOS.filter(h => h.momento).map(h => h.momento - 1));
   const entradas = [];
 
-  const huerfanos = [];
-
   MOMENTOS.forEach((texto, i) => {
     if (texto === null || !abiertos.has(i) || usadosPorHito.has(i)) return;
     const f = fechaDe(texto);
-    // Los que no dicen fecha ("No sé qué día fue este") van aparte, al final
-    if (!f) { huerfanos.push({ tipo: 'ent', texto: sinFecha(texto) }); return; }
+    // Sin fecha no entra a la línea: no hay dónde ponerlo
+    if (!f) return;
     entradas.push({ tipo: 'ent', fecha: f.iso, aprox: f.aprox, texto: sinFecha(texto) });
   });
 
@@ -303,13 +292,11 @@ function construir() {
   });
 
   entradas.sort((a, b) => a.fecha.localeCompare(b.fecha));
-  SIN_FECHA = huerfanos;
   return entradas;
 }
 
 // ── Render ───────────────────────────────────────────────────────────
 let ENTRADAS = [];
-let SIN_FECHA = [];
 
 function pintar() {
   ENTRADAS = construir();
@@ -319,9 +306,10 @@ function pintar() {
 }
 
 function pintarResumen() {
-  const recuerdos = ENTRADAS.filter(e => e.tipo === 'ent' || e.momento).length + SIN_FECHA.length;
-  const escritos  = MOMENTOS.filter(m => m !== null).length;
-  const faltan    = escritos - recuerdos;
+  const recuerdos = ENTRADAS.filter(e => e.tipo === 'ent' || e.momento).length;
+  // Solo cuentan los que sí pueden llegar algún día: los sin fecha nunca entran
+  const conFecha  = MOMENTOS.filter(m => m !== null && fechaDe(m)).length;
+  const faltan    = conFecha - recuerdos;
 
   document.getElementById('resumen').innerHTML = `
     <span>
@@ -384,21 +372,6 @@ function pintarLinea() {
         </div>`;
     }
   });
-
-  // Los que no traen fecha en el texto, agrupados al final
-  if (SIN_FECHA.length) {
-    html += `<div class="sinfecha-tit">Sin fecha exacta</div>`;
-    SIN_FECHA.forEach((e, k) => {
-      const id = 's-' + k;
-      html += `
-        <div class="ent" id="${id}" onclick="document.getElementById('${id}').classList.toggle('abierta')">
-          <div class="ent-card">
-            <div class="ent-fecha">en algún momento</div>
-            <div class="ent-texto">${esc(e.texto)}</div>
-          </div>
-        </div>`;
-    });
-  }
 
   document.getElementById('linea').innerHTML = html;
 }
