@@ -12,6 +12,8 @@
     --bg: #EBF5ED; --card: #FFFFFF;
     --g1: #2A5040; --g2: #45856A; --g3: #78B896; --g4: #C0DECA; --g5: #EAF5EE;
     --t1: #1C3A2C; --t2: #466355; --t3: #8AADA0;
+    /* Su voz: el mismo tono del 💌, para que se distinga sin romper la paleta */
+    --a1: #9E4A5E; --a2: #C97E8E; --a3: #EFD8DE; --a4: #FBF1F3;
     --shadow: 0 6px 32px rgba(42,80,64,.12);
     --r: 18px; --rsm: 12px;
   }
@@ -132,6 +134,22 @@
     -webkit-line-clamp: unset; color: var(--t1);
   }
 
+  /* ── Lo que escribió ella ── */
+  .ent.suya::before { border-color: var(--a2); background: var(--a4); }
+  .ent.suya .ent-card { border-color: var(--a3); background: var(--a4); }
+  .ent.suya .ent-card:active { background: #F7E6EA; }
+  .ent.suya.abierta .ent-card { border-color: var(--a2); }
+  .ent.suya.abierta::before { border-color: var(--a1); }
+  .ent.suya .ent-fecha { color: var(--a1); }
+  .ent.suya .ent-titulo { color: #7E3A4B; }
+  .ent.suya .ent-texto { border-top-color: var(--a3); }
+
+  .firma {
+    font-size: .66rem; font-weight: 700; letter-spacing: .07em;
+    text-transform: uppercase; color: var(--a2);
+  }
+  .firma::before { content: '· '; }
+
   /* Hito: tarjeta entera, con peso */
   .hito { position: relative; margin: 16px 0; }
   .hito::before {
@@ -191,7 +209,7 @@
   <header class="header">
     <span class="header-deco">🕰️</span>
     <h1>Nuestra línea de tiempo</h1>
-    <p>cómo llegamos hasta acá</p>
+    <p>cómo llegamos hasta acá, contado por los dos</p>
   </header>
 
   <div class="resumen" id="resumen"></div>
@@ -204,6 +222,7 @@
 <button class="ir-hoy" id="irHoy" onclick="irAlFinal()">↓ Lo más reciente</button>
 
 <script src="/momentos/momentos.js"></script>
+<script src="/linea/de-alyn.js"></script>
 <script>
 // ══════════════════════════════════════════════════════════════════════
 //  FECHAS CLAVE
@@ -235,8 +254,14 @@ const DIAS_SEM = 'lunes|martes|miércoles|jueves|viernes|sábado|domingo';
 
 // Solo entra a la línea lo que tiene día y mes exactos.
 // Un "Varios días en Marzo" no tiene dónde ponerse, así que queda fuera.
+//
+// Los míos abren con "Un 5 de agosto" y los de ella con "Sábado 12 de
+// septiembre": el "Un" y el día de la semana son los dos opcionales,
+// pero el día y el mes tienen que estar.
+const ABRE = `^\\s*(?:Un[ao]?\\s+)?(?:(?:${DIAS_SEM})\\s+)?(\\d{1,2})\\s+de\\s+`;
+
 function fechaDe(texto) {
-  const m = texto.match(new RegExp(`^\\s*Un[ao]?\\s+(?:(?:${DIAS_SEM})\\s+)?(\\d{1,2})\\s+de\\s+(\\p{L}+)`, 'iu'));
+  const m = texto.match(new RegExp(ABRE + `(\\p{L}+)`, 'iu'));
   if (!m) return null;
   const mes = MESES.indexOf(m[2].toLowerCase());
   return mes === -1 ? null : armar(mes, +m[1]);
@@ -251,7 +276,7 @@ function armar(mes, dia) {
 // Se le quita la fecha al texto, que ya se muestra arriba
 function sinFecha(texto) {
   const t = texto
-    .replace(new RegExp(`^\\s*Un[ao]?\\s+(?:(?:${DIAS_SEM})\\s+)?\\d{1,2}\\s+de\\s+\\p{L}+,?\\s*`, 'iu'), '')
+    .replace(new RegExp(ABRE + `\\p{L}+,?\\s*`, 'iu'), '')
     .replace(/^\s*Varios días en \p{L}+,?\s*/iu, '')
     // La etiqueta ya dice que no se sabe el día; repetirlo sobra
     .replace(/^\s*No s[eé] (?:qu[eé]|que) d[ií]a fue (?:este|[eé]ste),?\s*(?:pero\s*)?/iu, '')
@@ -309,6 +334,19 @@ function construir() {
     });
   });
 
+  // Los que escribió ella entran siempre: son suyos, no hay nada que
+  // reservarle. Van después de los míos para que, cuando los dos contamos
+  // el mismo día, el día se lea primero desde mi lado y después del suyo.
+  (typeof DE_ALYN === 'undefined' ? [] : DE_ALYN).forEach(m => {
+    const o = norm(m);
+    const fecha = fechaDe(o.texto);
+    if (!fecha) return;
+    entradas.push({
+      tipo: 'alyn', fecha,
+      titulo: o.titulo, resumen: o.resumen, texto: sinFecha(o.texto)
+    });
+  });
+
   HITOS.forEach(h => {
     // El hito siempre aparece: es una fecha que ella ya conoce.
     // Su recuerdo solo se muestra si además lo descubrió en 100 Momentos.
@@ -335,19 +373,21 @@ function pintar() {
 
 function pintarResumen() {
   // Un hito cuyo momento ella todavía no abre no cuenta como recuerdo
-  const recuerdos = ENTRADAS.filter(e => e.tipo === 'ent' || (e.momento && e.texto)).length;
+  const mios  = ENTRADAS.filter(e => e.tipo === 'ent' || (e.momento && e.texto)).length;
+  const suyos = ENTRADAS.filter(e => e.tipo === 'alyn').length;
   // Solo cuentan los que sí pueden llegar algún día: los sin fecha nunca entran
-  const conFecha  = MOMENTOS.filter(m => m !== null && fechaDe(norm(m).texto)).length;
-  const faltan    = conFecha - recuerdos;
+  const conFecha = MOMENTOS.filter(m => m !== null && fechaDe(norm(m).texto)).length;
+  const faltan   = conFecha - mios;
 
   document.getElementById('resumen').innerHTML = `
     <span>
-      <span class="r-num">${recuerdos}</span>
+      <span class="r-num">${mios + suyos}</span>
       <span class="r-lab">recuerdos</span>
     </span>
     <span class="r-sep"></span>
     <span class="r-txt">
       ${diasDesde(POLOLEO)} días de pololeo, ${diasDesde('2025-12-20')} desde la primera cita.
+      ${suyos > 0 ? `<br><b>${suyos}</b> ${suyos === 1 ? 'lo escribiste' : 'los escribiste'} tú 💌` : ''}
       ${faltan > 0 ? `<br>Quedan <b>${faltan}</b> esperando su lugar 🌿` : ''}
     </span>`;
 }
@@ -394,10 +434,11 @@ function pintarLinea() {
         </div>`;
     } else {
       // Título y resumen arriba; el recuerdo completo aparece al tocar
+      const suya = e.tipo === 'alyn';
       html += `
-        <div class="ent" id="e-${i}" onclick="abrir(${i})">
+        <div class="ent ${suya ? 'suya' : ''}" id="e-${i}" onclick="abrir(${i})">
           <div class="ent-card">
-            <div class="ent-fecha">${formatear(e.fecha)}</div>
+            <div class="ent-fecha">${formatear(e.fecha)}${suya ? ` <span class="firma">lo escribiste tú</span>` : ''}</div>
             ${e.titulo ? `<div class="ent-titulo">${esc(e.titulo)}</div>` : ''}
             ${e.resumen ? `<div class="ent-resumen">${esc(e.resumen)}</div>` : ''}
             <div class="ent-texto">${esc(e.texto)}</div>
