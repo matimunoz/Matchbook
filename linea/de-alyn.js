@@ -8,6 +8,9 @@
 //
 //  Mismo formato que los tuyos: la fecha va dentro del texto
 //  ("Sábado 12 de septiembre, ..."), y de ahí la toma la línea.
+//
+//  Si lo que escribió no nombra ningún día, ponle "fecha" a mano con el
+//  día en que lo mandó, que Netlify muestra al lado de cada envío.
 // ══════════════════════════════════════════════════════════════════════
 const DE_ALYN = [
   {

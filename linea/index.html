@@ -339,7 +339,8 @@ function construir() {
   // el mismo día, el día se lea primero desde mi lado y después del suyo.
   (typeof DE_ALYN === 'undefined' ? [] : DE_ALYN).forEach(m => {
     const o = norm(m);
-    const fecha = fechaDe(o.texto);
+    // Si no nombra ningún día, vale la fecha puesta a mano (la del envío)
+    const fecha = m.fecha || fechaDe(o.texto);
     if (!fecha) return;
     entradas.push({
       tipo: 'alyn', fecha,
