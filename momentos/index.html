@@ -134,6 +134,13 @@
     content: ''; flex: 1; height: 1px; background: var(--g4);
   }
 
+  .moment-titulo {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1.45rem; font-weight: normal; line-height: 1.3;
+    color: var(--g1); text-align: center; margin-bottom: 16px;
+    text-wrap: balance;
+  }
+
   .moment-text {
     font-family: Georgia, 'Times New Roman', serif;
     font-size: 1.15rem; line-height: 1.7;
@@ -798,6 +805,15 @@ function saveState(st) {
 // ══════════════════════════════════════════════════════════════════════
 function rango(a, b) { const r = []; for (let i = a; i <= b; i++) r.push(i); return r; }
 
+// Cada momento es { titulo, resumen, texto }; se toleran los antiguos en texto suelto
+function norm(m) {
+  if (m === null || m === undefined) return null;
+  if (typeof m === 'string') return { titulo: '', resumen: '', texto: m };
+  return { titulo: m.titulo || '', resumen: m.resumen || '', texto: m.texto || '' };
+}
+function textoDe(m)  { const o = norm(m); return o ? o.texto : ''; }
+function tituloDe(m) { const o = norm(m); return o ? o.titulo : ''; }
+
 const YA_DESCUBIERTOS  = [...rango(1, 32), 38, 36];  // números tal como salen en el admin
 const DESCUBIERTO_HOY  = 36;                         // ← el que abrió hoy, o null si aún no abre
 const RACHA_AL_MIGRAR  = 2;                          // ← ajústalo a la racha que ella trae
@@ -958,9 +974,10 @@ function renderDaily(st, total) {
   }
 
   if (alreadyOpenedToday) {
-    const texto = MOMENTOS[st.todayIdx];
-    const fecha = formatDate(st.seenDates[st.todayIdx] || today());
-    const num   = st.seen.indexOf(st.todayIdx) + 1;
+    const texto  = textoDe(MOMENTOS[st.todayIdx]);
+    const titulo = tituloDe(MOMENTOS[st.todayIdx]);
+    const fecha  = formatDate(st.seenDates[st.todayIdx] || today());
+    const num    = st.seen.indexOf(st.todayIdx) + 1;
 
     // Celebración de hito
     const hitMs = MILESTONES.find(m => m.day === st.streak);
@@ -975,6 +992,7 @@ function renderDaily(st, total) {
       ${celHtml}
       <div class="moment-card">
         <div class="moment-num">Momento ${num}</div>
+        ${titulo ? `<h2 class="moment-titulo">${titulo}</h2>` : ''}
         <p class="moment-text">${texto}</p>
         <div class="moment-date">🌿 Descubierto el ${fecha}</div>
         <div class="reply-zone" id="replyZone-${st.todayIdx}">${replyZoneHtml(st.todayIdx)}</div>
@@ -1055,7 +1073,7 @@ function renderArchive(st) {
           <div class="archive-header-left">
             <div class="archive-dot"></div>
             <div class="archive-header-info">
-              <div class="archive-num">Momento ${num}</div>
+              <div class="archive-num">${tituloDe(MOMENTOS[i]) || 'Momento ' + num}</div>
               <div class="archive-date-compact">${fecha}</div>
             </div>
           </div>
@@ -1063,7 +1081,7 @@ function renderArchive(st) {
         </div>
         <div class="archive-body">
           <div class="archive-body-inner">
-            <div class="archive-text">${MOMENTOS[i]}</div>
+            <div class="archive-text">${textoDe(MOMENTOS[i])}</div>
             <div class="reply-zone" id="replyZone-${i}">${replyZoneHtml(i)}</div>
           </div>
         </div>
@@ -1276,8 +1294,8 @@ async function sendReply(idx) {
       body: new URLSearchParams({
         'form-name': 'respuestas',
         respuesta: texto,
-        momento:   `Momento ${idx + 1}`,
-        recuerdo:  MOMENTOS[idx] || '',
+        momento:   tituloDe(MOMENTOS[idx]) || `Momento ${idx + 1}`,
+        recuerdo:  textoDe(MOMENTOS[idx]),
         fecha:     formatDate(today()),
       }).toString()
     });

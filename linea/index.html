@@ -108,12 +108,29 @@
     font-size: .66rem; font-weight: 700; letter-spacing: .07em;
     text-transform: uppercase; color: var(--g2); margin-bottom: 5px;
   }
-  .ent-texto {
-    font-family: Georgia, serif; font-size: .9rem; line-height: 1.6; color: var(--t2);
-    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
-    overflow: hidden;
+  .ent-titulo {
+    font-family: Georgia, serif; font-size: 1.02rem; line-height: 1.3;
+    color: var(--g1); margin-bottom: 3px;
   }
-  .ent.abierta .ent-texto { -webkit-line-clamp: unset; color: var(--t1); }
+  .ent-resumen {
+    font-size: .82rem; line-height: 1.5; color: var(--t2);
+  }
+  /* El recuerdo completo solo aparece al tocar la tarjeta */
+  .ent-texto {
+    font-family: Georgia, serif; font-size: .88rem; line-height: 1.65; color: var(--t1);
+    display: none; margin-top: 10px; padding-top: 10px;
+    border-top: 1px solid var(--g4);
+  }
+  .ent.abierta .ent-texto { display: block; }
+
+  /* Si no hay título ni resumen, el texto hace de asomo en dos líneas */
+  .ent-card:not(:has(.ent-titulo)):not(:has(.ent-resumen)) .ent-texto {
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+    overflow: hidden; margin-top: 0; padding-top: 0; border-top: none; color: var(--t2);
+  }
+  .ent.abierta .ent-card:not(:has(.ent-titulo)):not(:has(.ent-resumen)) .ent-texto {
+    -webkit-line-clamp: unset; color: var(--t1);
+  }
 
   /* Hito: tarjeta entera, con peso */
   .hito { position: relative; margin: 16px 0; }
@@ -137,12 +154,14 @@
     font-family: Georgia, serif; font-size: 1.22rem; color: var(--g1);
     line-height: 1.3; margin-bottom: 5px;
   }
+  .hito-res { font-size: .86rem; line-height: 1.6; color: var(--t2); }
+  /* El recuerdo completo del hito solo aparece al tocarlo */
   .hito-txt {
-    font-size: .86rem; line-height: 1.6; color: var(--t2);
-    display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
-    overflow: hidden;
+    font-size: .85rem; line-height: 1.65; color: var(--t1);
+    display: none; margin-top: 11px; padding-top: 11px;
+    border-top: 1px solid var(--g4);
   }
-  .hito.abierta .hito-txt { -webkit-line-clamp: unset; color: var(--t1); }
+  .hito.abierta .hito-txt { display: block; }
   .hito-card { cursor: pointer; -webkit-tap-highlight-color: transparent; }
   .hito.futuro::before { background: var(--bg); border-style: dashed; border-color: var(--g4); }
   .hito.futuro .hito-card {
@@ -198,7 +217,7 @@ const POLOLEO = '2026-08-13';
 const HITOS = [
   { fecha: '2025-12-20', em: '✨', titulo: `Nuestra primera cita`, momento: 19 },
   { fecha: '2026-07-08', em: '💚', titulo: `Te dije que te quería`, momento: 6 },
-  { fecha: POLOLEO,      em: '🌿', titulo: `Te pedí pololeo` },
+  { fecha: POLOLEO,      em: '🌿', titulo: `Te pedí pololeo`, momento: 41 },
   { fecha: '2026-10-13', em: '💌', titulo: `Dos meses`,
     texto: `Hipnotizados por nuestros sueños.` },
   { fecha: '2026-11-13', em: '🗓️', titulo: `Tres meses`, futuro: true },
@@ -263,6 +282,13 @@ function esc(s) {
     ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
 }
 
+// Cada momento es { titulo, resumen, texto }; se toleran los antiguos en texto suelto
+function norm(m) {
+  if (m === null || m === undefined) return null;
+  if (typeof m === 'string') return { titulo: '', resumen: '', texto: m };
+  return { titulo: m.titulo || '', resumen: m.resumen || '', texto: m.texto || '' };
+}
+
 // ── Construcción ─────────────────────────────────────────────────────
 // Nunca se muestran momentos sin descubrir: eso arruinaría 100 Momentos.
 function vistos() {
@@ -273,22 +299,30 @@ function vistos() {
 
 function construir() {
   const abiertos = vistos();
+  // Un momento que ya es hito no se repite como entrada suelta
   const usadosPorHito = new Set(HITOS.filter(h => h.momento).map(h => h.momento - 1));
   const entradas = [];
 
-  MOMENTOS.forEach((texto, i) => {
-    if (texto === null || !abiertos.has(i) || usadosPorHito.has(i)) return;
-    const f = fechaDe(texto);
+  MOMENTOS.forEach((m, i) => {
+    if (m === null || !abiertos.has(i) || usadosPorHito.has(i)) return;
+    const o = norm(m);
+    const f = fechaDe(o.texto);
     // Sin fecha no entra a la línea: no hay dónde ponerlo
     if (!f) return;
-    entradas.push({ tipo: 'ent', fecha: f.iso, aprox: f.aprox, texto: sinFecha(texto) });
+    entradas.push({
+      tipo: 'ent', fecha: f.iso, aprox: f.aprox,
+      titulo: o.titulo, resumen: o.resumen, texto: sinFecha(o.texto)
+    });
   });
 
   HITOS.forEach(h => {
-    // Un hito con momento solo aparece si ella ya lo descubrió
-    if (h.momento && !abiertos.has(h.momento - 1)) return;
-    const texto = h.texto || (h.momento ? sinFecha(MOMENTOS[h.momento - 1]) : '');
-    entradas.push({ tipo: 'hito', ...h, texto });
+    // El hito siempre aparece: es una fecha que ella ya conoce.
+    // Su recuerdo solo se muestra si además lo descubrió en 100 Momentos.
+    const abierto = h.momento ? abiertos.has(h.momento - 1) : false;
+    const o = abierto ? norm(MOMENTOS[h.momento - 1]) : null;
+    const resumen = h.texto || (o ? o.resumen : '');
+    const texto   = o ? sinFecha(o.texto) : '';
+    entradas.push({ tipo: 'hito', ...h, resumen, texto });
   });
 
   entradas.sort((a, b) => a.fecha.localeCompare(b.fecha));
@@ -308,7 +342,7 @@ function pintar() {
 function pintarResumen() {
   const recuerdos = ENTRADAS.filter(e => e.tipo === 'ent' || e.momento).length;
   // Solo cuentan los que sí pueden llegar algún día: los sin fecha nunca entran
-  const conFecha  = MOMENTOS.filter(m => m !== null && fechaDe(m)).length;
+  const conFecha  = MOMENTOS.filter(m => m !== null && fechaDe(norm(m).texto)).length;
   const faltan    = conFecha - recuerdos;
 
   document.getElementById('resumen').innerHTML = `
@@ -359,14 +393,18 @@ function pintarLinea() {
             <span class="hito-em">${e.em || '🌿'}</span>
             <div class="hito-fecha">${formatear(e.fecha)}</div>
             <div class="hito-tit">${esc(e.titulo)}</div>
+            ${e.resumen ? `<div class="hito-res">${esc(e.resumen)}</div>` : ''}
             ${e.texto ? `<div class="hito-txt">${esc(e.texto)}</div>` : ''}
           </div>
         </div>`;
     } else {
+      // Título y resumen arriba; el recuerdo completo aparece al tocar
       html += `
         <div class="ent" id="e-${i}" onclick="abrir(${i})">
           <div class="ent-card">
             <div class="ent-fecha">${formatear(e.fecha, e.aprox)}</div>
+            ${e.titulo ? `<div class="ent-titulo">${esc(e.titulo)}</div>` : ''}
+            ${e.resumen ? `<div class="ent-resumen">${esc(e.resumen)}</div>` : ''}
             <div class="ent-texto">${esc(e.texto)}</div>
           </div>
         </div>`;
