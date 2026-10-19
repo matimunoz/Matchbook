@@ -815,39 +815,35 @@ function textoDe(m)  { const o = norm(m); return o ? o.texto : ''; }
 function tituloDe(m) { const o = norm(m); return o ? o.titulo : ''; }
 
 const YA_DESCUBIERTOS  = [...rango(1, 32), 38, 36];  // números tal como salen en el admin
-const DESCUBIERTO_HOY  = 36;                         // ← el que abrió hoy, o null si aún no abre
-const RACHA_AL_MIGRAR  = 2;                          // ← ajústalo a la racha que ella trae
+const RACHA_AL_MIGRAR  = 2;                          // ← días de racha que trae de antes de hoy
 const PREMIOS_GANADOS  = [10, 25];                   // hitos que ya se ganó
 
 function sembrar() {
   const seen      = JSON.parse(localStorage.getItem('momentos_seen')      || '[]');
   const seenDates = JSON.parse(localStorage.getItem('momentos_seenDates') || '{}');
 
-  let faltan = YA_DESCUBIERTOS
+  const faltan = YA_DESCUBIERTOS
     .map(n => n - 1)
     .filter(i => MOMENTOS[i] != null && !seen.includes(i));
 
-  // El de hoy va último, para que quede fechado hoy
-  const idxHoy = DESCUBIERTO_HOY ? DESCUBIERTO_HOY - 1 : null;
-  if (idxHoy !== null && faltan.includes(idxHoy)) {
-    faltan = [...faltan.filter(i => i !== idxHoy), idxHoy];
-  }
-
   if (faltan.length) {
+    // La siembra no corre el día que se escribe, sino la primera vez que
+    // ella abre la app en un navegador nuevo, que puede ser cualquier día.
+    // Por eso siempre termina AYER: el momento de hoy se lo gana abriendo,
+    // y así nunca se le repite uno que ya había visto.
+    //
     // Los últimos van en días seguidos, para conservar la racha.
     // Los anteriores quedan más atrás, con un hueco, para no inflarla.
-    const haceHoy   = idxHoy !== null && faltan[faltan.length - 1] === idxHoy;
-    const desfase   = haceHoy ? 0 : 1;          // termina hoy, o ayer
     const racha     = Math.min(RACHA_AL_MIGRAR, faltan.length);
     const recientes = faltan.slice(faltan.length - racha);
     const viejos    = faltan.slice(0, faltan.length - racha);
 
     recientes.forEach((idx, k) => {
       seen.push(idx);
-      seenDates[idx] = shiftDate(today(), -(racha - 1 - k + desfase));
+      seenDates[idx] = shiftDate(today(), -(racha - k));
     });
 
-    const finViejos = racha + desfase + 2;   // el hueco corta la racha donde corresponde
+    const finViejos = racha + 3;   // el hueco corta la racha donde corresponde
     viejos.forEach((idx, k) => {
       seen.push(idx);
       seenDates[idx] = shiftDate(today(), -(finViejos + (viejos.length - 1 - k)));
@@ -859,13 +855,9 @@ function sembrar() {
     localStorage.setItem('momentos_seen',      JSON.stringify(seen));
     localStorage.setItem('momentos_seenDates', JSON.stringify(seenDates));
 
-    if (haceHoy) {
-      // Ya abrió el de hoy: se le muestra ese, no el botón de descubrir
-      localStorage.setItem('momentos_lastDate', today());
-      localStorage.setItem('momentos_todayIdx', String(idxHoy));
-    } else {
-      const dias = Object.values(seenDates).filter(Boolean).sort();
-      localStorage.setItem('momentos_lastDate', dias[dias.length - 1]);
+    // Si en este navegador todavía no abría nada hoy, que le toque uno nuevo
+    if (localStorage.getItem('momentos_lastDate') !== today()) {
+      localStorage.setItem('momentos_lastDate', shiftDate(today(), -1));
       localStorage.removeItem('momentos_todayIdx');
     }
   }
@@ -954,7 +946,9 @@ function renderStreakBadge(st) {
 function renderDaily(st, total) {
   const section   = document.getElementById('dailySection');
   const available = getAvailable(st.seen);
-  const alreadyOpenedToday = st.lastDate === today() && st.todayIdx !== null;
+  // Se pregunta por el hecho, no por la marca: el momento de hoy es el que
+  // tiene fecha de hoy. Así una marca vieja nunca le repite un recuerdo.
+  const alreadyOpenedToday = st.todayIdx !== null && st.seenDates[st.todayIdx] === today();
 
   // Todos descubiertos
   if (available.length === 0 && st.seen.length >= total && total > 0) {
