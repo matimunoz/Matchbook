@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Política de Privacidad · Matchbook</title>
+<meta name="description" content="Cómo Matchbook trata los datos personales de quienes participan en sus clubes de lectura.">
+<meta name="robots" content="index,follow">
+<link rel="icon" href="logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;0,7..72,700;1,7..72,400&family=Nunito+Sans:opsz,wght@6..12,400;6..12,700;6..12,800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --crema:#FBF2E2; --crema-2:#F4E8D0;
+    --ambar:#F5A93B; --celeste:#41ABE6;
+    --hoja:#5E7A52; --noche:#13293F;
+    --tinta:#2C2A20; --tinta-suave:#6E6450;
+    --serif:'Literata',Georgia,serif;
+    --sans:'Nunito Sans',sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    background:var(--crema); color:var(--tinta);
+    font-family:var(--serif); font-size:1.02rem; line-height:1.72;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  .barra{
+    background:var(--noche); padding:16px 0;
+    position:sticky; top:0; z-index:10;
+  }
+  .barra .wrap{display:flex; align-items:center; justify-content:space-between; gap:16px}
+  .barra img{height:30px; width:auto; display:block}
+  .barra a.volver{
+    font-family:var(--sans); font-weight:800; font-size:.86rem;
+    color:var(--crema); text-decoration:none; border-bottom:1.5px solid rgba(251,242,226,.45);
+    padding-bottom:1px;
+  }
+  .barra a.volver:hover{border-bottom-color:var(--ambar); color:var(--ambar)}
+
+  .wrap{max-width:760px; margin:0 auto; padding:0 22px}
+
+  header.titulo{padding:54px 0 10px}
+  h1{
+    font-family:var(--serif); font-weight:700; font-size:2.5rem;
+    line-height:1.12; letter-spacing:-.02em; color:var(--noche);
+  }
+  .actualizado{
+    font-family:var(--sans); font-size:.82rem; font-weight:700;
+    text-transform:uppercase; letter-spacing:.09em;
+    color:var(--tinta-suave); margin-top:14px;
+  }
+  .entradilla{
+    font-size:1.1rem; color:var(--tinta-suave); font-style:italic;
+    margin-top:18px; padding-bottom:30px;
+    border-bottom:1px solid rgba(110,100,80,.22);
+  }
+
+  main{padding-bottom:70px}
+  section{padding-top:38px}
+  h2{
+    font-family:var(--serif); font-weight:700; font-size:1.38rem;
+    color:var(--noche); margin-bottom:12px; letter-spacing:-.012em;
+  }
+  h3{
+    font-family:var(--sans); font-weight:800; font-size:.96rem;
+    color:var(--noche); margin:20px 0 6px;
+  }
+  p{margin-bottom:13px}
+  a{color:var(--hoja)}
+  a:hover{color:var(--noche)}
+  strong{font-weight:700; color:var(--noche)}
+
+  ul{margin:0 0 13px 1.1rem}
+  li{margin-bottom:7px}
+
+  table{
+    width:100%; border-collapse:collapse; margin:16px 0 20px;
+    font-size:.94rem;
+  }
+  th,td{
+    text-align:left; padding:11px 13px;
+    border-bottom:1px solid rgba(110,100,80,.2); vertical-align:top;
+  }
+  th{
+    font-family:var(--sans); font-weight:800; font-size:.8rem;
+    text-transform:uppercase; letter-spacing:.06em; color:var(--noche);
+    background:var(--crema-2); border-bottom-color:rgba(110,100,80,.32);
+  }
+  td:first-child{font-weight:600; color:var(--noche); white-space:nowrap}
+  @media (max-width:620px){
+    td:first-child{white-space:normal}
+    table{font-size:.88rem}
+    th,td{padding:9px 8px}
+  }
+
+  .destacado{
+    background:#FFFDF7; border:1px solid rgba(94,122,82,.34);
+    border-left:4px solid var(--hoja);
+    border-radius:0 14px 14px 0; padding:17px 20px; margin:20px 0;
+  }
+  .destacado p:last-child{margin-bottom:0}
+
+  .contacto{
+    background:var(--noche); color:var(--crema);
+    border-radius:18px; padding:26px 28px; margin-top:42px;
+  }
+  .contacto h2{color:var(--crema); margin-bottom:8px}
+  .contacto a{color:var(--ambar)}
+  .contacto p:last-child{margin-bottom:0}
+
+  footer{
+    background:var(--noche); color:rgba(251,242,226,.72);
+    font-family:var(--sans); font-size:.84rem; text-align:center;
+    padding:26px 22px;
+  }
+  footer a{color:rgba(251,242,226,.9)}
+</style>
+</head>
+<body>
+
+<div class="barra">
+  <div class="wrap">
+    <a href="/"><img src="logo-horizontal.png" alt="Matchbook"></a>
+    <a class="volver" href="/">← Volver al sitio</a>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <header class="titulo">
+    <h1>Política de Privacidad</h1>
+    <p class="actualizado">Última actualización: 19 de octubre de 2026</p>
+    <p class="entradilla">
+      Matchbook organiza clubes de lectura presenciales. Para reservar una silla
+      necesitamos algunos datos tuyos. Acá te contamos cuáles, para qué los usamos,
+      con quién los compartimos y cómo puedes pedir que los borremos.
+    </p>
+  </header>
+
+  <main>
+
+    <section>
+      <h2>1. Quién trata tus datos</h2>
+      <p>
+        El responsable del tratamiento es <strong>Matchbook</strong>, que organiza
+        clubes de lectura en Santiago, Valparaíso y Viña del Mar.
+      </p>
+      <p>
+        Para cualquier asunto relacionado con tus datos personales puedes escribirnos a
+        <a href="mailto:contacto@matchbook.cl">contacto@matchbook.cl</a>.
+      </p>
+    </section>
+
+    <section>
+      <h2>2. Qué datos recogemos y para qué</h2>
+      <p>Solo pedimos lo que necesitamos para que puedas participar en un club.</p>
+
+      <table>
+        <thead>
+          <tr><th>Dato</th><th>Para qué lo usamos</th><th>Por qué podemos</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Nombre</td>
+            <td>Identificar tu reserva y recibirte en la sesión</td>
+            <td>Ejecución del servicio que contrataste</td>
+          </tr>
+          <tr>
+            <td>Correo electrónico</td>
+            <td>Confirmarte la reserva, invitarte al calendario y avisarte de cambios</td>
+            <td>Ejecución del servicio que contrataste</td>
+          </tr>
+          <tr>
+            <td>Teléfono</td>
+            <td>Contactarte por WhatsApp si hay un cambio de última hora</td>
+            <td>Ejecución del servicio que contrataste</td>
+          </tr>
+          <tr>
+            <td>Historial de lecturas</td>
+            <td>Mostrarte en tu cuenta los libros que has conversado con nosotros</td>
+            <td>Ejecución del servicio que contrataste</td>
+          </tr>
+          <tr>
+            <td>Correo del boletín</td>
+            <td>Enviarte el libro del mes y las próximas fechas</td>
+            <td><strong>Tu consentimiento</strong>, que puedes retirar cuando quieras</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="destacado">
+        <p>
+          <strong>No usamos tus datos para publicidad de terceros, no los vendemos
+          y no los cedemos a nadie con fines comerciales.</strong>
+        </p>
+      </div>
+
+      <h3>Datos de pago</h3>
+      <p>
+        Los pagos se procesan íntegramente en <strong>Mercado Pago</strong>. Matchbook
+        nunca ve ni almacena tu número de tarjeta ni tus credenciales bancarias. El
+        tratamiento de esos datos se rige por la política de privacidad de Mercado Pago.
+      </p>
+
+      <h3>Fotografías</h3>
+      <p>
+        A veces tomamos fotos durante las sesiones para nuestras redes sociales. Si no
+        quieres aparecer, dinos antes o durante el encuentro y te dejamos fuera del
+        encuadre. Si ya publicamos una foto en la que apareces y quieres que la
+        bajemos, escríbenos y la retiramos.
+      </p>
+    </section>
+
+    <section>
+      <h2>3. Asistencias anteriores a este sitio</h2>
+      <p>
+        Llevamos clubes de lectura desde 2021, antes de tener sitio web. De esa época
+        conservamos registros de asistencia —nombre, correo y el libro conversado—
+        que recogimos en listas de inscripción y formularios de cada sesión.
+      </p>
+      <p>
+        Los usamos únicamente para armar tu historial de lecturas cuando creas una
+        cuenta. Si prefieres que borremos tus registros antiguos, pídelo a
+        <a href="mailto:contacto@matchbook.cl">contacto@matchbook.cl</a> y lo hacemos.
+      </p>
+    </section>
+
+    <section>
+      <h2>4. Con quién los compartimos</h2>
+      <p>
+        No vendemos ni cedemos tus datos. Para funcionar usamos servicios de terceros
+        que los tratan por encargo nuestro y bajo nuestras instrucciones:
+      </p>
+      <table>
+        <thead>
+          <tr><th>Servicio</th><th>Para qué</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Google</td><td>Guardar las reservas, enviar los correos y gestionar las invitaciones de calendario</td></tr>
+          <tr><td>Netlify</td><td>Alojar el sitio y las cuentas de lectores</td></tr>
+          <tr><td>Mercado Pago</td><td>Procesar los pagos</td></tr>
+        </tbody>
+      </table>
+      <p>
+        Estos proveedores operan servidores fuera de Chile, por lo que tus datos pueden
+        tratarse en el extranjero. Todos ofrecen garantías contractuales de protección
+        de datos, que hemos aceptado.
+      </p>
+
+      <h3>Invitaciones de calendario</h3>
+      <p>
+        Cuando reservas, te invitamos al evento de tu sesión. Ese evento está
+        configurado para que <strong>los asistentes no puedan ver los correos de los
+        demás</strong>.
+      </p>
+    </section>
+
+    <section>
+      <h2>5. Cuánto tiempo los guardamos</h2>
+      <ul>
+        <li><strong>Reservas y pagos:</strong> mientras sean necesarios para nuestras obligaciones contables y tributarias.</li>
+        <li><strong>Historial de lecturas:</strong> mientras mantengas tu cuenta.</li>
+        <li><strong>Correo del boletín:</strong> hasta que te des de baja.</li>
+      </ul>
+      <p>Cuando ya no los necesitamos, los eliminamos.</p>
+    </section>
+
+    <section>
+      <h2>6. Tus derechos</h2>
+      <p>La ley chilena te reconoce estos derechos sobre tus datos personales:</p>
+      <ul>
+        <li><strong>Acceso:</strong> saber qué datos tuyos tenemos.</li>
+        <li><strong>Rectificación:</strong> corregir los que estén equivocados o incompletos.</li>
+        <li><strong>Supresión:</strong> pedir que los borremos.</li>
+        <li><strong>Oposición:</strong> oponerte a que los usemos para un fin determinado.</li>
+        <li><strong>Portabilidad:</strong> recibirlos en un formato que puedas llevarte.</li>
+      </ul>
+
+      <h3>Cómo ejercerlos</h3>
+      <p>
+        Escríbenos a <a href="mailto:contacto@matchbook.cl">contacto@matchbook.cl</a>
+        desde el correo con el que reservaste. Te respondemos dentro de los plazos
+        que fija la ley y no te cobramos por ello.
+      </p>
+      <p>
+        Algunas cosas puedes hacerlas tú mismo, sin escribirnos: en
+        <strong>Mis lecturas</strong> ves tu historial completo, puedes corregir tu
+        nombre y teléfono, y puedes eliminar tu cuenta.
+      </p>
+      <p>
+        Si crees que no respetamos tus derechos, puedes reclamar ante la autoridad
+        de protección de datos personales.
+      </p>
+    </section>
+
+    <section>
+      <h2>7. Boletín y comunicaciones</h2>
+      <p>
+        Al boletín solo entras si lo pides expresamente. <strong>Reservar una silla no
+        te suscribe a nada.</strong>
+      </p>
+      <p>
+        Los correos sobre tu reserva —la confirmación, la invitación al calendario, un
+        aviso de cambio de lugar— no son publicidad: son parte del servicio, y los
+        recibes aunque no estés en el boletín.
+      </p>
+      <p>
+        Puedes darte de baja del boletín desde el enlace que va en cada envío, o
+        pidiéndolo a <a href="mailto:contacto@matchbook.cl">contacto@matchbook.cl</a>.
+      </p>
+    </section>
+
+    <section>
+      <h2>8. Seguridad</h2>
+      <p>
+        Tus datos se guardan en servicios con acceso restringido y protegido por
+        contraseña, y solo el equipo de Matchbook puede verlos. El sitio funciona
+        íntegramente sobre conexión cifrada.
+      </p>
+      <p>
+        Ningún sistema es infalible. Si ocurriera un incidente que afecte tus datos
+        personales, te lo comunicaremos y lo informaremos a la autoridad cuando
+        corresponda.
+      </p>
+    </section>
+
+    <section>
+      <h2>9. Cookies</h2>
+      <p>
+        No usamos cookies de publicidad ni de seguimiento, y no tenemos herramientas
+        de analítica de terceros.
+      </p>
+      <p>
+        El sitio guarda información en tu navegador solo para que funcione: mantener
+        tu sesión iniciada si creaste una cuenta, y recordar por un rato cuántas
+        sillas quedan disponibles para no recalcularlas en cada visita. Esa
+        información se queda en tu dispositivo.
+      </p>
+    </section>
+
+    <section>
+      <h2>10. Menores de edad</h2>
+      <p>
+        Nuestros clubes están pensados para personas adultas. No recogemos datos de
+        menores de 14 años a sabiendas. Si crees que tenemos datos de un menor,
+        escríbenos y los eliminamos.
+      </p>
+    </section>
+
+    <section>
+      <h2>11. Cambios a esta política</h2>
+      <p>
+        Si la modificamos, actualizaremos la fecha del encabezado. Cuando el cambio
+        sea relevante, te lo avisaremos por correo.
+      </p>
+    </section>
+
+    <div class="contacto">
+      <h2>¿Dudas sobre tus datos?</h2>
+      <p>
+        Escríbenos a <a href="mailto:contacto@matchbook.cl">contacto@matchbook.cl</a>.
+        Contesta una persona, no un formulario.
+      </p>
+    </div>
+
+  </main>
+</div>
+
+<footer>
+  Matchbook · Experiencias literarias desde 2021 · Chile<br>
+  <a href="/">matchbook.cl</a>
+</footer>
+
+</body>
+</html>

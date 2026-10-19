@@ -492,6 +492,10 @@
   .invita-check input{flex:0 0 auto;width:18px;height:18px;margin:0;accent-color:var(--hoja);cursor:pointer}
   .invita-check:hover span{color:var(--hoja)}
   .invita-check + .invita-campo{margin-top:12px}
+  /* La casilla del boletín es opcional: no debe pesar como las obligatorias. */
+  .consent-boletin{margin-bottom:16px;font-family:var(--serif);font-weight:400;font-size:.9rem;color:var(--tinta-suave)}
+  .consent-boletin:hover span{color:var(--noche)}
+  .aviso-privacidad{font-family:var(--serif);font-size:.8rem;color:var(--tinta-suave);text-align:center;margin-top:12px;line-height:1.5}
   .invita-fila{display:flex;gap:8px;align-items:stretch}
   .invita-fila input{flex:1 1 auto;min-width:0;text-transform:uppercase;letter-spacing:.06em}
   /* El texto guía no se grita: solo lo escrito va en mayúsculas. */
@@ -582,6 +586,12 @@
   .prox-donde{font-family:var(--serif);font-size:.8rem;color:var(--tinta-suave);margin-top:1px}
   .btn-salir{background:none;border:none;cursor:pointer;font-family:var(--sans);font-weight:800;font-size:.86rem;color:var(--tinta-suave);text-decoration:underline;padding:4px;display:block;margin:0 auto}
   .btn-salir:hover{color:#B0492E}
+  /* Zona de datos personales: separada del resto, y el borrado sin énfasis
+     visual para que nadie lo apriete de pasada. */
+  .zona-datos{margin-top:22px;padding-top:16px;border-top:1px solid rgba(110,100,80,.22);text-align:center}
+  .zona-datos p{font-family:var(--serif);font-size:.82rem;color:var(--tinta-suave);margin-bottom:10px}
+  .btn-borrar{background:none;border:none;cursor:pointer;font-family:var(--sans);font-weight:700;font-size:.8rem;color:var(--tinta-suave);text-decoration:underline;padding:4px}
+  .btn-borrar:hover{color:#B0492E}
 
   /* Pide los datos que faltan para reservar */
   .pide-datos{background:rgba(245,169,59,.14);border:1px solid rgba(245,169,59,.5);border-radius:14px;padding:16px;margin-bottom:18px}
@@ -824,7 +834,8 @@
       <button type="submit" class="btn btn-sol">Quiero enterarme</button>
     </form>
     <p class="lead-ok" id="leadOk" style="display:none">¡Listo! Te avisaremos cuando anunciemos el próximo libro. 📚</p>
-    <p class="lead-nota">Sin spam. Solo el libro del mes y las fechas. Puedes salir cuando quieras.</p>
+    <p class="lead-nota">Sin spam. Solo el libro del mes y las fechas. Puedes salir cuando quieras.<br>
+      Al suscribirte aceptas nuestra <a href="/privacidad">política de privacidad</a>.</p>
   </div>
 </section>
 
@@ -907,6 +918,7 @@
     <a class="logo" href="#"><img src="logo-horizontal.png" alt="Matchbook"></a>
     <span>Experiencias literarias desde 2021 · Chile</span>
     <span><a href="https://www.instagram.com/matchbook.cl/" target="_blank" rel="noopener">@matchbook.cl</a> · pagos con Mercado Pago</span>
+    <span><a href="/privacidad">Política de privacidad</a></span>
     <span class="eco">❧ apoyamos librerías locales y cafés de barrio — leer también es una forma de cuidar el ecosistema cultural</span>
   </div>
 </footer>
@@ -968,8 +980,15 @@
           <button type="button" onclick="quitarCodigo()">Quitar</button>
         </div>
       </div>
+      <!-- Marketing aparte del servicio: desmarcada, y reservar no suscribe. -->
+      <label class="invita-check consent-boletin">
+        <input type="checkbox" id="chkBoletin">
+        <span>Quiero recibir el libro del mes por correo</span>
+      </label>
       <div class="pago-nota" id="pagoNota">💳 Al continuar serás dirigido al checkout seguro de Mercado Pago (crédito, débito o saldo). Tu silla queda confirmada al completar el pago.</div>
       <button class="btn btn-sol" id="btnSubmit" onclick="submitReserva()">Continuar al pago →</button>
+      <p class="aviso-privacidad">Usamos tus datos solo para tu reserva. Lee nuestra
+        <a href="/privacidad" target="_blank" rel="noopener">política de privacidad</a>.</p>
     </div>
     <div id="confirmView" class="confirm" style="display:none">
       <svg><use href="#mb-icon"/></svg>
@@ -1070,6 +1089,10 @@
     <button class="btn btn-sol" id="btnGuardarDatos" onclick="guardarMisDatos()">Guardar</button>
     <p class="pd-err" id="miErr"></p>
     <button class="btn-salir" onclick="cerrarSesion()" style="margin-top:20px">Cerrar sesión</button>
+    <div class="zona-datos">
+      <p><a href="/privacidad" target="_blank" rel="noopener">Cómo tratamos tus datos</a></p>
+      <button class="btn-borrar" onclick="eliminarCuenta()">Eliminar mi cuenta y mis datos</button>
+    </div>
   </div>
 </div>
 
@@ -1384,6 +1407,7 @@
     activeModalClubId = id;
     fillSesionCards(id);
     reiniciarInvita();
+    document.getElementById("chkBoletin").checked = false;   // nunca premarcada
     formView.style.display="block";confirmView.style.display="none";
     overlay.classList.add("open");document.body.style.overflow="hidden";
     autocompletarDatos();
@@ -1559,6 +1583,7 @@
         mode:"no-cors",
         headers:{"Content-Type":"application/json"},
         body:JSON.stringify({nombre,email,telefono:fono,club:c.club,libro:c.titulo,fecha:s.fecha,lugar:s.lugar,codigo:code,
+                             boletin: document.getElementById("chkBoletin").checked,
                              precio: INVITACION ? ("INVITACIÓN · " + INVITACION) : clp(c.precio)})
       });
     } catch(e){ console.warn("Formspree:",e) }
@@ -1860,6 +1885,48 @@
     cerrarCuenta();
     cerrarDatos();
     if (window.netlifyIdentity) window.netlifyIdentity.logout();
+  }
+
+  // Derecho de supresión. Se avisa a Matchbook para que borre las filas de la
+  // planilla —eso no se puede hacer desde el navegador— y se intenta eliminar
+  // la cuenta del sitio. Si el proveedor no lo permite, la solicitud igual
+  // quedó registrada y se completa a mano.
+  async function eliminarCuenta(){
+    if(!USUARIO) return;
+
+    const seguro = confirm(
+      "Vamos a eliminar tu cuenta y tu historial de lecturas.\n\n" +
+      "Conservamos los comprobantes de las reservas que pagaste, porque la ley " +
+      "nos obliga a guardarlos para efectos contables y tributarios.\n\n" +
+      "Esto no se puede deshacer. ¿Seguimos?"
+    );
+    if(!seguro) return;
+
+    const btn = document.querySelector(".btn-borrar");
+    btn.disabled = true;
+    btn.textContent = "Enviando solicitud…";
+
+    try {
+      await fetch(APPS_SCRIPT_URL,{
+        method:"POST", mode:"no-cors", headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({ tipo:"borrado", email: USUARIO.email,
+                               nombre: (USUARIO.user_metadata || {}).full_name || "" })
+      });
+    } catch(e){ console.warn("Solicitud de borrado:", e); }
+
+    let borrada = false;
+    try {
+      const u = window.netlifyIdentity && window.netlifyIdentity.currentUser();
+      if (u && typeof u.delete === "function") { await u.delete(); borrada = true; }
+    } catch(e){ console.warn("La cuenta no se pudo borrar sola:", e); }
+
+    try { localStorage.removeItem("mb_cupos"); } catch(e){}
+
+    alert(borrada
+      ? "Listo, tu cuenta fue eliminada. Terminamos de borrar el resto de tus datos y te confirmamos por correo."
+      : "Recibimos tu solicitud. Eliminaremos tu cuenta y tus datos, y te confirmamos por correo.");
+
+    cerrarSesion();
   }
 
   // El widget de Netlify solo pide nombre, correo y contraseña. El teléfono lo
