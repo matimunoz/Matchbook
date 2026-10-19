@@ -233,18 +233,13 @@ const MESES = ['enero','febrero','marzo','abril','mayo','junio',
 const CORTOS = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
 const DIAS_SEM = 'lunes|martes|miércoles|jueves|viernes|sábado|domingo';
 
+// Solo entra a la línea lo que tiene día y mes exactos.
+// Un "Varios días en Marzo" no tiene dónde ponerse, así que queda fuera.
 function fechaDe(texto) {
-  const conDia = texto.match(new RegExp(`^\\s*Un[ao]?\\s+(?:(?:${DIAS_SEM})\\s+)?(\\d{1,2})\\s+de\\s+(\\p{L}+)`, 'iu'));
-  if (conDia) {
-    const mes = MESES.indexOf(conDia[2].toLowerCase());
-    if (mes !== -1) return { iso: armar(mes, +conDia[1]), aprox: false };
-  }
-  const soloMes = texto.match(/\ben\s+(\p{L}+)/iu);
-  if (soloMes) {
-    const mes = MESES.indexOf(soloMes[1].toLowerCase());
-    if (mes !== -1) return { iso: armar(mes, 15), aprox: true };
-  }
-  return null;
+  const m = texto.match(new RegExp(`^\\s*Un[ao]?\\s+(?:(?:${DIAS_SEM})\\s+)?(\\d{1,2})\\s+de\\s+(\\p{L}+)`, 'iu'));
+  if (!m) return null;
+  const mes = MESES.indexOf(m[2].toLowerCase());
+  return mes === -1 ? null : armar(mes, +m[1]);
 }
 
 // La relación empezó en diciembre de 2025: diciembre es 2025, el resto 2026.
@@ -264,9 +259,9 @@ function sinFecha(texto) {
   return t.charAt(0).toUpperCase() + t.slice(1);
 }
 
-function formatear(iso, aprox) {
+function formatear(iso) {
   const [y, m, d] = iso.split('-').map(Number);
-  return aprox ? `${MESES[m-1]} de ${y}` : `${d} de ${MESES[m-1]}`;
+  return `${d} de ${MESES[m-1]}`;
 }
 
 function diasDesde(iso) {
@@ -306,11 +301,10 @@ function construir() {
   MOMENTOS.forEach((m, i) => {
     if (m === null || !abiertos.has(i) || usadosPorHito.has(i)) return;
     const o = norm(m);
-    const f = fechaDe(o.texto);
-    // Sin fecha no entra a la línea: no hay dónde ponerlo
-    if (!f) return;
+    const fecha = fechaDe(o.texto);
+    if (!fecha) return;
     entradas.push({
-      tipo: 'ent', fecha: f.iso, aprox: f.aprox,
+      tipo: 'ent', fecha,
       titulo: o.titulo, resumen: o.resumen, texto: sinFecha(o.texto)
     });
   });
@@ -340,7 +334,8 @@ function pintar() {
 }
 
 function pintarResumen() {
-  const recuerdos = ENTRADAS.filter(e => e.tipo === 'ent' || e.momento).length;
+  // Un hito cuyo momento ella todavía no abre no cuenta como recuerdo
+  const recuerdos = ENTRADAS.filter(e => e.tipo === 'ent' || (e.momento && e.texto)).length;
   // Solo cuentan los que sí pueden llegar algún día: los sin fecha nunca entran
   const conFecha  = MOMENTOS.filter(m => m !== null && fechaDe(norm(m).texto)).length;
   const faltan    = conFecha - recuerdos;
@@ -402,7 +397,7 @@ function pintarLinea() {
       html += `
         <div class="ent" id="e-${i}" onclick="abrir(${i})">
           <div class="ent-card">
-            <div class="ent-fecha">${formatear(e.fecha, e.aprox)}</div>
+            <div class="ent-fecha">${formatear(e.fecha)}</div>
             ${e.titulo ? `<div class="ent-titulo">${esc(e.titulo)}</div>` : ''}
             ${e.resumen ? `<div class="ent-resumen">${esc(e.resumen)}</div>` : ''}
             <div class="ent-texto">${esc(e.texto)}</div>
