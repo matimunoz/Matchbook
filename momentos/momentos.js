@@ -56,7 +56,7 @@ const MOMENTOS = [
   {
     emoji:   `🚌`,
     titulo:  `De vuelta de Santiago`,
-    resumen: `Un día normal que dejó de serlo apenas llegué al terminal.`,
+    resumen: `En un día totalmente normal, aparecías a cumplir mis deseos.`,
     texto:   `Un 9 de abril, venía de vuelta de Santiago como si fuese un día normal. Entre coqueteo y coqueteo respecto a que me encantaría tener tu boquita recorriendo mi cuerpo, me explicitaste estar dispuesta a venir a solo cumplirme ese deseo y efectivamente, te pedí el uber al llegar al terminal y viniste de inmediato. Llegaste, te puse de rodillas y te tragaste todo con tantas ganas. De solo recordarlo, me prendo.`
   },
   {
@@ -147,7 +147,7 @@ PD: Quiero destacar que al día siguiente te dediqué "Waiting for a girl like y
   {
     emoji:   `🌧️`,
     titulo:  `Nuestro gran conflicto`,
-    resumen: `La noche en que me fui. También se aprende de lo malo.`,
+    resumen: `La noche en que casi me fui. También se aprende de lo malo.`,
     texto:   `Un 15 de julio, teníamos una cita en tu departamento tras mi reunión con las Empresas B. Ahora bien, se nos sumó la Vivi por un momento para hacer la hora y nos enseñaste tu oficina, fue lindo haber conocido un espacio más de tu vida. Ahora bien, lo que parecía ser una cita prometedora en la cual compramos cosas ricas para tomar y tú tenías cosas ricas para comer, terminó siendo nuestro gran conflicto. Escribo de esto porque no solo vivimos de lo bueno, sino que también se aprende de lo malo.
 
 Esa noche sentí que querías que cumpliera un molde y que además, querías que las cosas se dieran a tu forma. No bastaba con minimizar mis intereses sino que también con instarme a terminarte, pero antes, tener sexo de despedida, porque así lo querías. No te miento que en algún momento en mi pensamiento pensé acceder, pero después reflexioné, no pienso vivir dinámicas así nuevamente y en medio de la noche, me fui y pensaba que sin volver. 
