@@ -163,13 +163,11 @@
   .ent.ambos .ent-fecha { color: var(--g2); }
   .firma.amb { color: var(--a2); }
 
-  /* ── Días que todavía no tienen su versión ── */
-  /* Cerrada: solo una pluma tenue, para no llenar la línea de ruido */
-  /* Los emojis ignoran "color", así que se atenúa con opacidad */
-  .pluma { opacity: .4; font-size: .72rem; }
-  .ent.abierta .pluma, .hito.abierta .pluma { display: none; }
+  /* Cada recuerdo lleva su propio emoji junto al título */
+  .ent-em { margin-right: 7px; font-size: .95em; }
 
-  /* Abierta: la invitación de verdad */
+  /* ── Días que todavía no tienen su versión ── */
+  /* La invitación aparece al abrir la tarjeta */
   .sumar-wrap { margin-top: 13px; }
   .sumar {
     display: inline-flex; align-items: center; gap: 7px;
@@ -353,8 +351,8 @@ function esc(s) {
 // Cada momento es { titulo, resumen, texto }; se toleran los antiguos en texto suelto
 function norm(m) {
   if (m === null || m === undefined) return null;
-  if (typeof m === 'string') return { titulo: '', resumen: '', texto: m };
-  return { titulo: m.titulo || '', resumen: m.resumen || '', texto: m.texto || '' };
+  if (typeof m === 'string') return { emoji: '', titulo: '', resumen: '', texto: m };
+  return { emoji: m.emoji || '', titulo: m.titulo || '', resumen: m.resumen || '', texto: m.texto || '' };
 }
 
 // ── Construcción ─────────────────────────────────────────────────────
@@ -379,7 +377,7 @@ function construir() {
     const fecha = fechaDe(o.texto);
     if (!fecha) return;
     entradas.push({
-      tipo: 'ent', fecha,
+      tipo: 'ent', fecha, emoji: o.emoji,
       titulo: o.titulo, resumen: o.resumen, texto: sinFecha(o.texto)
     });
   });
@@ -394,7 +392,7 @@ function construir() {
     const fecha = m.fecha || fechaDe(o.texto);
     if (!fecha) return;
     entradas.push({
-      tipo: 'alyn', fecha,
+      tipo: 'alyn', fecha, emoji: o.emoji,
       titulo: o.titulo, resumen: o.resumen, texto: sinFecha(o.texto)
     });
   });
@@ -438,7 +436,7 @@ function fundirVoces(entradas) {
     if (!mio || !suyo) return;
     fundidos.add(mio).add(suyo);
     nuevas.push({
-      tipo: 'ambos', fecha: mio.fecha,
+      tipo: 'ambos', fecha: mio.fecha, emoji: mio.emoji,
       titulo: mio.titulo, resumen: mio.resumen,
       voces: [
         { quien: 'mio',  texto: mio.texto },
@@ -540,7 +538,7 @@ function pintarLinea() {
         <div class="hito ${e.futuro ? 'futuro' : ''}" id="e-${i}" onclick="abrir(${i})">
           <div class="hito-card">
             <span class="hito-em">${e.em || '🌿'}</span>
-            <div class="hito-fecha">${formatear(e.fecha)}${faltaSuVersion(e) ? ` <span class="pluma">✍️</span>` : ''}</div>
+            <div class="hito-fecha">${formatear(e.fecha)}</div>
             <div class="hito-tit">${esc(e.titulo)}</div>
             ${e.resumen ? `<div class="hito-res">${esc(e.resumen)}</div>` : ''}
             ${((e.voces || []).length || faltaSuVersion(e))
@@ -562,8 +560,8 @@ function pintarLinea() {
       html += `
         <div class="ent ${suya ? 'suya' : ''}${ambos ? 'ambos' : ''}" id="e-${i}" onclick="abrir(${i})">
           <div class="ent-card">
-            <div class="ent-fecha">${formatear(e.fecha)}${firma}${faltaSuVersion(e) ? ` <span class="pluma">✍️</span>` : ''}</div>
-            ${e.titulo ? `<div class="ent-titulo">${esc(e.titulo)}</div>` : ''}
+            <div class="ent-fecha">${formatear(e.fecha)}${firma}</div>
+            ${e.titulo ? `<div class="ent-titulo">${e.emoji ? `<span class="ent-em">${e.emoji}</span>` : ''}${esc(e.titulo)}</div>` : ''}
             ${e.resumen ? `<div class="ent-resumen">${esc(e.resumen)}</div>` : ''}
             <div class="ent-texto">${ambos ? vocesHtml(e.voces) : esc(e.texto)}${faltaSuVersion(e) ? sumarHtml(e) : ''}</div>
           </div>

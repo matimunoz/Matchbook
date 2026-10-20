@@ -217,6 +217,11 @@
       <button class="btn btn-ghost btn-sm" style="margin-top:8px" onclick="toggleAdd()">+ Agregar momento</button>
       <div class="add-form" id="addForm">
         <div class="field" style="margin-top:12px">
+          <label>Emoji</label>
+          <input id="newEmoji" type="text" placeholder="🍌" maxlength="6"
+                 style="width:80px;text-align:center" />
+        </div>
+        <div class="field" style="margin-top:8px">
           <label>Título</label>
           <input id="newTitle" type="text" placeholder="El banana bread" />
         </div>
@@ -384,8 +389,8 @@
   // Normaliza a { titulo, resumen, texto } — tolera entradas antiguas en texto suelto
   function norm(m) {
     if (m === null || m === undefined) return null;
-    if (typeof m === 'string') return { titulo: '', resumen: '', texto: m };
-    return { titulo: m.titulo || '', resumen: m.resumen || '', texto: m.texto || '' };
+    if (typeof m === 'string') return { emoji: '', titulo: '', resumen: '', texto: m };
+    return { emoji: m.emoji || '', titulo: m.titulo || '', resumen: m.resumen || '', texto: m.texto || '' };
   }
 
   function tick(s) {
@@ -398,6 +403,7 @@
       if (m === null || !m.texto) return '  null,';
       return [
         '  {',
+        '    emoji:   ' + tick(m.emoji) + ',',
         '    titulo:  ' + tick(m.titulo) + ',',
         '    resumen: ' + tick(m.resumen) + ',',
         '    texto:   ' + tick(m.texto),
@@ -510,6 +516,12 @@
           </div>
           <div class="moment-edit-area" id="edit-${i}" style="display:none">
             <div class="field">
+              <label>Emoji</label>
+              <input id="em-${i}" type="text" placeholder="🍌" maxlength="6"
+                     style="width:80px;text-align:center"
+                     value="${escHtml(isEmpty ? '' : m.emoji)}" />
+            </div>
+            <div class="field" style="margin-top:8px">
               <label>Título</label>
               <input id="ti-${i}" type="text" placeholder="El banana bread"
                      value="${escHtml(isEmpty ? '' : m.titulo)}" />
@@ -548,10 +560,11 @@
   }
 
   function saveMomento(i) {
+    const emoji   = document.getElementById(`em-${i}`).value.trim();
     const titulo  = document.getElementById(`ti-${i}`).value.trim();
     const resumen = document.getElementById(`re-${i}`).value.trim();
     const texto   = document.getElementById(`ta-${i}`).value.trim();
-    momentos[i] = texto ? { titulo, resumen, texto } : null;
+    momentos[i] = texto ? { emoji, titulo, resumen, texto } : null;
     dirty = true;
     renderList();
     toast('Momento actualizado — recordá guardar y publicar');
@@ -582,6 +595,7 @@
     const texto = document.getElementById('newText').value.trim();
     if (!texto) return;
     const nuevo = {
+      emoji:   document.getElementById('newEmoji').value.trim(),
       titulo:  document.getElementById('newTitle').value.trim(),
       resumen: document.getElementById('newSummary').value.trim(),
       texto
@@ -593,6 +607,7 @@
     } else {
       momentos.push(nuevo);
     }
+    document.getElementById('newEmoji').value = '';
     document.getElementById('newTitle').value = '';
     document.getElementById('newSummary').value = '';
     document.getElementById('newText').value = '';
