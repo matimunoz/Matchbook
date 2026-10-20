@@ -610,6 +610,8 @@
     </div>
   </div>
 
+  <div class="foot-amor">te amo 💚</div>
+
 </div>
 
 <script src="momentos.js"></script>
@@ -1185,6 +1187,30 @@ function startCountdown() {
 }
 
 // ── Sugerencias (Netlify Forms) ───────────────────────────────────────
+// Si llega desde la línea de tiempo con ?contar=2026-08-05, el formulario
+// ya la espera con ese día escrito, en el formato que ella misma usa.
+(function prepararDesdeLaLinea() {
+  const iso = new URLSearchParams(location.search).get('contar');
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(iso || '')) return;
+
+  const MES = ['enero','febrero','marzo','abril','mayo','junio',
+               'julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  const SEM = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
+
+  const [y, m, d] = iso.split('-').map(Number);
+  const dia  = SEM[new Date(y, m - 1, d).getDay()];
+  const abre = dia.charAt(0).toUpperCase() + dia.slice(1) + ` ${d} de ${MES[m-1]}, `;
+
+  window.addEventListener('DOMContentLoaded', () => {
+    const ta = document.getElementById('suggestText');
+    if (!ta) return;
+    ta.value = abre;
+    ta.closest('.suggest-section').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    ta.focus();
+    ta.setSelectionRange(abre.length, abre.length);   // el cursor, listo para escribir
+  });
+})();
+
 async function sendSuggestion() {
   const texto = document.getElementById('suggestText').value.trim();
   if (!texto) return;
@@ -1326,5 +1352,6 @@ syncStreak();
 render();
 renderBonusInfo();
 </script>
+<script src="/alyn/volver.js"></script>
 </body>
 </html>

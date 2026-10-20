@@ -163,6 +163,25 @@
   .ent.ambos .ent-fecha { color: var(--g2); }
   .firma.amb { color: var(--a2); }
 
+  /* ── Días que todavía no tienen su versión ── */
+  /* Cerrada: solo una pluma tenue, para no llenar la línea de ruido */
+  /* Los emojis ignoran "color", así que se atenúa con opacidad */
+  .pluma { opacity: .4; font-size: .72rem; }
+  .ent.abierta .pluma, .hito.abierta .pluma { display: none; }
+
+  /* Abierta: la invitación de verdad */
+  .sumar-wrap { margin-top: 13px; }
+  .sumar {
+    display: inline-flex; align-items: center; gap: 7px;
+    background: var(--a4); border: 1.5px dashed var(--a3);
+    border-radius: 50px; padding: 8px 15px;
+    font-size: .76rem; color: var(--a1); text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: border-color .2s, background .2s;
+  }
+  .sumar:hover { border-color: var(--a2); background: #F7E6EA; }
+  .sumar:active { transform: scale(.97); }
+
   /* Cada voz dentro de una tarjeta compartida */
   .voz { margin-top: 13px; padding-top: 12px; border-top: 1px solid var(--g4); }
   .voz:first-child { margin-top: 0; padding-top: 0; border-top: none; }
@@ -240,7 +259,7 @@
   <div class="meses" id="meses"></div>
   <div class="linea" id="linea"></div>
 
-  <div class="foot"><a href="/alyn/">Volver al inicio 💚</a></div>
+  <div class="foot-amor">te amo 💚</div>
 </div>
 
 <button class="ir-hoy" id="irHoy" onclick="irAlFinal()">↓ Lo más reciente</button>
@@ -260,7 +279,8 @@ const POLOLEO = '2026-08-13';
 // ══════════════════════════════════════════════════════════════════════
 const HITOS = [
   { fecha: '2025-12-20', em: '✨', titulo: `Nuestra primera cita`, momento: 19 },
-  { fecha: '2026-07-08', em: '💚', titulo: `Te dije que te quería`, momento: 6 },
+  { fecha: '2026-07-08', em: '💚', titulo: `Nos dijimos te quiero`, momento: 6,
+    texto: `Unos días viviendo la cotidianidad y ya sentía quererte.` },
   { fecha: POLOLEO,      em: '🌿', titulo: `Te pedí pololeo`, momento: 41 },
   { fecha: '2026-08-24', em: '💞', titulo: `Nos dijimos te amo`,
     momento: 16, deAlyn: 'dia-del-lector' },
@@ -430,6 +450,20 @@ function fundirVoces(entradas) {
   return [...entradas.filter(e => !fundidos.has(e)), ...nuevas];
 }
 
+// Un día que conté yo y ella todavía no: se la invita a sumar la suya.
+// La lleva al formulario de 100 Momentos con la fecha ya escrita.
+function faltaSuVersion(e) {
+  if (e.futuro) return false;
+  if (e.tipo === 'ambos' || e.tipo === 'alyn') return false;
+  if (e.tipo === 'hito') return !(e.voces || []).some(v => v.quien === 'suyo');
+  return e.tipo === 'ent';
+}
+
+function sumarHtml(e) {
+  return `<div class="sumar-wrap"><a class="sumar" href="/momentos/?contar=${e.fecha}"
+             onclick="event.stopPropagation()">✍️ Cuéntame tu versión</a></div>`;
+}
+
 // Las dos voces de una tarjeta compartida
 function vocesHtml(voces) {
   return (voces || []).map(v => `
@@ -506,13 +540,15 @@ function pintarLinea() {
         <div class="hito ${e.futuro ? 'futuro' : ''}" id="e-${i}" onclick="abrir(${i})">
           <div class="hito-card">
             <span class="hito-em">${e.em || '🌿'}</span>
-            <div class="hito-fecha">${formatear(e.fecha)}</div>
+            <div class="hito-fecha">${formatear(e.fecha)}${faltaSuVersion(e) ? ` <span class="pluma">✍️</span>` : ''}</div>
             <div class="hito-tit">${esc(e.titulo)}</div>
             ${e.resumen ? `<div class="hito-res">${esc(e.resumen)}</div>` : ''}
-            ${(e.voces || []).length
-              ? `<div class="hito-txt">${e.voces.length > 1
-                   ? vocesHtml(e.voces)
-                   : esc(e.voces[0].texto)}</div>`
+            ${((e.voces || []).length || faltaSuVersion(e))
+              ? `<div class="hito-txt">${
+                   (e.voces || []).length
+                     ? (e.voces.length > 1 ? vocesHtml(e.voces) : esc(e.voces[0].texto))
+                     : ''
+                 }${faltaSuVersion(e) ? sumarHtml(e) : ''}</div>`
               : ''}
           </div>
         </div>`;
@@ -526,10 +562,10 @@ function pintarLinea() {
       html += `
         <div class="ent ${suya ? 'suya' : ''}${ambos ? 'ambos' : ''}" id="e-${i}" onclick="abrir(${i})">
           <div class="ent-card">
-            <div class="ent-fecha">${formatear(e.fecha)}${firma}</div>
+            <div class="ent-fecha">${formatear(e.fecha)}${firma}${faltaSuVersion(e) ? ` <span class="pluma">✍️</span>` : ''}</div>
             ${e.titulo ? `<div class="ent-titulo">${esc(e.titulo)}</div>` : ''}
             ${e.resumen ? `<div class="ent-resumen">${esc(e.resumen)}</div>` : ''}
-            <div class="ent-texto">${ambos ? vocesHtml(e.voces) : esc(e.texto)}</div>
+            <div class="ent-texto">${ambos ? vocesHtml(e.voces) : esc(e.texto)}${faltaSuVersion(e) ? sumarHtml(e) : ''}</div>
           </div>
         </div>`;
     }
@@ -576,5 +612,6 @@ window.addEventListener('scroll', vigilar, { passive: true });
 pintar();
 vigilar();
 </script>
+<script src="/alyn/volver.js"></script>
 </body>
 </html>
