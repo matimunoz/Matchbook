@@ -276,15 +276,15 @@ const POLOLEO = '2026-08-13';
 //  Si llevan "deAlyn", se funden con el que escribió ella, por su id.
 // ══════════════════════════════════════════════════════════════════════
 const HITOS = [
-  { fecha: '2025-12-20', em: '✨', titulo: `Nuestra primera cita`, momento: 19 },
+  { fecha: '2025-12-20', em: '💚', titulo: `Nuestra primera cita`, momento: 19 },
   { fecha: '2026-07-08', em: '💚', titulo: `Nos dijimos te quiero`, momento: 6,
     texto: `Unos días viviendo la cotidianidad y ya sentía quererte.` },
-  { fecha: POLOLEO,      em: '🌿', titulo: `Te pedí pololeo`, momento: 41 },
-  { fecha: '2026-08-24', em: '💞', titulo: `Nos dijimos te amo`,
+  { fecha: POLOLEO,      em: '💚', titulo: `Te pedí pololeo`, momento: 41 },
+  { fecha: '2026-08-24', em: '💚', titulo: `Nos dijimos te amo`,
     momento: 16, deAlyn: 'dia-del-lector' },
-  { fecha: '2026-10-13', em: '💌', titulo: `Dos meses`,
+  { fecha: '2026-10-13', em: '💚', titulo: `Dos meses`,
     texto: `Hipnotizados por nuestros sueños.` },
-  { fecha: '2026-11-13', em: '🗓️', titulo: `Tres meses`, futuro: true },
+  { fecha: '2026-11-13', em: '💚', titulo: `Tres meses`, futuro: true },
 ];
 
 // ── Momentos ya descubiertos ─────────────────────────────────────────
@@ -537,7 +537,7 @@ function pintarLinea() {
       html += `
         <div class="hito ${e.futuro ? 'futuro' : ''}" id="e-${i}" onclick="abrir(${i})">
           <div class="hito-card">
-            <span class="hito-em">${e.em || '🌿'}</span>
+            <span class="hito-em">${e.em || '💚'}</span>
             <div class="hito-fecha">${formatear(e.fecha)}</div>
             <div class="hito-tit">${esc(e.titulo)}</div>
             ${e.resumen ? `<div class="hito-res">${esc(e.resumen)}</div>` : ''}
