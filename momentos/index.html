@@ -574,6 +574,7 @@
     <input type="text" name="bot-field" />
     <input type="text" name="racha" />
     <input type="text" name="momento" />
+    <input type="text" name="descubiertos" />
     <input type="text" name="fecha" />
   </form>
 
@@ -1126,8 +1127,7 @@ function unlockMomento() {
   syncAchieved(st.seenDates, st.streak);
 
   // Registro silencioso de racha en Netlify Forms
-  const momentNum = st.seen.length;
-  logStreakToNetlify(st.streak, momentNum);
+  logStreakToNetlify(st.streak, st.todayIdx, st.seen.length);
 
   // Notificar hito si aplica
   const hitMs = MILESTONES.find(ms => ms.day === st.streak && !st.notifiedMs.includes(ms.day));
@@ -1141,15 +1141,18 @@ function unlockMomento() {
 }
 
 // ── Registro diario de racha en Netlify Forms (silencioso) ───────────
-function logStreakToNetlify(streak, momentNum) {
+// "momento" lleva el numero del admin (la posicion en la lista de 100) y el
+// titulo, para no confundirlo con cuantos recuerdos lleva descubiertos.
+function logStreakToNetlify(streak, idx, descubiertos) {
   fetch('/', {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body: new URLSearchParams({
       'form-name': 'racha-diaria',
       racha:   `${streak} día${streak !== 1 ? 's' : ''}`,
-      momento: `Momento ${momentNum}`,
-      fecha:   formatDate(today()),
+      momento:      `#${idx + 1} · ${tituloDe(MOMENTOS[idx]) || 'sin titulo'}`,
+      descubiertos: `${descubiertos} de ${MOMENTOS.length}`,
+      fecha:        formatDate(today()),
     }).toString()
   }).catch(() => {}); // silencioso si falla
 }
