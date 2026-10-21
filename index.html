@@ -2309,15 +2309,31 @@
     });
   }
 
+  // Avisa al Apps Script que esta persona tiene cuenta, para la pestaña
+  // Usuarios. Netlify Identity es otro sistema y el script no puede
+  // consultarlo, así que se lo contamos nosotros. Una vez por sesión basta.
+  let CUENTA_AVISADA = false;
+  function avisarCuenta(u){
+    if (!u || !u.email || CUENTA_AVISADA) return;
+    CUENTA_AVISADA = true;
+    const md = u.user_metadata || {};
+    fetch(APPS_SCRIPT_URL, {
+      method:"POST", mode:"no-cors", headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({ tipo:"cuenta", email:u.email,
+                             nombre: md.full_name || "", telefono: md.telefono || "" })
+    }).catch(function(e){ console.warn("Aviso de cuenta:", e); });
+  }
+
   if (window.netlifyIdentity) {
     window.netlifyIdentity.on("init", function(user){
       USUARIO = user || null;
       pintarSesion();
-      if (USUARIO) precargarLecturas();
+      if (USUARIO) { precargarLecturas(); avisarCuenta(USUARIO); }
     });
     window.netlifyIdentity.on("login", function(user){
       USUARIO = user;
       pintarSesion();
+      avisarCuenta(user);
       window.netlifyIdentity.close();
       if (esAdmin(user)) document.location.href = "/admin/";
     });
