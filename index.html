@@ -492,9 +492,6 @@
   .invita-check input{flex:0 0 auto;width:18px;height:18px;margin:0;accent-color:var(--hoja);cursor:pointer}
   .invita-check:hover span{color:var(--hoja)}
   .invita-check + .invita-campo{margin-top:12px}
-  /* La casilla del boletín es opcional: no debe pesar como las obligatorias. */
-  .consent-boletin{margin-bottom:16px;font-family:var(--serif);font-weight:400;font-size:.9rem;color:var(--tinta-suave)}
-  .consent-boletin:hover span{color:var(--noche)}
   .aviso-privacidad{font-family:var(--serif);font-size:.8rem;color:var(--tinta-suave);text-align:center;margin-top:12px;line-height:1.5}
   .invita-fila{display:flex;gap:8px;align-items:stretch}
   .invita-fila input{flex:1 1 auto;min-width:0;text-transform:uppercase;letter-spacing:.06em}
@@ -980,11 +977,6 @@
           <button type="button" onclick="quitarCodigo()">Quitar</button>
         </div>
       </div>
-      <!-- Marketing aparte del servicio: desmarcada, y reservar no suscribe. -->
-      <label class="invita-check consent-boletin">
-        <input type="checkbox" id="chkBoletin">
-        <span>Quiero recibir el libro del mes por correo</span>
-      </label>
       <div class="pago-nota" id="pagoNota">💳 Al continuar serás dirigido al checkout seguro de Mercado Pago (crédito, débito o saldo). Tu silla queda confirmada al completar el pago.</div>
       <button class="btn btn-sol" id="btnSubmit" onclick="submitReserva()">Continuar al pago →</button>
       <p class="aviso-privacidad">Usamos tus datos solo para tu reserva. Lee nuestra
@@ -1407,7 +1399,6 @@
     activeModalClubId = id;
     fillSesionCards(id);
     reiniciarInvita();
-    document.getElementById("chkBoletin").checked = false;   // nunca premarcada
     formView.style.display="block";confirmView.style.display="none";
     overlay.classList.add("open");document.body.style.overflow="hidden";
     autocompletarDatos();
@@ -1583,7 +1574,6 @@
         mode:"no-cors",
         headers:{"Content-Type":"application/json"},
         body:JSON.stringify({nombre,email,telefono:fono,club:c.club,libro:c.titulo,fecha:s.fecha,lugar:s.lugar,codigo:code,
-                             boletin: document.getElementById("chkBoletin").checked,
                              precio: INVITACION ? ("INVITACIÓN · " + INVITACION) : clp(c.precio)})
       });
     } catch(e){ console.warn("Formspree:",e) }
