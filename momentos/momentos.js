@@ -208,7 +208,7 @@ Afortunadamente, ni yo me fui realmente, ni a ti te fue indiferente la situació
     emoji:   `🫂`,
     titulo:  `Cargada de emociones`,
     resumen: `Llegaste abrumada. Entendimos que una relación es para apoyarse.`,
-    texto:   `Un 15 de septiembre, llegabas cargada de emociones y con ganas de irte a la soledad. Ahora bien, el regalo que te entregué siento de partida de ablandó un poco el corazón. Llegando a echarnos, te desahogaste y te veías bastante abrumada con todo, por malestar físico, miedos, frustración y tristeza. Sin embargo, entre meditación, regaloneo y palabras con amor fuiste cediendo a comprender que si estamos en una relación, es para apoyarnos y cuidarnos. Agradezco después el almuerzo que tuvimos y todo lo que dormimos.`
+    texto:   `Un 15 de septiembre, llegabas cargada de emociones y con ganas de irte a la soledad. Ahora bien, el regalo que te entregué siento de partida te ablandó un poco el corazón. Llegando a echarnos, te desahogaste y te veías bastante abrumada con todo, por malestar físico, miedos, frustración y tristeza. Sin embargo, entre meditación, regaloneo y palabras con amor fuiste cediendo a comprender que si estamos en una relación, es para apoyarnos y cuidarnos. Agradezco después el almuerzo que tuvimos y todo lo que dormimos.`
   },
   {
     emoji:   `🤝`,
