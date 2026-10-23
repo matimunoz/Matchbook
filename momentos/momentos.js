@@ -247,7 +247,7 @@ Ahí en el restaurant, lo pasé súper. Comimos rico, me sentí incluido y cómo
   {
     emoji:   `🎁`,
     titulo:  `Mi mejor cumpleaños`,
-    resumen: `Mis mundos conociéndose, y tú al lado. Una noche perfecta.`,
+    resumen: `Mis mundos conociéndose, y tú a mi lado. Una noche perfecta.`,
     texto:   `Un 19 de septiembre, tras comentarle a mi papá un poco de tu historia, se ofreció a facilitarnos la vida pasándote a buscar con el Alexis para irlo a dejar donde su tía. Menos mal fue así pues de esta forma pudimos estar juntos desde el inicio del festejo. En retrospectiva, sigo pensando que fue el mejor cumpleaños de todos, porque sentí mi corazón tranquilo y si bien no hubo muchas palabras que crucé con mis invitados y hasta contigo, creo que a veces los silencios también dicen mucho. Me sentía feliz de ver cómo se conocían personas de mis diferentes mundos, orgulloso de ver cómo me rodeo de tanto talento y también contento de poder vivir todo eso a tu lado. Nos fuimos a dormir y ahí tuvimos la conversación en torno a que me entendieras que realmente quería dormir contigo por sobre todo y menos mal accediste y no te fuiste, eso me hubiese puesto triste. De ahí en más no nos importó nada y lo hicimos sin importar quien estuviese al lado o quien entrase al baño. Fue una noche perfecta.`
   },
   {
