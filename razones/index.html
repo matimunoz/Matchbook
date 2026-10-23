@@ -194,6 +194,16 @@
 
   <div class="foot-amor">te amo 💚</div>
 
+  <!-- Formulario oculto: registro de visitas (invisible para Alyn) -->
+  <form name="razones" data-netlify="true" netlify-honeypot="bot-field" hidden>
+    <input type="hidden" name="form-name" value="razones" />
+    <input type="text" name="bot-field" />
+    <input type="text" name="fecha" />
+    <input type="text" name="hora" />
+    <input type="text" name="vistas" />
+    <input type="text" name="en-pantalla" />
+  </form>
+
 </div>
 
 <script>
@@ -406,8 +416,41 @@ function pintarMedidor() {
     <div class="meter-bar"><div class="meter-fill" style="width:${pct}%"></div></div>`;
 }
 
+// ── Registro silencioso de visitas ──────────────────────────
+// Una linea por dia, no por visita: Netlify Forms tiene cupo mensual.
+// Queda en el panel de Netlify, invisible para ella.
+function registrarVisita() {
+  const d = new Date();
+  const hoy = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+
+  try {
+    if (localStorage.getItem('razones_registro') === hoy) return;
+    localStorage.setItem('razones_registro', hoy);
+  } catch (e) { return; }   // sin almacenamiento, mejor no registrar que repetir
+
+  const MESES = ['enero','febrero','marzo','abril','mayo','junio',
+                 'julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  const ultima = getUltima();
+  const enPantalla = (ultima !== null && RAZONES[ultima])
+    ? `#${ultima + 1} · ${normalizar(RAZONES[ultima]).titulo || 'sin titulo'}`
+    : 'nada todavia';
+
+  fetch('/', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({
+      'form-name': 'razones',
+      fecha: `${d.getDate()} de ${MESES[d.getMonth()]} de ${d.getFullYear()}`,
+      hora:  `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`,
+      vistas: `${getVistas().length} de ${escritas()} escritas`,
+      'en-pantalla': enPantalla,
+    }).toString()
+  }).catch(() => {});   // silencioso si falla
+}
+
 // ── Init ──────────────────────────────────────────────────────────────
 (function init() {
+  registrarVisita();
   const ultima = getUltima();
   // Si ya vio alguna, al volver le mostramos la última en vez del botón pelado
   if (ultima !== null && RAZONES[ultima]) {
