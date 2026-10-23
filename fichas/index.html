@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Fichas de compromiso · Global Shapers</title>
 <meta name="robots" content="noindex">
-<meta name="description" content="Después del documental, saca tu ficha y elige una acción para los próximos 30 días.">
+<meta name="description" content="Saca tu ficha al azar y elige una acción para los próximos 30 días.">
 <meta name="theme-color" content="#FDFBEF">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -75,38 +75,6 @@
   /* ── Zona central ── */
   .escenario { min-height: 310px; display: flex; flex-direction: column; justify-content: center; }
 
-  /* ── Candado: antes del documental ── */
-  .candado { text-align: center; padding: 14px 0; }
-  .candado .cerrojo { font-size: 2.9rem; display: block; margin-bottom: 14px; }
-  .candado h2 {
-    font-size: 1.22rem; font-weight: 600; margin-bottom: 8px;
-  }
-  .candado p {
-    font-size: .89rem; font-weight: 400; line-height: 1.55;
-    color: var(--tinta-3); margin-bottom: 20px;
-  }
-  .clave-fila { display: flex; flex-direction: column; gap: 10px; }
-  .clave-fila input {
-    font-family: inherit; font-size: 1.05rem; font-weight: 500;
-    text-align: center; color: var(--tinta);
-    background: #fff; border: 2px solid var(--verde-b);
-    border-radius: 50px; padding: 13px 18px;
-    outline: none; transition: border-color .2s;
-  }
-  .clave-fila input:focus { border-color: var(--hoja); }
-  .clave-fila input::placeholder { color: var(--tinta-3); font-weight: 400; }
-
-  .error {
-    margin-top: 12px; font-size: .84rem; font-weight: 500; color: #C2533F;
-  }
-  .sacudir { animation: sacudir .4s; }
-  @keyframes sacudir {
-    0%,100% { transform: translateX(0); }
-    25%     { transform: translateX(-7px); }
-    75%     { transform: translateX(7px); }
-  }
-
-  /* ── Listo para sacar ── */
   .invitacion { text-align: center; padding: 22px 0; }
   .invitacion .mazo {
     font-size: 3.3rem; display: block; margin-bottom: 14px;
@@ -118,10 +86,6 @@
   }
   .invitacion p {
     font-size: .92rem; color: var(--tinta-3); margin-bottom: 20px; font-weight: 400;
-  }
-  .aviso-unica {
-    display: block; margin-top: 14px;
-    font-size: .78rem; font-weight: 400; color: var(--tinta-3);
   }
 
   /* ── La tarjeta ── */
@@ -141,7 +105,7 @@
     to   { opacity: 1; transform: none; }
   }
   @media (prefers-reduced-motion: reduce) {
-    .ficha, .invitacion .mazo, .sacudir { animation: none; }
+    .ficha, .invitacion .mazo { animation: none; }
   }
 
   /* El emoji con los rayitos amarillos del diseño original */
@@ -174,27 +138,30 @@
     font-size: .76rem; font-weight: 600; color: var(--tinta-2);
   }
 
-  /* ── Botones ── */
+  /* ── Botón ── */
   .btn {
     width: 100%;
     font-family: inherit; font-size: 1rem; font-weight: 600;
     border-radius: 50px; padding: 14px 22px;
-    cursor: pointer; border: 2px solid transparent;
+    cursor: pointer; border: none;
+    background: var(--sol); color: var(--tinta);
+    box-shadow: 0 4px 16px rgba(244,195,64,.4);
     -webkit-tap-highlight-color: transparent;
     transition: transform .12s, background .2s;
   }
+  .btn:hover  { background: #F0B92A; }
   .btn:active { transform: scale(.975); }
 
-  .btn-sol {
-    background: var(--sol); color: var(--tinta);
-    box-shadow: 0 4px 16px rgba(244,195,64,.4);
+  .otra {
+    display: block; margin: 18px auto 0;
+    background: none; border: none; padding: 6px;
+    font-family: inherit; font-size: .84rem; font-weight: 500;
+    color: var(--tinta-3); text-decoration: underline; cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
   }
-  .btn-sol:hover { background: #F0B92A; }
+  .otra:hover { color: var(--hoja); }
 
-  .btn-hoja { background: var(--hoja); color: #fff; }
-  .btn-hoja:hover { background: #3E8A51; }
-
-  /* ── Ficha ya sacada ── */
+  /* ── Ficha sacada ── */
   .sello {
     text-align: center; margin-bottom: 15px;
     font-size: .78rem; font-weight: 600; letter-spacing: .09em;
@@ -226,8 +193,8 @@
   </header>
 
   <p class="intro">
-    Después del documental, cada shaper saca <b>una ficha</b>.<br>
-    La que te toque es la tuya: una acción simple para los próximos <b>30 días</b>.
+    Saca tu ficha al azar.<br>
+    La que te toque es una acción simple para los próximos <b>30 días</b>.
   </p>
 
   <main class="escenario" id="escenario"></main>
@@ -239,97 +206,40 @@
 <script src="fichas.js"></script>
 <script>
 // ══════════════════════════════════════════════════════════════════════
-//  CONFIGURACIÓN
+//  Un botón, una ficha al azar.
+//
+//  La ficha que le sale a cada quien queda guardada en su propio
+//  teléfono, así que al volver la encuentra en vez del mazo, y en una
+//  junta cada persona saca la suya sin pisarse con el resto.
+//
+//  Para dejar un teléfono como nuevo, abrir la página con ?reset
 // ══════════════════════════════════════════════════════════════════════
-//
-//  La palabra que abre la actividad. Se dice en voz alta o se proyecta
-//  al terminar el documental, así nadie saca ficha antes de verlo.
-//  Cámbiala antes de cada junta.
-//
-//  No distingue mayúsculas ni tildes: "Regenera", "regenera" y
-//  "REGENERÁ" entran igual.
-//
-const CLAVE = 'regenera';
-
-//  Para reiniciar un teléfono (o para probar), basta abrir la página
-//  con  ?reset  al final de la dirección.
-//
-// ══════════════════════════════════════════════════════════════════════
-
-const K_ACCESO = 'fichas_acceso';
-const K_MIA    = 'fichas_elegida';
-
-function leer(clave, porDefecto) {
-  try {
-    const v = localStorage.getItem(clave);
-    return v === null ? porDefecto : JSON.parse(v);
-  } catch (e) { return porDefecto; }
-}
-
-function guardar(clave, valor) {
-  try { localStorage.setItem(clave, JSON.stringify(valor)); } catch (e) {}
-}
+const K_MIA = 'fichas_elegida';
 
 function esc(s) {
   return String(s).replace(/[&<>"']/g, c =>
     ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
 }
 
-// ── El candado ───────────────────────────────────────────────────────
-// Sin tildes ni mayúsculas, para que nadie quede fuera por un acento
-function limpiar(s) {
-  return String(s).trim().toLowerCase()
-    .normalize('NFD').replace(/[̀-ͯ]/g, '');
+function sacarFicha() {
+  const i = Math.floor(Math.random() * FICHAS.length);
+  try { localStorage.setItem(K_MIA, String(i)); } catch (e) {}
+  pintarFicha(i);
 }
 
-function pintarCandado(fallo) {
-  document.getElementById('escenario').innerHTML = `
-    <div class="candado ${fallo ? 'sacudir' : ''}">
-      <span class="cerrojo">&#128274;</span>
-      <h2>Primero, el documental</h2>
-      <p>Al terminar la proyección se comparte una palabra.<br>Escríbela acá para sacar tu ficha.</p>
-      <div class="clave-fila">
-        <input id="clave" type="text" inputmode="text" autocomplete="off"
-               autocapitalize="none" spellcheck="false" placeholder="La palabra"
-               onkeydown="if(event.key==='Enter')probarClave()">
-        <button class="btn btn-hoja" onclick="probarClave()">Entrar</button>
-      </div>
-      ${fallo ? `<p class="error">Esa no es. Pregúntale a quien está facilitando.</p>` : ''}
-    </div>`;
-  const campo = document.getElementById('clave');
-  if (fallo) campo.focus();
-}
-
-function probarClave() {
-  const escrita = document.getElementById('clave').value;
-  if (limpiar(escrita) !== limpiar(CLAVE)) { pintarCandado(true); return; }
-  guardar(K_ACCESO, true);
-  pintarInvitacion();
-}
-
-// ── Lista para sacar ─────────────────────────────────────────────────
 function pintarInvitacion() {
   document.getElementById('escenario').innerHTML = `
     <div class="invitacion">
       <span class="mazo">&#127807;</span>
       <p>Quince acciones pequeñas.<br>Una es la tuya.</p>
-      <button class="btn btn-sol" onclick="sacarFicha()">Sacar mi ficha</button>
-      <span class="aviso-unica">Se saca una sola vez</span>
+      <button class="btn" onclick="sacarFicha()">Sacar una ficha</button>
     </div>`;
 }
 
-// ── El sorteo: una por persona, y esa queda ──────────────────────────
-function sacarFicha() {
-  if (leer(K_MIA, null) !== null) return;   // ya tiene la suya
-  const i = Math.floor(Math.random() * FICHAS.length);
-  guardar(K_MIA, i);
-  pintarMiFicha(i);
-}
-
-function pintarMiFicha(i) {
+function pintarFicha(i) {
   const f = FICHAS[i];
   document.getElementById('escenario').innerHTML = `
-    <p class="sello">Tu compromiso</p>
+    <p class="sello">Tu ficha</p>
     <div class="ficha ${f.tono}">
       <span class="icono">${f.emoji}</span>
       <h2>${esc(f.titulo)}</h2>
@@ -338,21 +248,26 @@ function pintarMiFicha(i) {
     </div>
     <div class="cierre">
       Si quieres, en la próxima junta puedes contar cómo te fue.
-    </div>`;
+    </div>
+    <button class="otra" onclick="sacarFicha()">Sacar otra</button>`;
 }
 
 // ── Arranque ─────────────────────────────────────────────────────────
 (function init() {
-  // ?reset deja el teléfono como nuevo, para reiniciar o para probar
   if (location.search.includes('reset')) {
-    try { localStorage.removeItem(K_ACCESO); localStorage.removeItem(K_MIA); } catch (e) {}
+    try { localStorage.removeItem(K_MIA); } catch (e) {}
     history.replaceState(null, '', location.pathname);
   }
 
-  const mia = leer(K_MIA, null);
-  if (mia !== null && FICHAS[mia]) pintarMiFicha(mia);   // ya la sacó
-  else if (leer(K_ACCESO, false))  pintarInvitacion();   // vio el documental
-  else                             pintarCandado(false); // todavía no
+  let mia = null;
+  try {
+    const v = localStorage.getItem(K_MIA);
+    if (v !== null) mia = parseInt(v);
+  } catch (e) {}
+
+  // Si ya sacó una, al volver la encuentra en vez del mazo
+  if (mia !== null && FICHAS[mia]) pintarFicha(mia);
+  else pintarInvitacion();
 })();
 </script>
 </body>
