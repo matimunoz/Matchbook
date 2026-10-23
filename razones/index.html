@@ -417,15 +417,21 @@ function pintarMedidor() {
 }
 
 // ── Registro silencioso de visitas ──────────────────────────
-// Una linea por dia, no por visita: Netlify Forms tiene cupo mensual.
 // Queda en el panel de Netlify, invisible para ella.
+//
+// Se registra cada entrada, no una por dia, para poder ver a que horas
+// la busca. La espera evita que recargar o volver a los minutos cuente
+// dos veces; subila si llegan demasiadas.
+const ESPERA_REGISTRO = 60 * 60 * 1000;   // una hora
+
 function registrarVisita() {
   const d = new Date();
-  const hoy = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  const ahora = d.getTime();
 
   try {
-    if (localStorage.getItem('razones_registro') === hoy) return;
-    localStorage.setItem('razones_registro', hoy);
+    const ultimo = parseInt(localStorage.getItem('razones_registro')) || 0;
+    if (ahora - ultimo < ESPERA_REGISTRO) return;
+    localStorage.setItem('razones_registro', String(ahora));
   } catch (e) { return; }   // sin almacenamiento, mejor no registrar que repetir
 
   const MESES = ['enero','febrero','marzo','abril','mayo','junio',
