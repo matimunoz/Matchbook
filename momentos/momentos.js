@@ -268,8 +268,28 @@ Ahí en el restaurant, lo pasé súper. Comimos rico, me sentí incluido y cómo
     resumen: `WIP Coffee, jazz, y en la tranquilidad de la pieza te lo dije.`,
     texto:   `Un 13 de agosto, había comprado entradas para ir a ver a Antonio Monasterio, pero antes de quería mostrar una cafetería: WIP Coffee. Me gustó un montón compartir ese ratito contigo y después irnos a disfrutar de mi agrupación de jazz favorita, para  que conocieses un poco más de mis gustos. De ahí, nos fuimos caminando hasta una farmacia dado que te había llegado recién la regla. Partimos al departamento, y ahí en la tranquilidad de la habitación te dije "Quiero que seas mi polola". Preferí afirmarlo en vez de netamente consultarlo, pues lo sentía mucho en mi corazón. Vi tu sonrisa, con mis palabras y mis regalos, mientras me decías que si bien no podíamos hacer el amor, afortunadamente tenías una boca para usar, aquello me calentó un montón.`
   },
-  null,
-  null,
+  {
+    emoji:   `🌕`,
+    titulo:  `Una noche especial`,
+    resumen: `Compartiendo con nuestros amigos porque sí.`,
+    texto:   `Un sábado 24, desbloqueamos un nuevo lugar vegetariano en el cual almorzamos. Estuvo todo tan rico y preciso, realmente fue un gusto partir el día así. Buena comida, buena bebida y buena compañía. Me gustó transmitirte lo que había aprendido del documental, sobre todo aquello sobre los niveles de la economía que consideraba se podían extrapolar a las relaciones humanas. 1) Consumistas 2) Sostenibles 3) Regenerativas. Realmente yo aspiro a tener contigo una relación que no solo se sostenga en el tiempo sino que también sea capaz de regenerar, de crear y de sanar. 
+
+Después de ello, fuimos a Café Local, el proyecto que cree en Global Shapers cuando recién surgió la organización. Fue bonito que me acompañaras y que pudieses saber más de las personas con las cuales me rodeo. Para que les pongas rostro y puedas imaginar las aventuras en las que suelo andar junto a ellos. 
+
+Finalmente, llegó la noche tras tu junta de amigas, donde realmente casi me salieron lágrimas. Te presentaste e iluminaste la terraza con tu luz. Admirable, fue la palabra que más se repitió sobre ti y fue tan bonito que me involucraras en tu relato agradeciendo el amor y preocupación incondicional que tengo hacia ti. Me sentí demasiado honrado, valorado y visto. Después, pasando de lo emocional, tuvimos una noche cargada de risas, donde te veía siendo tú libremente, con mi gente. Verte feliz me pone demasiado feliz. Qué tristeza no acordarme cómo fue exactamente terminó la noche, pero que alegría que fue a tu lado.`
+  },
+  {
+    emoji:   `☀️`,
+    titulo:  `Como los domingos debiesen ser`,
+    resumen: `Levantarnos tarde, hacer el amor, almorzar rico y regalonear hasta el infinito.`,
+    texto:   `Un 25 de octubre, pensé lo siguiente. Me siento tan afortunado de experimentar intensamente la mezcla de emociones que significa el amor. Mi mano se siente atraída a tomar tu mano, a recorrer tu cuerpo y a acariciar tu pelo. Mis brazos necesitan sostenerte, sentirte y acercarte a mí. Mi boca necesita recorrer tus labios y tu piel tan preciosa. Mis ojos quieren mirar todos tus movimientos, para mantenerte siempre fresca en todos mis recuerdos. Mi mente vive inspirada en querer siempre sorprenderte. Y así podría seguir hasta el infinito. 
+
+Este domingo fue eso, sentirme agradecido de compartir mi vida con otro ser humano y sentirme dispuesto a retroalimentarnos con nuestros gustos, historias, aprendizajes y más. 
+
+Te disfruté tanto. Nos levantamos tarde después de escuchar música desnudos mientras nos abrazábamos. Después de eso, quería aprovechar cada minuto a tu lado así que omití ordenar, cocinar y lo clásico que vivimos cada uno en nuestra semana, dejando como centro el compartirnos un momento. Fue tan bonito almorzar en la laguna, nunca lo había hecho y pareciera que ese tronco nos estaba esperando para utilizarlo. Y después, echados vimos el documental de Mon Laferte, el cual me hizo reflexionar muchas cosas pero la más potente de todas es: qué bello es sentir con tanta profundidad. 
+
+Te amo demasiado, más de lo que a veces siento poder expresar.`
+  },
   null,
   null,
   null,
