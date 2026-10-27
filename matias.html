@@ -155,14 +155,22 @@
   .premio .medalla{font-size:1.5rem;line-height:1.2}
   .premio p{margin:0;font-size:1rem}
 
-  /* ---------- listas con color de club ---------- */
-  .fichas{display:grid;gap:12px;margin:18px 0 6px}
-  .ficha{
-    background:#FFFDF7;border:1px solid rgba(19,41,63,.1);
-    border-left:5px solid var(--c,var(--hoja));border-radius:14px;padding:16px 20px;
+  /* ---------- lista editorial ----------
+     Sin cajas ni barras de color: solo jerarquia tipografica y una linea
+     fina entre items, como una ficha de revista. */
+  .detalle{margin:20px 0 6px;border-top:1px solid rgba(110,100,80,.3)}
+  .detalle > div{
+    display:grid;grid-template-columns:210px 1fr;gap:6px 28px;
+    padding:16px 0;border-bottom:1px solid rgba(110,100,80,.18);
   }
-  .ficha b{display:block;font-family:var(--serif);font-size:1.05rem;color:var(--c,var(--noche))}
-  .ficha span{font-size:.95rem;color:var(--tinta-suave)}
+  .detalle dt{
+    font-family:var(--serif);font-weight:700;font-size:1.05rem;
+    color:var(--noche);line-height:1.3;
+  }
+  .detalle dd{font-size:.98rem;line-height:1.55;color:var(--tinta-suave);max-width:58ch}
+  @media (max-width:620px){
+    .detalle > div{grid-template-columns:1fr;gap:3px;padding:14px 0}
+  }
 
   ul.puntos{margin:0 0 14px 0;list-style:none;max-width:66ch}
   ul.puntos li{position:relative;padding-left:22px;margin-bottom:9px}
@@ -172,6 +180,24 @@
   }
 
   .nota{font-size:.94rem;color:var(--tinta-suave);font-style:italic}
+
+  /* Fotos del relato. Los recortes de prensa se muestran a tamano moderado
+     y se abren completos al hacer clic, que es como se leen de verdad. */
+  .figura{margin:32px 0 6px}
+  .figura a{display:inline-block;line-height:0;border-radius:16px;overflow:hidden;
+            box-shadow:0 14px 38px rgba(19,41,63,.2);transition:transform .18s,box-shadow .25s}
+  .figura a:hover{transform:translateY(-3px);box-shadow:0 20px 48px rgba(19,41,63,.28)}
+  .figura img{display:block;width:100%;height:auto}
+  .figura.recorte a{max-width:380px}
+  .figura.ancha a{max-width:520px}
+  .figura figcaption{
+    font-family:var(--sans);font-size:.82rem;line-height:1.5;color:var(--tinta-suave);
+    margin-top:12px;max-width:52ch;
+  }
+  .figura figcaption b{color:var(--noche);font-weight:800}
+  @media (max-width:620px){
+    .figura.recorte a,.figura.ancha a{max-width:100%}
+  }
 
   /* ---------- pie ---------- */
   footer{background:var(--noche);color:rgba(251,242,226,.75);padding:40px 0;margin-top:0}
@@ -200,10 +226,8 @@
     <div>
       <h1>Matías Muñoz Zamora</h1>
       <p class="bajada">Cofundador de Matchbook <span>· Valparaíso</span></p>
-      <p class="frase">Nací en Valparaíso y todo lo que hago tiene un sentido local.</p>
       <div class="enlaces">
-        <a class="btn btn-sol" href="/">Conoce Matchbook</a>
-        <a class="btn btn-aire" href="https://www.linkedin.com/in/matiasmunozzamora/" target="_blank" rel="noopener">LinkedIn</a>
+        <a class="btn btn-sol" href="https://www.linkedin.com/in/matiasmunozzamora/" target="_blank" rel="noopener">LinkedIn</a>
       </div>
     </div>
   </div>
@@ -239,21 +263,28 @@
           por la PUCV y Santander.</p>
       </div>
 
+      <figure class="figura recorte">
+        <a href="/portadas/prensa-df-mas.webp" target="_blank" rel="noopener">
+          <img src="/portadas/prensa-df-mas.webp" alt="Reportaje de DF MÁS sobre el lanzamiento de Matchbook" width="576" height="800" loading="lazy">
+        </a>
+        <figcaption><b>DF MÁS</b> cubrió el lanzamiento de la plataforma, con el equipo fundador. Haz clic para leerlo completo.</figcaption>
+      </figure>
+
       <h3>Nuestros clubes</h3>
-      <div class="fichas">
-        <div class="ficha" style="--c:#2F8CC4">
-          <b>Exploración Literaria</b>
-          <span>Leemos de todo. El libro se vota cada mes.</span>
+      <dl class="detalle">
+        <div>
+          <dt>Exploración Literaria</dt>
+          <dd>Leemos de todo y el libro se vota cada mes, a partir del catálogo de la Biblioteca Santiago Severín.</dd>
         </div>
-        <div class="ficha" style="--c:#C9821F">
-          <b>Books Up</b>
-          <span>No ficción para pensar, aprender y crecer.</span>
+        <div>
+          <dt>Books Up</dt>
+          <dd>No ficción para pensar, aprender y entender mejor el mundo. Las lecturas se planifican cada trimestre entre quienes participan.</dd>
         </div>
-        <div class="ficha" style="--c:#548f57">
-          <b>Utopías de Bolsillo</b>
-          <span>Autores que imaginaron otros mundos posibles.</span>
+        <div>
+          <dt>Utopías de Bolsillo</dt>
+          <dd>Autores que se atrevieron a imaginar sociedades distintas, para conversar desde ahí sobre el presente.</dd>
         </div>
-      </div>
+      </dl>
 
       <h3>Más allá de la mesa</h3>
       <p>
@@ -301,12 +332,24 @@
       </div>
 
       <h3>Los proyectos</h3>
-      <div class="fichas">
-        <div class="ficha" style="--c:#41ABE6"><b>Academia de Jóvenes por el Océano</b></div>
-        <div class="ficha" style="--c:#B9761A"><b>Café Local</b></div>
-        <div class="ficha" style="--c:#5E7A52"><b>Ruta B</b></div>
-        <div class="ficha" style="--c:#1B3A57"><b>Diálogos Ciudadanos</b></div>
-      </div>
+      <dl class="detalle">
+        <div>
+          <dt>Academia de Jóvenes por el Océano</dt>
+          <dd>Impulsamos la ratificación del tratado BBNJ, que protege la biodiversidad marina más allá de las jurisdicciones nacionales, y la candidatura de Valparaíso como sede de su firma.</dd>
+        </div>
+        <div>
+          <dt>Café Local</dt>
+          <dd>Conversaciones circulares con referentes de la región en un ambiente íntimo, donde el intercambio de experiencias importa más que la exposición.</dd>
+        </div>
+        <div>
+          <dt>Ruta B</dt>
+          <dd>Acercamos a jóvenes de la región a empresas con propósito, para que conozcan de cerca cómo se trabaja desde el triple impacto.</dd>
+        </div>
+        <div>
+          <dt>Diálogos Ciudadanos</dt>
+          <dd>Espacios de conversación abierta sobre los temas que mueven a la región, entre vecinos, organizaciones y quienes toman decisiones.</dd>
+        </div>
+      </dl>
 
       <h3>Fuera de la región</h3>
       <p>
@@ -317,6 +360,13 @@
         Representé a Valparaíso en el <strong>Global Shapers Annual Summit 2025</strong>,
         en Ginebra.
       </p>
+
+      <figure class="figura recorte">
+        <a href="/portadas/prensa-la-estrella.webp" target="_blank" rel="noopener">
+          <img src="/portadas/prensa-la-estrella.webp" alt="Reportaje de La Estrella de Valparaíso sobre la cumbre del Foro Económico Mundial" width="1543" height="1929" loading="lazy">
+        </a>
+        <figcaption><b>La Estrella de Valparaíso</b>, julio de 2025: la cumbre de Ginebra reunió a más de 500 líderes de 150 países. Haz clic para leerlo completo.</figcaption>
+      </figure>
 
       <p style="margin-top:26px">
         <a class="btn btn-aire" href="/reporte-shapers-valparaiso-2026.pdf" target="_blank" rel="noopener">
@@ -345,6 +395,13 @@
         acompañado los procesos de certificación B de una consultora chilena y de
         una empresa argentina.
       </p>
+      <figure class="figura ancha">
+        <a href="/portadas/malaga-impulso-b.webp" target="_blank" rel="noopener">
+          <img src="/portadas/malaga-impulso-b.webp" alt="Matías Muñoz presentando Impulso B en el B Academics Spain Day, Málaga 2023" width="828" height="777" loading="lazy">
+        </a>
+        <figcaption>Presentando <b>Impulso B</b> en el III Encuentro Anual de B Academics Spain Day, Málaga, 2023.</figcaption>
+      </figure>
+
       <p>
         Ese trabajo se cruza con Global Shapers en <strong>Ruta B</strong>, el proyecto
         con el que acercamos a jóvenes de la región a empresas con propósito.
