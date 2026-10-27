@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Nuestra playlist 🎧</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#49593F">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    color-scheme: only dark;
+    --fondo:   #49593F;
+    --fondo-2: #3E4C36;
+    --crema:   #F6F0E2;
+    --crema-2: #DFE4D3;
+    --musgo:   #AEBC9E;
+    --linea:   rgba(246,240,226,.14);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--fondo);
+    font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+    color: var(--crema-2);
+    min-height: 100vh;
+    padding: 40px 20px calc(50px + env(safe-area-inset-bottom));
+    -webkit-font-smoothing: antialiased;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* Hojas difusas en las esquinas, como en la lámina */
+  body::before, body::after {
+    content: ''; position: fixed; z-index: 0; pointer-events: none;
+    width: 320px; height: 320px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(126,150,104,.30), transparent 68%);
+  }
+  body::before { top: -120px; left: -110px; }
+  body::after  { bottom: -130px; right: -110px; }
+
+  .wrap { max-width: 540px; margin: 0 auto; position: relative; z-index: 1; }
+
+  /* ── Encabezado ── */
+  .header { text-align: center; margin-bottom: 40px; }
+  .header h1 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 400; font-size: 2.65rem; line-height: 1.1;
+    color: var(--crema); margin-bottom: 14px;
+  }
+  .header p {
+    font-size: .89rem; line-height: 1.6; color: var(--musgo);
+    letter-spacing: .04em;
+  }
+
+  /* ── Canción ── */
+  .cancion {
+    padding: 26px 0;
+    border-top: 1px solid var(--linea);
+  }
+  .cancion:first-of-type { border-top: none; padding-top: 4px; }
+
+  .cancion h2 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 400; font-size: 1.52rem; line-height: 1.2;
+    color: var(--crema); margin-bottom: 3px;
+  }
+  .artista {
+    font-size: .88rem; color: var(--musgo);
+    letter-spacing: .03em; margin-bottom: 13px;
+  }
+  .porque {
+    font-size: .95rem; line-height: 1.68; color: var(--crema-2);
+  }
+
+  /* ── Reproductor ── */
+  .player { margin-top: 15px; }
+
+  .escuchar {
+    display: inline-flex; align-items: center; gap: 9px;
+    background: transparent; color: var(--crema);
+    border: 1.5px solid var(--linea); border-radius: 50px;
+    padding: 9px 18px 9px 15px;
+    font-family: inherit; font-size: .84rem; cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: border-color .2s, background .2s;
+  }
+  .escuchar:hover  { border-color: var(--musgo); background: rgba(246,240,226,.06); }
+  .escuchar:active { transform: scale(.97); }
+  .escuchar .tri {
+    font-size: .7rem; color: var(--musgo);
+  }
+
+  .player iframe {
+    width: 100%; border: none; border-radius: 12px; display: block;
+    animation: aparecer .35s ease both;
+  }
+  @keyframes aparecer { from { opacity: 0; } to { opacity: 1; } }
+  @media (prefers-reduced-motion: reduce) { .player iframe { animation: none; } }
+
+  /* ── La playlist completa ── */
+  .completa {
+    margin-top: 42px; padding-top: 30px;
+    border-top: 1px solid var(--linea);
+  }
+  .completa h2 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 400; font-size: 1.42rem; color: var(--crema);
+    text-align: center; margin-bottom: 7px;
+  }
+  .completa .nota {
+    text-align: center; font-size: .84rem; color: var(--musgo);
+    line-height: 1.6; margin-bottom: 18px;
+  }
+  .completa iframe {
+    width: 100%; border: none; border-radius: 14px; display: block;
+  }
+
+  /* ── Pie ── */
+  .pie {
+    margin-top: 34px; text-align: center;
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: .92rem; font-style: italic; color: var(--musgo);
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="header">
+    <h1>Nuestra playlist</h1>
+    <p>y por qué cada una de esas canciones<br>son tan nuestras.</p>
+  </header>
+
+  <main id="lista"></main>
+
+  <section class="completa">
+    <h2>Y las demás</h2>
+    <p class="nota" id="nota"></p>
+    <div id="playlistEntera"></div>
+  </section>
+
+  <p class="pie">te amo 💚</p>
+
+</div>
+
+<script src="canciones.js"></script>
+<script>
+// Del enlace de Spotify solo se necesita el identificador. Se acepta el
+// enlace completo tal como lo copia la app, con todo lo que trae pegado.
+function idDeSpotify(enlace) {
+  if (!enlace) return '';
+  const m = String(enlace).match(/track[/:]([A-Za-z0-9]+)/);
+  return m ? m[1] : String(enlace).trim();
+}
+
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, c =>
+    ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+}
+
+// El reproductor no se carga hasta que ella lo pide: seis iframes de
+// entrada harían lenta la página en el teléfono.
+function escuchar(i) {
+  const id = idDeSpotify(CANCIONES[i].spotify);
+  if (!id) return;
+  document.getElementById('player-' + i).innerHTML =
+    `<iframe src="https://open.spotify.com/embed/track/${id}?theme=0"
+             height="152" loading="lazy"
+             allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+             title="Reproductor de ${esc(CANCIONES[i].titulo)}"></iframe>`;
+}
+
+document.getElementById('lista').innerHTML = CANCIONES.map((c, i) => `
+  <article class="cancion">
+    <h2>${esc(c.titulo)}</h2>
+    <p class="artista">${esc(c.artista)}</p>
+    <p class="porque">${esc(c.texto)}</p>
+    ${c.spotify ? `
+      <div class="player" id="player-${i}">
+        <button class="escuchar" onclick="escuchar(${i})">
+          <span class="tri">&#9654;</span> Escuchar
+        </button>
+      </div>` : ''}
+  </article>`).join('');
+
+// La playlist entera, para las que todavía no tienen su historia
+document.getElementById('nota').textContent =
+  `Las ${CANCIONES.length} de arriba ya tienen su porqué. Acá está la playlist completa.`;
+
+document.getElementById('playlistEntera').innerHTML =
+  `<iframe src="https://open.spotify.com/embed/playlist/${PLAYLIST}?theme=0"
+           height="420" loading="lazy"
+           allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+           title="Nuestra playlist completa"></iframe>`;
+</script>
+<script src="/alyn/volver.js"></script>
+</body>
+</html>
