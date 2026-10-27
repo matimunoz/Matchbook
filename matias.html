@@ -76,9 +76,11 @@
   /* ---------- encabezado ---------- */
   .hero{padding:66px 0 54px;border-bottom:1px solid rgba(110,100,80,.2)}
   .hero-fila{display:flex;align-items:center;gap:40px}
-  /* Misma proporcion que la foto original (2:3), asi no se recorta nada */
+  /* Encuadre algo mas alto que la foto original: recorta por abajo para que
+     la cara quede mas grande, sin llegar a un primer plano. */
   .retrato{
-    flex:0 0 auto;width:208px;height:312px;border-radius:20px;object-fit:cover;
+    flex:0 0 auto;width:228px;height:300px;border-radius:20px;
+    object-fit:cover;object-position:50% 16%;
     display:block;box-shadow:0 18px 46px rgba(19,41,63,.26);
     border:6px solid #FFFDF7;
   }
@@ -100,7 +102,7 @@
   @media (max-width:760px){
     .hero{padding:44px 0 38px}
     .hero-fila{flex-direction:column;align-items:flex-start;gap:26px}
-    .retrato{width:154px;height:231px}
+    .retrato{width:168px;height:220px}
     .hero h1{font-size:2.2rem}
     .frase{max-width:none}
   }
@@ -324,14 +326,68 @@
     </div>
   </section>
 
+  <section class="bloque">
+    <div class="wrap">
+      <p class="rotulo">Triple impacto</p>
+      <h2>Comunidad de Empresas B de Valparaíso</h2>
+
+      <p>
+        Hoy lidero el grupo motor de la comunidad, que reúne a las empresas de la
+        región que miden su éxito por el impacto social y ambiental que generan, y
+        no solamente por sus resultados financieros.
+      </p>
+      <p>
+        Llegué hasta acá por un camino largo: hice mi práctica en
+        <strong>Sistema B Chile</strong>, escribí mi tesis de magíster sobre Empresas B
+        —la llamé <strong>Impulso B</strong>— y me certifiqué como
+        <strong>Líder de Impacto</strong> de Sistema B. En 2023 expuse en el
+        <strong>B Academics Spain Day</strong>, en Málaga, y desde entonces he
+        acompañado los procesos de certificación B de una consultora chilena y de
+        una empresa argentina.
+      </p>
+      <p>
+        Ese trabajo se cruza con Global Shapers en <strong>Ruta B</strong>, el proyecto
+        con el que acercamos a jóvenes de la región a empresas con propósito.
+      </p>
+    </div>
+  </section>
+
+  <section class="bloque">
+    <div class="wrap">
+      <p class="rotulo">Arte</p>
+      <h2>100 Porteños</h2>
+
+      <p>
+        Un proyecto para visibilizar las historias y las voces de Valparaíso, partiendo
+        de la idea de que la ciudad se entiende mejor a través de quienes la habitan
+        que a través de sus postales.
+      </p>
+    </div>
+  </section>
+
+  <section class="bloque">
+    <div class="wrap">
+      <p class="rotulo">Reconocimientos</p>
+      <h2>Algunos hitos</h2>
+
+      <ul class="puntos">
+        <li><strong>Mejor Emprendimiento del Año 2023</strong> — PUCV y Santander</li>
+        <li><strong>Capital Semilla Inicia</strong> — Corfo, 2021</li>
+        <li><strong>Joven Agente de Cambio</strong> — Ashoka</li>
+        <li><strong>Expositor en B Academics Spain Day</strong> — Málaga, 2023</li>
+      </ul>
+    </div>
+  </section>
+
 </main>
 
 <footer>
   <div class="wrap">
     <p>Matías Muñoz Zamora · Valparaíso, Chile</p>
     <p>
-      <a href="/">matchbook.cl</a> ·
-      <a href="https://www.linkedin.com/in/matiasmunozzamora/" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="https://www.linkedin.com/in/matiasmunozzamora/" target="_blank" rel="noopener">LinkedIn</a> ·
+      <a href="https://www.instagram.com/matchbook.cl/" target="_blank" rel="noopener">@matchbook.cl</a> ·
+      <a href="mailto:contacto@matchbook.cl">contacto@matchbook.cl</a>
     </p>
   </div>
 </footer>
