@@ -5,96 +5,98 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Nuestra playlist 🎧</title>
 <meta name="robots" content="noindex">
-<meta name="theme-color" content="#49593F">
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#EBF5ED">
 
 <style>
   :root {
-    color-scheme: only dark;
-    --fondo:   #49593F;
-    --fondo-2: #3E4C36;
-    --crema:   #F6F0E2;
-    --crema-2: #DFE4D3;
-    --musgo:   #AEBC9E;
-    --linea:   rgba(246,240,226,.14);
+    color-scheme: only light;
+    --bg: #EBF5ED; --card: #FFFFFF;
+    --g1: #2A5040; --g2: #45856A; --g3: #78B896; --g4: #C0DECA; --g5: #EAF5EE;
+    --t1: #1C3A2C; --t2: #466355; --t3: #8AADA0;
+    --shadow: 0 6px 32px rgba(42,80,64,.12);
+    --r: 18px;
   }
-
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
-    background: var(--fondo);
+    background: var(--bg);
     font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
-    color: var(--crema-2);
-    min-height: 100vh;
-    padding: 40px 20px calc(50px + env(safe-area-inset-bottom));
-    -webkit-font-smoothing: antialiased;
-    position: relative;
-    overflow-x: hidden;
+    min-height: 100vh; color: var(--t1);
+    padding: 34px 16px calc(50px + env(safe-area-inset-bottom));
   }
-
-  /* Hojas difusas en las esquinas, como en la lámina */
-  body::before, body::after {
-    content: ''; position: fixed; z-index: 0; pointer-events: none;
-    width: 320px; height: 320px; border-radius: 50%;
-    background: radial-gradient(circle, rgba(126,150,104,.30), transparent 68%);
-  }
-  body::before { top: -120px; left: -110px; }
-  body::after  { bottom: -130px; right: -110px; }
-
-  .wrap { max-width: 540px; margin: 0 auto; position: relative; z-index: 1; }
+  .wrap { max-width: 520px; margin: 0 auto; }
 
   /* ── Encabezado ── */
-  .header { text-align: center; margin-bottom: 40px; }
+  .header { text-align: center; margin-bottom: 24px; }
+  .header-deco { font-size: 1.9rem; display: block; margin-bottom: 8px; }
   .header h1 {
-    font-family: 'Playfair Display', Georgia, serif;
-    font-weight: 400; font-size: 2.65rem; line-height: 1.1;
-    color: var(--crema); margin-bottom: 14px;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1.8rem; font-weight: normal; color: var(--g1); margin-bottom: 6px;
   }
-  .header p {
-    font-size: .89rem; line-height: 1.6; color: var(--musgo);
-    letter-spacing: .04em;
-  }
+  .header p { font-size: .82rem; color: var(--t3); line-height: 1.5; }
 
   /* ── Canción ── */
   .cancion {
-    padding: 26px 0;
-    border-top: 1px solid var(--linea);
+    background: var(--card);
+    border: 1.5px solid var(--g4);
+    border-radius: var(--r);
+    box-shadow: var(--shadow);
+    padding: 16px 17px 18px;
+    margin-bottom: 13px;
+    animation: subir .5s cubic-bezier(.22,1,.36,1) both;
   }
-  .cancion:first-of-type { border-top: none; padding-top: 4px; }
+  @keyframes subir {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: none; }
+  }
+  @media (prefers-reduced-motion: reduce) { .cancion { animation: none; } }
 
+  .cabecera { display: flex; align-items: center; gap: 14px; }
+
+  .portada {
+    width: 76px; height: 76px; flex-shrink: 0;
+    border-radius: 11px; object-fit: cover;
+    background: var(--g5);
+    box-shadow: 0 3px 12px rgba(42,80,64,.18);
+  }
+  /* Si no hay portada o no carga, queda un disquito en su lugar */
+  .sin-portada {
+    width: 76px; height: 76px; flex-shrink: 0;
+    border-radius: 11px; background: var(--g5);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.7rem;
+  }
+
+  .titulos { min-width: 0; }
   .cancion h2 {
-    font-family: 'Playfair Display', Georgia, serif;
-    font-weight: 400; font-size: 1.52rem; line-height: 1.2;
-    color: var(--crema); margin-bottom: 3px;
+    font-family: Georgia, serif; font-size: 1.14rem; font-weight: normal;
+    line-height: 1.25; color: var(--g1); margin-bottom: 3px;
   }
   .artista {
-    font-size: .88rem; color: var(--musgo);
-    letter-spacing: .03em; margin-bottom: 13px;
+    font-size: .79rem; color: var(--t3); letter-spacing: .02em;
   }
+
   .porque {
-    font-size: .95rem; line-height: 1.68; color: var(--crema-2);
+    font-size: .89rem; line-height: 1.62; color: var(--t2);
+    margin-top: 14px; padding-top: 13px;
+    border-top: 1px solid var(--g4);
   }
 
   /* ── Reproductor ── */
-  .player { margin-top: 15px; }
+  .player { margin-top: 13px; }
 
   .escuchar {
-    display: inline-flex; align-items: center; gap: 9px;
-    background: transparent; color: var(--crema);
-    border: 1.5px solid var(--linea); border-radius: 50px;
-    padding: 9px 18px 9px 15px;
-    font-family: inherit; font-size: .84rem; cursor: pointer;
-    -webkit-tap-highlight-color: transparent;
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--g5); color: var(--g1);
+    border: 1.5px solid var(--g4); border-radius: 50px;
+    padding: 8px 16px 8px 13px;
+    font-family: inherit; font-size: .81rem; font-weight: 600;
+    cursor: pointer; -webkit-tap-highlight-color: transparent;
     transition: border-color .2s, background .2s;
   }
-  .escuchar:hover  { border-color: var(--musgo); background: rgba(246,240,226,.06); }
+  .escuchar:hover  { border-color: var(--g3); background: #E2F0E7; }
   .escuchar:active { transform: scale(.97); }
-  .escuchar .tri {
-    font-size: .7rem; color: var(--musgo);
-  }
+  .escuchar .tri { font-size: .68rem; color: var(--g2); }
 
   .player iframe {
     width: 100%; border: none; border-radius: 12px; display: block;
@@ -104,28 +106,18 @@
   @media (prefers-reduced-motion: reduce) { .player iframe { animation: none; } }
 
   /* ── La playlist completa ── */
-  .completa {
-    margin-top: 42px; padding-top: 30px;
-    border-top: 1px solid var(--linea);
-  }
+  .completa { margin-top: 30px; }
   .completa h2 {
-    font-family: 'Playfair Display', Georgia, serif;
-    font-weight: 400; font-size: 1.42rem; color: var(--crema);
-    text-align: center; margin-bottom: 7px;
+    font-family: Georgia, serif; font-size: 1.3rem; font-weight: normal;
+    color: var(--g1); text-align: center; margin-bottom: 6px;
   }
   .completa .nota {
-    text-align: center; font-size: .84rem; color: var(--musgo);
-    line-height: 1.6; margin-bottom: 18px;
+    text-align: center; font-size: .8rem; color: var(--t3);
+    line-height: 1.55; margin-bottom: 15px;
   }
   .completa iframe {
-    width: 100%; border: none; border-radius: 14px; display: block;
-  }
-
-  /* ── Pie ── */
-  .pie {
-    margin-top: 34px; text-align: center;
-    font-family: 'Playfair Display', Georgia, serif;
-    font-size: .92rem; font-style: italic; color: var(--musgo);
+    width: 100%; border: none; border-radius: var(--r); display: block;
+    box-shadow: var(--shadow);
   }
 </style>
 </head>
@@ -133,8 +125,9 @@
 <div class="wrap">
 
   <header class="header">
+    <span class="header-deco">🎧</span>
     <h1>Nuestra playlist</h1>
-    <p>y por qué cada una de esas canciones<br>son tan nuestras.</p>
+    <p>y por qué cada una de esas canciones son tan nuestras</p>
   </header>
 
   <main id="lista"></main>
@@ -145,7 +138,7 @@
     <div id="playlistEntera"></div>
   </section>
 
-  <p class="pie">te amo 💚</p>
+  <div class="foot-amor">te amo 💚</div>
 
 </div>
 
@@ -170,16 +163,32 @@ function escuchar(i) {
   const id = idDeSpotify(CANCIONES[i].spotify);
   if (!id) return;
   document.getElementById('player-' + i).innerHTML =
-    `<iframe src="https://open.spotify.com/embed/track/${id}?theme=0"
+    `<iframe src="https://open.spotify.com/embed/track/${id}"
              height="152" loading="lazy"
              allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
              title="Reproductor de ${esc(CANCIONES[i].titulo)}"></iframe>`;
 }
 
+// Si la portada no carga, la reemplaza un disquito en vez de dejar un hueco
+function portadaRota(img) {
+  const hueco = document.createElement('span');
+  hueco.className = 'sin-portada';
+  hueco.textContent = '💿';
+  img.replaceWith(hueco);
+}
+
 document.getElementById('lista').innerHTML = CANCIONES.map((c, i) => `
-  <article class="cancion">
-    <h2>${esc(c.titulo)}</h2>
-    <p class="artista">${esc(c.artista)}</p>
+  <article class="cancion" style="animation-delay:${(i * .06).toFixed(2)}s">
+    <div class="cabecera">
+      ${c.portada
+        ? `<img class="portada" src="${esc(c.portada)}" alt="Portada de ${esc(c.titulo)}"
+                loading="lazy" onerror="portadaRota(this)">`
+        : `<span class="sin-portada">💿</span>`}
+      <div class="titulos">
+        <h2>${esc(c.titulo)}</h2>
+        <div class="artista">${esc(c.artista)}</div>
+      </div>
+    </div>
     <p class="porque">${esc(c.texto)}</p>
     ${c.spotify ? `
       <div class="player" id="player-${i}">
@@ -194,7 +203,7 @@ document.getElementById('nota').textContent =
   `Las ${CANCIONES.length} de arriba ya tienen su porqué. Acá está la playlist completa.`;
 
 document.getElementById('playlistEntera').innerHTML =
-  `<iframe src="https://open.spotify.com/embed/playlist/${PLAYLIST}?theme=0"
+  `<iframe src="https://open.spotify.com/embed/playlist/${PLAYLIST}"
            height="420" loading="lazy"
            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
            title="Nuestra playlist completa"></iframe>`;
