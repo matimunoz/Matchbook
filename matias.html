@@ -76,10 +76,11 @@
   /* ---------- encabezado ---------- */
   .hero{padding:66px 0 54px;border-bottom:1px solid rgba(110,100,80,.2)}
   .hero-fila{display:flex;align-items:center;gap:40px}
+  /* Misma proporcion que la foto original (2:3), asi no se recorta nada */
   .retrato{
-    flex:0 0 auto;width:188px;height:188px;border-radius:50%;object-fit:cover;
-    display:block;box-shadow:0 14px 40px rgba(19,41,63,.22);
-    border:5px solid #FFFDF7;
+    flex:0 0 auto;width:208px;height:312px;border-radius:20px;object-fit:cover;
+    display:block;box-shadow:0 18px 46px rgba(19,41,63,.26);
+    border:6px solid #FFFDF7;
   }
   .hero h1{
     font-family:var(--serif);font-weight:700;font-size:3rem;line-height:1.08;
@@ -99,7 +100,7 @@
   @media (max-width:760px){
     .hero{padding:44px 0 38px}
     .hero-fila{flex-direction:column;align-items:flex-start;gap:26px}
-    .retrato{width:132px;height:132px}
+    .retrato{width:154px;height:231px}
     .hero h1{font-size:2.2rem}
     .frase{max-width:none}
   }
@@ -193,7 +194,7 @@
 
 <header class="hero">
   <div class="wrap hero-fila">
-    <img class="retrato" src="/portadas/mati.jpg" alt="Matías Muñoz Zamora">
+    <img class="retrato" src="/portadas/matias-munoz.jpg" alt="Matías Muñoz Zamora" width="853" height="1280">
     <div>
       <h1>Matías Muñoz Zamora</h1>
       <p class="bajada">Cofundador de Matchbook <span>· Valparaíso</span></p>
