@@ -10,8 +10,8 @@
 //  2. Pegá el enlace completo en "spotify". Da lo mismo si trae cosas
 //     después del "?", la página se queda solo con lo que necesita.
 //  3. Escribí el porqué en "texto".
-//  4. La portada es opcional: si la dejás vacía, la tarjeta se arma igual
-//     con un disquito en su lugar. Si la querés, pedímela y la busco.
+//  4. La portada es opcional: si la dejas vacía, la tarjeta se arma igual
+//     con un disquito en su lugar. Si la quieres, pídemela y la busco.
 // ══════════════════════════════════════════════════════════════════════
 const PLAYLIST = '09jhufHqoHOyqOtX8wdmef';   // "Us 💚"
 
@@ -62,7 +62,7 @@ const CANCIONES = [
   // ── Las que faltan por contar ───────────────────────────────────────
   // La playlist tiene 22 canciones y acá hay 6. Las otras ya se escuchan
   // en el reproductor del final; cuando escribas el porqué de alguna,
-  // copiá un bloque de arriba y sumala. Las que esperan:
+  // copia un bloque de arriba y súmala. Las que esperan:
   //
   //   El Hombre Que Yo Amo      · Myriam Hernández
   //   Así Fue                   · Juan Gabriel

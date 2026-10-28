@@ -39,11 +39,19 @@
   .intro {
     background: linear-gradient(145deg, var(--g1) 0%, var(--g2) 130%);
     color: #fff; border-radius: var(--r);
-    padding: 19px 22px; margin-bottom: 20px;
-    font-size: .86rem; line-height: 1.62; box-shadow: var(--shadow);
+    padding: 22px 24px; margin-bottom: 13px;
+    text-align: center; box-shadow: var(--shadow);
   }
-  .intro p + p { margin-top: 10px; }
-  .intro b { font-weight: 600; }
+  .lema {
+    font-family: Georgia, serif; font-size: 1.22rem;
+    line-height: 1.3; margin-bottom: 8px;
+  }
+  .aclara { font-size: .8rem; line-height: 1.55; opacity: .82; }
+
+  .como {
+    text-align: center; margin-bottom: 22px;
+    font-size: .74rem; letter-spacing: .04em; color: var(--t3);
+  }
 
   /* ── Escenario ── */
   .futuro { margin-bottom: 11px; }
@@ -164,11 +172,11 @@
   </header>
 
   <div class="intro">
-    <p>Esto no es un ejercicio de adivinar. Es uno de <b>mirar</b>: seis caminos que existen de verdad, puestos uno al lado del otro, porque verlos todos es lo que nos deja elegir.</p>
-    <p><b>Ninguno es una predicción</b> y no están ordenados de mejor a peor. A los seis se llega por acumulación de días, nunca por una decisión grande.</p>
-    <p>Cada uno se abre con <b>dos cartas</b>, una tuya y una mía, escritas desde adentro de ese futuro. Son las que acompañarían esa foto que nos mandaron nuestras versiones desde el futuro.</p>
-    <p>Está hecho para leerlo <b>los dos juntos</b>. Léanse una carta cada uno, en voz alta, y párense a conversar donde haga falta.</p>
+    <p class="lema">Esto no es adivinar. Es mirar.</p>
+    <p class="aclara">Ninguno es una predicción, y no están ordenados de mejor a peor.</p>
   </div>
+
+  <p class="como">para leerlo los dos juntos &middot; una carta cada uno &middot; en voz alta</p>
 
   <main id="lista"></main>
 
@@ -180,7 +188,7 @@
 
     <ul class="preguntas">
       <li>¿Cuál te dio más miedo al leerlo?</li>
-      <li>¿Hacia cuál sentís que vamos hoy, de verdad?</li>
+      <li>¿Hacia cuál sientes que vamos hoy, de verdad?</li>
       <li>¿Qué estamos haciendo bien que no deberíamos dejar de hacer?</li>
       <li>¿Hay alguno que falte, uno tuyo que yo no vi?</li>
     </ul>
