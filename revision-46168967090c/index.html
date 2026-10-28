@@ -83,9 +83,32 @@
   .f-cuerpo { display: none; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--g4); }
   .futuro.abierto .f-cuerpo { display: block; }
 
-  .f-escena {
-    font-family: Georgia, serif; font-size: .93rem;
-    line-height: 1.68; color: var(--t1);
+  /* El año bajo el título: la carta viene despachada desde allá */
+  .f-desde {
+    display: block; margin-top: 3px;
+    font-family: system-ui, sans-serif; font-size: .68rem;
+    letter-spacing: .06em; text-transform: uppercase; color: var(--t3);
+  }
+
+  /* ── Las dos cartas ── */
+  .carta {
+    border-radius: 14px; padding: 15px 17px;
+  }
+  .carta + .carta { margin-top: 11px; }
+  .carta.mia  { background: var(--g5); border: 1px solid var(--g4); }
+  .carta.suya { background: #FBF1F3; border: 1px solid #EFD8DE; }
+
+  .c-quien {
+    display: block; margin-bottom: 7px;
+    font-size: .64rem; font-weight: 700; letter-spacing: .09em;
+    text-transform: uppercase;
+  }
+  .carta.mia  .c-quien { color: var(--g2); }
+  .carta.suya .c-quien { color: #9E4A5E; }
+
+  .carta p {
+    font-family: Georgia, serif; font-size: .92rem;
+    line-height: 1.7; color: var(--t1);
   }
 
   .f-brujula { margin-top: 15px; }
@@ -141,9 +164,10 @@
   </header>
 
   <div class="intro">
-    <p>Fui a una experiencia que mostraba cuatro futuros posibles de la inteligencia artificial. No para adivinar cuál pasa, sino para <b>tener perspectiva</b>: verlos todos es lo que te deja elegir.</p>
-    <p>Esto es lo mismo, con lo nuestro. <b>Ninguno es una predicción</b> y no están ordenados de mejor a peor. Los seis existen y a los seis se llega por acumulación de días, no por una decisión grande.</p>
-    <p>Está hecho para leerlo <b>los dos juntos</b>. Léanse uno cada uno, en voz alta, y párense a conversar donde haga falta.</p>
+    <p>Esto no es un ejercicio de adivinar. Es uno de <b>mirar</b>: seis caminos que existen de verdad, puestos uno al lado del otro, porque verlos todos es lo que nos deja elegir.</p>
+    <p><b>Ninguno es una predicción</b> y no están ordenados de mejor a peor. A los seis se llega por acumulación de días, nunca por una decisión grande.</p>
+    <p>Cada uno se abre con <b>dos cartas</b>, una tuya y una mía, escritas desde adentro de ese futuro. Son las que acompañarían esa foto que nos mandaron nuestras versiones desde el futuro.</p>
+    <p>Está hecho para leerlo <b>los dos juntos</b>. Léanse una carta cada uno, en voz alta, y párense a conversar donde haga falta.</p>
   </div>
 
   <main id="lista"></main>
@@ -182,11 +206,20 @@ document.getElementById('lista').innerHTML = FUTUROS.map((f, i) => `
     <div class="f-card">
       <div class="f-cabecera">
         <span class="f-emoji">${f.emoji}</span>
-        <span class="f-titulo">${esc(f.titulo)}</span>
+        <span class="f-titulo">${esc(f.titulo)}
+          <span class="f-desde">cartas desde ${esc(f.desde)}</span>
+        </span>
         <span class="f-flecha">▸</span>
       </div>
       <div class="f-cuerpo">
-        <p class="f-escena">${esc(f.escena)}</p>
+        <div class="carta mia">
+          <span class="c-quien">Yo</span>
+          <p>${esc(f.mia)}</p>
+        </div>
+        <div class="carta suya">
+          <span class="c-quien">Tú</span>
+          <p>${esc(f.suya)}</p>
+        </div>
         <div class="f-brujula">
           <div class="f-item acerca">
             <div class="f-rotulo">Se acerca cuando</div>
