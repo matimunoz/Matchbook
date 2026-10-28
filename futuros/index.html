@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Futuros posibles 🧭</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#EBF5ED">
+
+<style>
+  :root {
+    color-scheme: only light;
+    --bg: #EBF5ED; --card: #FFFFFF;
+    --g1: #2A5040; --g2: #45856A; --g3: #78B896; --g4: #C0DECA; --g5: #EAF5EE;
+    --t1: #1C3A2C; --t2: #466355; --t3: #8AADA0;
+    --shadow: 0 6px 32px rgba(42,80,64,.12);
+    --r: 18px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+    min-height: 100vh; color: var(--t1);
+    padding: 34px 16px calc(50px + env(safe-area-inset-bottom));
+  }
+  .wrap { max-width: 520px; margin: 0 auto; }
+
+  /* ── Encabezado ── */
+  .header { text-align: center; margin-bottom: 20px; }
+  .header-deco { font-size: 1.9rem; display: block; margin-bottom: 8px; }
+  .header h1 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1.8rem; font-weight: normal; color: var(--g1); margin-bottom: 6px;
+  }
+  .header p { font-size: .82rem; color: var(--t3); }
+
+  /* ── Cómo se lee ── */
+  .intro {
+    background: linear-gradient(145deg, var(--g1) 0%, var(--g2) 130%);
+    color: #fff; border-radius: var(--r);
+    padding: 19px 22px; margin-bottom: 20px;
+    font-size: .86rem; line-height: 1.62; box-shadow: var(--shadow);
+  }
+  .intro p + p { margin-top: 10px; }
+  .intro b { font-weight: 600; }
+
+  /* ── Escenario ── */
+  .futuro { margin-bottom: 11px; }
+
+  .f-card {
+    background: var(--card);
+    border: 1.5px solid var(--g4);
+    border-radius: var(--r);
+    box-shadow: var(--shadow);
+    padding: 16px 18px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: border-color .2s;
+  }
+  .f-card:active { background: var(--g5); }
+  .futuro.abierto .f-card { border-color: var(--g3); }
+
+  .f-cabecera { display: flex; align-items: center; gap: 13px; }
+  .f-emoji {
+    width: 44px; height: 44px; flex-shrink: 0;
+    border-radius: 50%; background: var(--g5);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem;
+  }
+  .f-titulo {
+    flex: 1; min-width: 0;
+    font-family: Georgia, serif; font-size: 1.12rem;
+    color: var(--g1); line-height: 1.25;
+  }
+  .f-flecha {
+    flex-shrink: 0; font-size: .8rem; color: var(--g3);
+    transition: transform .25s;
+  }
+  .futuro.abierto .f-flecha { transform: rotate(90deg); }
+
+  /* El contenido aparece al tocar: nadie se topa de golpe con el final */
+  .f-cuerpo { display: none; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--g4); }
+  .futuro.abierto .f-cuerpo { display: block; }
+
+  .f-escena {
+    font-family: Georgia, serif; font-size: .93rem;
+    line-height: 1.68; color: var(--t1);
+  }
+
+  .f-brujula { margin-top: 15px; }
+  .f-item + .f-item { margin-top: 11px; }
+  .f-rotulo {
+    font-size: .66rem; font-weight: 700; letter-spacing: .08em;
+    text-transform: uppercase; margin-bottom: 4px;
+  }
+  .f-item.acerca  .f-rotulo { color: #B07B52; }
+  .f-item.protege .f-rotulo { color: var(--g2); }
+  .f-item p { font-size: .86rem; line-height: 1.6; color: var(--t2); }
+
+  /* ── Cierre ── */
+  .cierre {
+    margin-top: 26px;
+    background: var(--card);
+    border: 1.5px dashed var(--g4);
+    border-radius: var(--r);
+    padding: 20px 22px;
+  }
+  .cierre h2 {
+    font-family: Georgia, serif; font-size: 1.2rem; font-weight: normal;
+    color: var(--g1); margin-bottom: 10px;
+  }
+  .cierre p { font-size: .88rem; line-height: 1.62; color: var(--t2); }
+  .cierre p + p { margin-top: 9px; }
+
+  .preguntas { margin-top: 16px; padding-top: 15px; border-top: 1px solid var(--g4); }
+  .preguntas li {
+    list-style: none;
+    font-family: Georgia, serif; font-size: .92rem; line-height: 1.55;
+    color: var(--t1); padding-left: 20px; position: relative;
+  }
+  .preguntas li + li { margin-top: 11px; }
+  .preguntas li::before {
+    content: '🌿'; position: absolute; left: 0; font-size: .72rem; top: .25em;
+  }
+
+  .enlace-futuro {
+    display: block; margin-top: 20px; text-align: center;
+    font-size: .8rem; color: var(--t3);
+  }
+  .enlace-futuro a { color: var(--g2); text-decoration: none; border-bottom: 1px solid var(--g4); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="header">
+    <span class="header-deco">🧭</span>
+    <h1>Futuros posibles</h1>
+    <p>seis maneras en que esto puede terminar siendo</p>
+  </header>
+
+  <div class="intro">
+    <p>Fui a una experiencia que mostraba cuatro futuros posibles de la inteligencia artificial. No para adivinar cuál pasa, sino para <b>tener perspectiva</b>: verlos todos es lo que te deja elegir.</p>
+    <p>Esto es lo mismo, con lo nuestro. <b>Ninguno es una predicción</b> y no están ordenados de mejor a peor. Los seis existen y a los seis se llega por acumulación de días, no por una decisión grande.</p>
+    <p>Está hecho para leerlo <b>los dos juntos</b>. Léanse uno cada uno, en voz alta, y párense a conversar donde haga falta.</p>
+  </div>
+
+  <main id="lista"></main>
+
+  <section class="cierre">
+    <h2>Por qué te muestro los seis</h2>
+    <p>Porque el que más miedo me da no es ninguno de estos. Es llegar a uno sin haberlo elegido, y darme cuenta tarde.</p>
+    <p>No están decididos. Hoy, mientras escribo esto, estamos más cerca del primero que de cualquier otro, y eso no fue suerte: fue cada vez que preguntamos en vez de suponer, y cada vez que volvimos después de rompernos.</p>
+    <p>Yo estoy trabajando para el primero. Te lo dejo escrito acá para que quede constancia.</p>
+
+    <ul class="preguntas">
+      <li>¿Cuál te dio más miedo al leerlo?</li>
+      <li>¿Hacia cuál sentís que vamos hoy, de verdad?</li>
+      <li>¿Qué estamos haciendo bien que no deberíamos dejar de hacer?</li>
+      <li>¿Hay alguno que falte, uno tuyo que yo no vi?</li>
+    </ul>
+  </section>
+
+  <p class="enlace-futuro">
+    Si quedaron con ganas de seguir, <a href="/futuro/">Conversemos del futuro</a>
+  </p>
+
+  <div class="foot-amor">te amo 💚</div>
+
+</div>
+
+<script src="escenarios.js"></script>
+<script>
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, c =>
+    ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+}
+
+document.getElementById('lista').innerHTML = FUTUROS.map((f, i) => `
+  <div class="futuro" id="f-${i}" onclick="abrir(${i})">
+    <div class="f-card">
+      <div class="f-cabecera">
+        <span class="f-emoji">${f.emoji}</span>
+        <span class="f-titulo">${esc(f.titulo)}</span>
+        <span class="f-flecha">▸</span>
+      </div>
+      <div class="f-cuerpo">
+        <p class="f-escena">${esc(f.escena)}</p>
+        <div class="f-brujula">
+          <div class="f-item acerca">
+            <div class="f-rotulo">Se acerca cuando</div>
+            <p>${esc(f.acerca)}</p>
+          </div>
+          <div class="f-item protege">
+            <div class="f-rotulo">Nos protege</div>
+            <p>${esc(f.protege)}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>`).join('');
+
+function abrir(i) {
+  document.getElementById('f-' + i).classList.toggle('abierto');
+}
+</script>
+<script src="/alyn/volver.js"></script>
+</body>
+</html>
