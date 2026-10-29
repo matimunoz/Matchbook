@@ -63,60 +63,6 @@
       "portada": "/portadas/La buena Tierra - Pearl S. Buck.webp"
     },
     {
-      "autor": "Yanis Varoufakis",
-      "color": "#C9821F",
-      "precio": 10000,
-      "sesiones": [
-        {
-          "fecha": "Viernes 30 de octubre, 19:00 hrs | Viña del Mar",
-          "moderador": {
-            "nombre": "Gonzalo",
-            "foto": "/portadas/gonzalo-valdebenito.jpeg"
-          },
-          "lugar": "Club 2D",
-          "cuposTotal": 10,
-          "cuposTomados": 5
-        }
-      ],
-      "club": "Books Up",
-      "sobreElClub": "Un club de lectura enfocado en el desarrollo personal y profesional. Leemos libros de no ficción que nos invitan a aprender, cuestionar nuestras ideas y comprender mejor el mundo. Cada trimestre votamos y planificamos juntos nuestras próximas lecturas.",
-      "curaduria": "Cada mes leemos un libro para nuestro desarrollo integral. Este mes: Yanis Varoufakis, economista y político griego, nos expone que el capitalismo ya fue reemplazado. Empresas como Amazon o Google serían los nuevos señores feudales: los vendedores les pagan arriendo por sus plataformas, y los usuarios trabajan gratis para ellas cada día.",
-      "titulo": "Tecnofeudalismo",
-      "mpLink": "https://mpago.la/1eHGFXB",
-      "portada": "/portadas/Tecnofeudalismo - Yanis Varoufakis.webp"
-    },
-    {
-      "autor": "Aldous Huxley",
-      "color": "#548f57",
-      "precio": 5000,
-      "sesiones": [
-        {
-          "cuposTotal": 10,
-          "fecha": "Viernes 20 de Noviembre, 18:30 hrs",
-          "lugar": "Café Madrid, Viña de Mar",
-          "moderador": {
-            "nombre": "Matías",
-            "foto": "/portadas/mati.jpg"
-          }
-        },
-        {
-          "cuposTotal": 10,
-          "fecha": "Viernes 27 de Noviembre, 18:30 hrs",
-          "lugar": "Providencia",
-          "moderador": {
-            "nombre": "Matías",
-            "foto": "/portadas/mati.jpg"
-          }
-        }
-      ],
-      "club": "Utopías de Bolsillo",
-      "sobreElClub": "Todos conocemos las distopías, pero ¿qué hay de las utopías? En este club exploramos las obras de grandes autores que se atrevieron a imaginar sociedades diferentes. Un espacio para cuestionar nuestro presente y conversar sobre el mundo que deseamos construir.",
-      "curaduria": "Cada mes leemos una utopía distinta para imaginar otros mundos posibles. Este mes: La isla, de Aldous Huxley, la última novela del autor de Un mundo feliz y su respuesta esperanzadora: una sociedad que intenta unir ciencia, espiritualidad y bienestar.",
-      "titulo": "La Isla",
-      "mpLink": " https://mpago.la/2R9WruX",
-      "portada": "/portadas/La Isla - Aldous Huxley.webp"
-    },
-    {
       "autor": "Angus Fletcher",
       "color": "#c9821f",
       "precio": 10000,
@@ -155,6 +101,37 @@
       "titulo": "Inteligencia Primitiva",
       "mpLink": "https://mpago.la/1eHGFXB",
       "portada": "/portadas/inteligencia-primitiva.png"
+    },
+    {
+      "autor": "Aldous Huxley",
+      "color": "#548f57",
+      "precio": 5000,
+      "sesiones": [
+        {
+          "cuposTotal": 10,
+          "fecha": "Viernes 20 de Noviembre, 18:30 hrs",
+          "lugar": "Café Madrid, Viña de Mar",
+          "moderador": {
+            "nombre": "Matías",
+            "foto": "/portadas/mati.jpg"
+          }
+        },
+        {
+          "cuposTotal": 10,
+          "fecha": "Viernes 27 de Noviembre, 18:30 hrs",
+          "lugar": "Providencia",
+          "moderador": {
+            "nombre": "Matías",
+            "foto": "/portadas/mati.jpg"
+          }
+        }
+      ],
+      "club": "Utopías de Bolsillo",
+      "sobreElClub": "Todos conocemos las distopías, pero ¿qué hay de las utopías? En este club exploramos las obras de grandes autores que se atrevieron a imaginar sociedades diferentes. Un espacio para cuestionar nuestro presente y conversar sobre el mundo que deseamos construir.",
+      "curaduria": "Cada mes leemos una utopía distinta para imaginar otros mundos posibles. Este mes: La isla, de Aldous Huxley, la última novela del autor de Un mundo feliz y su respuesta esperanzadora: una sociedad que intenta unir ciencia, espiritualidad y bienestar.",
+      "titulo": "La Isla",
+      "mpLink": " https://mpago.la/2R9WruX",
+      "portada": "/portadas/La Isla - Aldous Huxley.webp"
     }
   ],
   "testimonios": [
