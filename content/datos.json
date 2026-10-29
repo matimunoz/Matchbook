@@ -68,25 +68,6 @@
       "precio": 10000,
       "sesiones": [
         {
-          "fecha": "Martes 27 de octubre, 19:00 hrs | Santiago",
-          "moderador": {
-            "nombre": "Gonzalo",
-            "foto": "/portadas/gonzalo-valdebenito.jpeg"
-          },
-          "lugar": "Between Coffee",
-          "cuposTotal": 10,
-          "cuposTomados": 4
-        },
-        {
-          "cuposTotal": 10,
-          "fecha": "Miércoles 28 de octubre, 19:00 hrs. | Santiago",
-          "lugar": "Between Coffee",
-          "moderador": {
-            "nombre": "Gonzalo",
-            "foto": "/portadas/gonzalo-valdebenito.jpeg"
-          }
-        },
-        {
           "fecha": "Viernes 30 de octubre, 19:00 hrs | Viña del Mar",
           "moderador": {
             "nombre": "Gonzalo",
@@ -134,6 +115,46 @@
       "titulo": "La Isla",
       "mpLink": " https://mpago.la/2R9WruX",
       "portada": "/portadas/La Isla - Aldous Huxley.webp"
+    },
+    {
+      "autor": "Angus Fletcher",
+      "color": "#c9821f",
+      "precio": 10000,
+      "sesiones": [
+        {
+          "cuposTotal": 8,
+          "fecha": "Martes 24 de noviembre, 19:00 | Santiago",
+          "lugar": "Between Coffee & Bar",
+          "moderador": {
+            "nombre": "Gonzalo",
+            "foto": "/portadas/gonzalo-valdebenito.jpeg"
+          }
+        },
+        {
+          "cuposTotal": 8,
+          "fecha": "Miércoles 25 de noviembre | Santiago",
+          "lugar": "Between Coffee & Bar",
+          "moderador": {
+            "nombre": "Gonzalo",
+            "foto": "/portadas/gonzalo-valdebenito.jpeg"
+          }
+        },
+        {
+          "cuposTotal": 8,
+          "fecha": "Viernes 27 de noviembre, 19:00 | Viña del Mar",
+          "lugar": "Club 2D",
+          "moderador": {
+            "nombre": "Gonzalo",
+            "foto": "/portadas/gonzalo-valdebenito.jpeg"
+          }
+        }
+      ],
+      "club": "Books Up ",
+      "sobreElClub": "Un club de lectura enfocado en el desarrollo personal y profesional. Leemos libros de no ficción que nos invitan a aprender, cuestionar nuestras ideas y comprender mejor el mundo. Cada trimestre votamos y planificamos juntos nuestras próximas lecturas.",
+      "curaduria": "Cada mes leemos un libro para nuestro desarrollo integral. Este mes: ¿cuánto espacio les damos a la creatividad y la intuición en nuestras decisiones, nuestro trabajo y nuestra vida cotidiana? Angus Fletcher explora el papel de la intuición, la imaginación y las emociones en nuestra capacidad para crear, resolver problemas y adaptarnos a los cambios.",
+      "titulo": "Inteligencia Primitiva",
+      "mpLink": "https://mpago.la/1eHGFXB",
+      "portada": "/portadas/inteligencia-primitiva.png"
     }
   ],
   "testimonios": [
