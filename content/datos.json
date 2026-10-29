@@ -68,7 +68,7 @@
       "precio": 10000,
       "sesiones": [
         {
-          "cuposTotal": 8,
+          "cuposTotal": 10,
           "fecha": "Martes 24 de noviembre, 19:00 | Santiago",
           "lugar": "Between Coffee & Bar",
           "moderador": {
@@ -77,7 +77,7 @@
           }
         },
         {
-          "cuposTotal": 8,
+          "cuposTotal": 10,
           "fecha": "Miércoles 25 de noviembre, 19:00 hrs | Santiago",
           "lugar": "Between Coffee & Bar",
           "moderador": {
@@ -86,7 +86,7 @@
           }
         },
         {
-          "cuposTotal": 8,
+          "cuposTotal": 10,
           "fecha": "Viernes 27 de noviembre, 19:00 | Viña del Mar",
           "lugar": "Club 2D",
           "moderador": {
