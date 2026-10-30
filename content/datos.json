@@ -29,7 +29,7 @@
           "fecha": "Sábado 7 de Noviembre, 11:30 hrs",
           "moderador": {
             "nombre": "Paulette",
-            "foto": "/portadas/pau.png"
+            "foto": "/portadas/pau.jpg"
           },
           "lugar": "Café Madrid, Viña del Mar",
           "cuposTotal": 10,
@@ -41,7 +41,7 @@
           "lugar": "Café Madrid, Viña del Mar",
           "moderador": {
             "nombre": "Paulette",
-            "foto": "/portadas/pau.png"
+            "foto": "/portadas/pau.jpg"
           }
         },
         {
@@ -100,7 +100,7 @@
       "curaduria": "Cada mes leemos un libro para nuestro desarrollo integral. Este mes: ¿cuánto espacio les damos a la creatividad y la intuición en nuestras decisiones, nuestro trabajo y nuestra vida cotidiana? Angus Fletcher explora el papel de la intuición, la imaginación y las emociones en nuestra capacidad para crear, resolver problemas y adaptarnos a los cambios.",
       "titulo": "Inteligencia Primitiva",
       "mpLink": "https://mpago.la/1eHGFXB",
-      "portada": "/portadas/inteligencia-primitiva.png"
+      "portada": "/portadas/inteligencia-primitiva.jpg"
     },
     {
       "autor": "Aldous Huxley",
