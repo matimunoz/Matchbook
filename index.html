@@ -335,7 +335,7 @@
      distintas no hagan saltar la fila. */
   .reg-pista{
     display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;
-    scroll-behavior:smooth;padding:4px 4px 14px;margin:0 -4px;
+    padding:4px 4px 14px;margin:0 -4px;
     scrollbar-width:thin;scrollbar-color:rgba(19,41,63,.25) transparent;
   }
   .reg-pista::-webkit-scrollbar{height:8px}
@@ -1695,6 +1695,30 @@
 
     // Se calcula la tarjeta destino y se va a su posicion exacta. Sumar
     // desplazamientos encadenaba animaciones y el boton de atras se trababa.
+    // scroll-snap mandatory hace que el navegador ignore scrollTo y scrollBy,
+    // y scroll-behavior:smooth bloquea incluso asignar scrollLeft. Por eso la
+    // animacion se hace a mano: cada cuadro asigna scrollLeft, que sí responde.
+    let animacion = null;
+    const irA = destino => {
+      if(animacion) clearTimeout(animacion);
+      // El anclaje se apaga mientras dura la animacion: si no, cada cuadro es
+      // un movimiento pequeño que el navegador devuelve al punto anclado, y la
+      // pista nunca llega a moverse. Se vuelve a encender al terminar, para
+      // que el arrastre con el dedo siga calzando con las tarjetas.
+      pista.style.scrollSnapType = "none";
+      const inicio = pista.scrollLeft;
+      const tramo = destino - inicio;
+      const t0 = performance.now();
+      const cuadro = () => {
+        const t = Math.min(1, (performance.now() - t0) / 380);
+        const suave = t < .5 ? 2*t*t : 1 - Math.pow(-2*t + 2, 2) / 2;
+        pista.scrollLeft = inicio + tramo * suave;
+        if(t < 1){ animacion = setTimeout(cuadro, 16); }
+        else { animacion = null; pista.style.scrollSnapType = ""; }
+      };
+      cuadro();
+    };
+
     const mover = dir => {
       const items = [...pista.querySelectorAll(".reg-item")];
       if(!items.length) return;
@@ -1702,9 +1726,9 @@
       const actual = Math.round(pista.scrollLeft / paso);
       const destino = Math.min(items.length - 1, Math.max(0, actual + dir));
       // Diferencia real en pantalla entre la tarjeta y la pista: no depende
-      // de cual sea el elemento posicionado padre, que es lo que fallaba.
+      // de cual sea el elemento posicionado padre.
       const delta = items[destino].getBoundingClientRect().left - pista.getBoundingClientRect().left;
-      pista.scrollTo({ left: pista.scrollLeft + delta, behavior: "smooth" });
+      irA(pista.scrollLeft + delta);
     };
     document.getElementById("regPrev").onclick = () => mover(-1);
     document.getElementById("regNext").onclick = () => mover(1);
