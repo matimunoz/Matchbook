@@ -263,7 +263,6 @@
   .club-body .autor{font-family:var(--serif);font-style:italic;color:var(--tinta-suave);text-align:center;margin-top:-4px}
   .curaduria{
     font-family:var(--serif);font-size:.93rem;color:var(--tinta-suave);line-height:1.55;
-    border-left:3px solid var(--club);padding-left:12px;
   }
   .club-nombre{
     align-self:center;
@@ -330,18 +329,41 @@
   .manif-firma{position:relative;z-index:2;text-align:center;margin-top:28px;font-family:var(--serif);font-style:italic;color:var(--tinta-suave)}
 
   /* ---------- RITUAL: estaciones del día ---------- */
-  .pasos{display:grid;gap:24px}
-  @media(min-width:780px){.pasos{grid-template-columns:repeat(4,1fr)}}
-  .paso{
-    background:#FFFDF7;border:1px solid rgba(94,122,82,.25);
-    border-radius:22px;padding:26px 22px;position:relative;overflow:hidden;
+  /* ---------- registros fotográficos ---------- */
+  /* Carrusel horizontal con anclaje: se arrastra en móvil y se mueve con
+     los botones en escritorio. Alto fijo para que fotos de proporciones
+     distintas no hagan saltar la fila. */
+  .reg-pista{
+    display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;
+    scroll-behavior:smooth;padding:4px 4px 14px;margin:0 -4px;
+    scrollbar-width:thin;scrollbar-color:rgba(19,41,63,.25) transparent;
   }
-  .paso::before{content:"";position:absolute;top:0;left:0;right:0;height:5px}
-  .paso:nth-child(1)::before{background:linear-gradient(90deg,#8CCBEF,var(--celeste))}
-  .paso:nth-child(2)::before{background:linear-gradient(90deg,var(--ambar-suave),var(--ambar))}
-  .paso:nth-child(3)::before{background:linear-gradient(90deg,var(--hoja-clara),var(--hoja))}
-  .paso:nth-child(4)::before{background:linear-gradient(90deg,#3D5A78,var(--noche))}
-  .paso .momento{font-family:var(--serif);font-style:italic;font-size:.9rem;color:var(--tinta-suave);margin-bottom:10px}
+  .reg-pista::-webkit-scrollbar{height:8px}
+  .reg-pista::-webkit-scrollbar-thumb{background:rgba(19,41,63,.22);border-radius:99px}
+  .reg-pista:focus-visible{outline:3px solid rgba(245,169,59,.55);outline-offset:4px;border-radius:20px}
+  .reg-item{
+    flex:0 0 min(420px,82%);scroll-snap-align:start;margin:0;
+    background:#FFFDF7;border:1px solid rgba(19,41,63,.1);border-radius:20px;
+    overflow:hidden;box-shadow:0 10px 28px rgba(19,41,63,.12);
+  }
+  .reg-item img{display:block;width:100%;height:268px;object-fit:cover;background:var(--crema-2)}
+  .reg-item figcaption{
+    font-family:var(--serif);font-size:.96rem;line-height:1.45;
+    color:var(--tinta-suave);padding:16px 20px 18px;
+  }
+  .reg-nav{display:flex;gap:12px;justify-content:center;margin-top:18px}
+  .reg-btn{
+    background:rgba(255,253,247,.8);border:1.5px solid rgba(19,41,63,.25);
+    color:var(--noche);width:42px;height:42px;border-radius:50%;cursor:pointer;
+    font-size:1.1rem;display:flex;align-items:center;justify-content:center;
+    transition:background .18s,border-color .18s,transform .15s;
+  }
+  .reg-btn:hover{background:var(--ambar);border-color:var(--ambar)}
+  .reg-btn:active{transform:scale(.94)}
+  @media(max-width:620px){
+    .reg-item img{height:218px}
+    .reg-nav{display:none}
+  }
   .paso h3{font-family:var(--serif);font-weight:700;font-size:1.1rem;margin-bottom:8px;color:var(--noche)}
   .paso p{font-family:var(--serif);font-size:.93rem;color:var(--tinta-suave);line-height:1.55}
 
@@ -678,7 +700,7 @@
     </a>
     <div class="nav-links">
       <a href="#clubes">Los libros</a>
-      <a href="#ritual">El ritual</a>
+      <a href="#registros">Registros</a>
       <a href="#comunidad">La fogata</a>
       <a href="#faq">Preguntas</a>
     </div>
@@ -847,17 +869,16 @@
   </div>
 </section>
 
-<section id="ritual">
+<section id="registros">
   <div class="wrap">
     <div class="sec-head">
-      <h2>El ritual del mes</h2>
-      <p>Un ciclo completo, como el del día.</p>
+      <h2>Registros fotográficos</h2>
+      <p>Lo que pasa cuando un libro se conversa en persona.</p>
     </div>
-    <div class="pasos">
-      <div class="paso"><div class="momento">amanece ·</div><h3>Eliges el libro</h3><p>Mira la cosecha del mes y quédate con el que te llame. Confía en tu instinto lector.</p></div>
-      <div class="paso"><div class="momento">mediodía ·</div><h3>Reservas tu lugar</h3><p>Mesas pequeñas a propósito: en un círculo de doce, todas las voces alcanzan a brotar.</p></div>
-      <div class="paso"><div class="momento">atardece ·</div><h3>Lees a tu ritmo</h3><p>Tienes el mes entero. Te acompañamos con hitos de lectura y apuntes para mirar el libro de cerca.</p></div>
-      <div class="paso"><div class="momento">anochece ·</div><h3>Enciendes la fogata</h3><p>Café de por medio, mediación profesional y la mejor parte: lo que cada persona trae consigo.</p></div>
+    <div class="reg-pista" id="regPista" tabindex="0" aria-label="Registros fotográficos"></div>
+    <div class="reg-nav">
+      <button class="reg-btn" id="regPrev" aria-label="Foto anterior">&#8592;</button>
+      <button class="reg-btn" id="regNext" aria-label="Foto siguiente">&#8594;</button>
     </div>
   </div>
 </section>
@@ -1641,6 +1662,54 @@
     } catch(err){ console.warn("Newsletter:", err); }
     okVisual();
   });
+
+  // ---------- Registros fotográficos ----------
+  // El orden cambia en cada visita: así la primera foto que ve alguien que
+  // vuelve no es siempre la misma, y todas las experiencias tienen turno.
+  const REGISTROS = [
+    { foto: "/registros/fiesta-estrella-negra.jpg", pie: "Fiesta de Lectura en el Club de Jazz Estrella Negra" },
+    { foto: "/registros/trekking-el-palmar.jpg",    pie: "Trekking Literario en El Palmar" },
+    { foto: "/registros/exploracion-vina.jpg",      pie: "Exploración Literaria en Viña del Mar" },
+    { foto: "/registros/books-up-sisdef.jpg",       pie: "Books Up para Empresas en SISDEF" },
+    { foto: "/registros/books-up-santiago.jpg",     pie: "Books Up en Santiago" }
+  ];
+
+  function pintarRegistros(){
+    const pista = document.getElementById("regPista");
+    if(!pista) return;
+
+    // Fisher-Yates: baraja pareja, sin el sesgo de ordenar al azar
+    const orden = REGISTROS.slice();
+    for(let i = orden.length - 1; i > 0; i--){
+      const j = Math.floor(Math.random() * (i + 1));
+      const t = orden[i]; orden[i] = orden[j]; orden[j] = t;
+    }
+
+    pista.innerHTML = orden.map(function(r, i){
+      return '<figure class="reg-item">' +
+        '<img src="' + r.foto + '" alt="' + esc(r.pie) + '" ' +
+        'loading="' + (i === 0 ? "eager" : "lazy") + '" decoding="async">' +
+        '<figcaption>' + esc(r.pie) + '</figcaption>' +
+      '</figure>';
+    }).join("");
+
+    // Se calcula la tarjeta destino y se va a su posicion exacta. Sumar
+    // desplazamientos encadenaba animaciones y el boton de atras se trababa.
+    const mover = dir => {
+      const items = [...pista.querySelectorAll(".reg-item")];
+      if(!items.length) return;
+      const paso = items[0].getBoundingClientRect().width + 18;
+      const actual = Math.round(pista.scrollLeft / paso);
+      const destino = Math.min(items.length - 1, Math.max(0, actual + dir));
+      // Diferencia real en pantalla entre la tarjeta y la pista: no depende
+      // de cual sea el elemento posicionado padre, que es lo que fallaba.
+      const delta = items[destino].getBoundingClientRect().left - pista.getBoundingClientRect().left;
+      pista.scrollTo({ left: pista.scrollLeft + delta, behavior: "smooth" });
+    };
+    document.getElementById("regPrev").onclick = () => mover(-1);
+    document.getElementById("regNext").onclick = () => mover(1);
+  }
+  pintarRegistros();
 
   loadData();
 </script>
