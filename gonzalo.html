@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Gonzalo Valdebenito · Mediador de lectura en Matchbook</title>
+<meta name="description" content="Mediador de los clubes de lectura de Matchbook en Santiago, Viña del Mar y Valparaíso, y charlista de TEDxUValpoChile 2025 con «Lectura activa en la era de la distracción».">
+
+<meta property="og:type" content="profile">
+<meta property="og:site_name" content="Matchbook">
+<meta property="og:locale" content="es_CL">
+<meta property="og:title" content="Gonzalo Valdebenito · Mediador de lectura en Matchbook">
+<meta property="og:description" content="Mediar una lectura no es explicarla: es abrir la conversación para que el libro le pase algo a cada persona de la mesa.">
+<meta property="og:url" content="https://matchbook.cl/gonzalo">
+<meta property="og:image" content="https://matchbook.cl/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Gonzalo Valdebenito · Mediador de lectura en Matchbook">
+<meta name="twitter:description" content="Mediar una lectura no es explicarla: es abrir la conversación.">
+
+<link rel="icon" href="favicon.svg">
+<link rel="canonical" href="https://matchbook.cl/gonzalo">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;0,7..72,600;0,7..72,700;1,7..72,400&family=Nunito+Sans:opsz,wght@6..12,400;6..12,700;6..12,800;6..12,900&display=swap" rel="stylesheet">
+
+<style>
+  /* Mismos tokens y mismo sistema que matias.html: las paginas personales
+     comparten identidad, pero cada una vive sola y no toca el index. */
+  :root{
+    --crema:#FBF2E2; --crema-2:#F4E8D0;
+    --ambar:#F5A93B; --ambar-suave:#FBD08A; --ambar-hondo:#B9761A;
+    --celeste:#41ABE6; --hoja:#5E7A52; --hoja-clara:#8CA67D;
+    --noche:#13293F; --noche-2:#1B3A57;
+    --tinta:#2C2A20; --tinta-suave:#6E6450;
+    --serif:'Literata',Georgia,serif;
+    --sans:'Nunito Sans',sans-serif;
+    --maxw:960px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--crema); color:var(--tinta);
+    font-family:var(--serif); font-size:1.05rem; line-height:1.68;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+
+  a{color:var(--hoja)}
+  a:hover{color:var(--noche)}
+  strong{font-weight:700;color:var(--noche)}
+
+  .btn{
+    display:inline-block;font-family:var(--sans);font-weight:800;font-size:1rem;cursor:pointer;
+    text-decoration:none;text-align:center;border:none;padding:14px 30px;border-radius:999px;
+    transition:transform .15s,background .2s,box-shadow .25s;
+  }
+  .btn:active{transform:scale(.97)}
+  .btn-sol{background:var(--noche);color:var(--crema)}
+  .btn-sol:hover{background:var(--ambar);color:var(--noche);box-shadow:0 0 28px rgba(245,169,59,.55)}
+  .btn-aire{background:rgba(251,242,226,.7);color:var(--noche);border:2px solid rgba(19,41,63,.3)}
+  .btn-aire:hover{border-color:var(--noche);background:#fff}
+
+  /* ---------- barra ---------- */
+  .barra{background:var(--noche);padding:16px 0;position:sticky;top:0;z-index:10}
+  .barra .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px}
+  .barra .simbolo{width:34px;height:34px;display:block}
+  .barra a.volver{
+    font-family:var(--sans);font-weight:800;font-size:.86rem;color:var(--crema);
+    text-decoration:none;border-bottom:1.5px solid rgba(251,242,226,.45);padding-bottom:1px;
+  }
+  .barra a.volver:hover{border-bottom-color:var(--ambar);color:var(--ambar)}
+
+  /* ---------- encabezado ---------- */
+  .hero{padding:66px 0 54px;border-bottom:1px solid rgba(110,100,80,.2)}
+  .hero-fila{display:flex;align-items:center;gap:40px}
+  /* La foto original es cuadrada: se encuadra algo mas arriba para que la
+     cara quede centrada en un retrato vertical. */
+  .retrato{
+    flex:0 0 auto;width:228px;height:300px;border-radius:20px;
+    object-fit:cover;object-position:50% 22%;
+    display:block;box-shadow:0 18px 46px rgba(19,41,63,.26);
+    border:6px solid #FFFDF7;
+  }
+  .hero h1{
+    font-family:var(--serif);font-weight:700;font-size:3rem;line-height:1.08;
+    color:var(--noche);letter-spacing:-.028em;
+  }
+  .bajada{
+    font-family:var(--sans);font-weight:800;font-size:.95rem;
+    letter-spacing:.04em;color:var(--hoja);margin-top:12px;
+  }
+  .bajada span{color:var(--tinta-suave);font-weight:700}
+  .enlaces{display:flex;flex-wrap:wrap;gap:14px;margin-top:26px}
+
+  @media (max-width:760px){
+    .hero{padding:44px 0 38px}
+    .hero-fila{flex-direction:column;align-items:flex-start;gap:26px}
+    .retrato{width:168px;height:220px}
+    .hero h1{font-size:2.2rem}
+  }
+
+  /* ---------- secciones ---------- */
+  section.bloque{padding:58px 0;border-bottom:1px solid rgba(110,100,80,.2)}
+  section.bloque:last-of-type{border-bottom:none}
+  .rotulo{
+    font-family:var(--sans);font-weight:800;font-size:.76rem;
+    letter-spacing:.17em;text-transform:uppercase;color:var(--ambar-hondo);
+    margin-bottom:12px;
+  }
+  h2{
+    font-family:var(--serif);font-weight:700;font-size:1.95rem;line-height:1.16;
+    color:var(--noche);letter-spacing:-.02em;margin-bottom:18px;
+  }
+  h3{
+    font-family:var(--sans);font-weight:800;font-size:.95rem;
+    color:var(--noche);margin:30px 0 10px;
+  }
+  p{margin-bottom:14px;max-width:66ch}
+
+  /* ---------- cifras ---------- */
+  .cifras{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:4px;
+    margin:28px 0;border-top:2px solid rgba(19,41,63,.14);
+    border-bottom:2px solid rgba(19,41,63,.14);
+  }
+  .cifra{padding:22px 10px 20px;text-align:center}
+  .cifra b{
+    display:block;font-family:var(--serif);font-weight:700;font-size:2.4rem;
+    line-height:1;color:var(--ambar-hondo);letter-spacing:-.03em;
+  }
+  .cifra span{
+    display:block;font-family:var(--sans);font-weight:700;font-size:.78rem;
+    letter-spacing:.05em;text-transform:uppercase;color:var(--tinta-suave);
+    margin-top:8px;line-height:1.35;
+  }
+  @media (max-width:620px){
+    .cifras{grid-template-columns:repeat(2,1fr)}
+    .cifra b{font-size:2rem}
+  }
+
+  /* ---------- cita ---------- */
+  .cita{
+    font-family:var(--serif);font-style:italic;font-size:1.26rem;line-height:1.55;
+    color:var(--noche);max-width:34ch;margin:30px 0;
+    padding-left:0;
+  }
+
+  /* ---------- lista editorial ----------
+     Sin cajas ni barras de color: solo jerarquia tipografica y una linea
+     fina entre items, como una ficha de revista. */
+  .detalle{margin:20px 0 6px;border-top:1px solid rgba(110,100,80,.3)}
+  .detalle > div{
+    display:grid;grid-template-columns:210px 1fr;gap:6px 28px;
+    padding:16px 0;border-bottom:1px solid rgba(110,100,80,.18);
+  }
+  .detalle dt{
+    font-family:var(--serif);font-weight:700;font-size:1.05rem;
+    color:var(--noche);line-height:1.3;
+  }
+  .detalle dd{font-size:.98rem;line-height:1.55;color:var(--tinta-suave);max-width:58ch}
+  @media (max-width:620px){
+    .detalle > div{grid-template-columns:1fr;gap:3px;padding:14px 0}
+  }
+
+  ul.puntos{margin:0 0 14px 0;list-style:none;max-width:66ch}
+  ul.puntos li{position:relative;padding-left:22px;margin-bottom:9px}
+  ul.puntos li::before{
+    content:"";position:absolute;left:0;top:.62em;
+    width:8px;height:8px;border-radius:50%;background:var(--ambar);
+  }
+
+  .nota{font-size:.94rem;color:var(--tinta-suave);font-style:italic}
+
+  /* Fotos del relato: tamano moderado y se abren completas al hacer clic. */
+  .figura{margin:32px 0 6px}
+  .figura a{display:inline-block;line-height:0;border-radius:16px;overflow:hidden;
+            box-shadow:0 14px 38px rgba(19,41,63,.2);transition:transform .18s,box-shadow .25s}
+  .figura a:hover{transform:translateY(-3px);box-shadow:0 20px 48px rgba(19,41,63,.28)}
+  .figura img{display:block;width:100%;height:auto}
+  .figura.recorte a{max-width:380px}
+  .figura.ancha a{max-width:620px}
+  .figura figcaption{
+    font-family:var(--sans);font-size:.82rem;line-height:1.5;color:var(--tinta-suave);
+    margin-top:12px;max-width:52ch;
+  }
+  .figura figcaption b{color:var(--noche);font-weight:800}
+  @media (max-width:620px){
+    .figura.recorte a,.figura.ancha a{max-width:100%}
+  }
+
+  /* ---------- pie ---------- */
+  footer{background:var(--noche);color:rgba(251,242,226,.75);padding:40px 0;margin-top:0}
+  footer .wrap{display:flex;flex-wrap:wrap;gap:12px 26px;align-items:center;justify-content:space-between}
+  footer p{margin:0;font-family:var(--sans);font-size:.88rem;max-width:none}
+  footer a{color:var(--ambar)}
+</style>
+</head>
+<body>
+
+<div class="barra">
+  <div class="wrap">
+    <a href="/" aria-label="Ir a Matchbook">
+      <svg class="simbolo" viewBox="0 0 250.2 250.2" role="img" aria-label="Matchbook">
+        <circle cx="125.1" cy="125.1" r="125.1" fill="#FFFFFF"/>
+        <path fill="#41ABE6" d="M125.1,0C56,0,0,56,0,125.1s56,125.1,125.1,125.1s125.1-56,125.1-125.1C250.2,56,194.2,0,125.1,0z M116.1,195.3c-5.1-5-23.8-19.9-76.1-27.7V79.9c52.3,7.8,71,22.8,76.1,27.7V195.3z M210.2,167.6c-52.3,7.8-70.9,22.8-76.1,27.7v-87.7c5.1-4.9,23.8-19.9,76.1-27.7V167.6z"/>
+      </svg>
+    </a>
+    <a class="volver" href="/">Ir a Matchbook →</a>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="wrap hero-fila">
+    <img class="retrato" src="/portadas/gonzalo-valdebenito.jpeg" alt="Gonzalo Valdebenito" width="640" height="640">
+    <div>
+      <h1>Gonzalo Valdebenito</h1>
+      <!-- POR CONFIRMAR: la bajada deberia decir su cargo exacto en Matchbook
+           (mediador, moderador, cofundador) y su ciudad base. -->
+      <p class="bajada">Mediador de lectura en Matchbook <span>· Valparaíso</span></p>
+      <div class="enlaces">
+        <!-- POR CONFIRMAR: que este sea su LinkedIn. -->
+        <a class="btn btn-sol" href="https://cl.linkedin.com/in/gonzalo-abv" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <section class="bloque">
+    <div class="wrap">
+      <p class="rotulo">Mediación lectora</p>
+      <h2>Matchbook</h2>
+
+      <p>
+        Modero los clubes de <strong>Matchbook</strong> en Santiago, Viña del Mar y
+        Valparaíso. Mi trabajo empieza antes de la sesión, leyendo el libro con la
+        pregunta de qué puede abrir en una mesa de doce personas, y termina cuando
+        la conversación se sostiene sola.
+      </p>
+      <p>
+        Mediar no es explicar un libro. Es cuidar que todas las voces alcancen a
+        entrar, que nadie sienta que llegó a rendir una prueba y que cada persona
+        se vaya con algo que no traía al llegar.
+      </p>
+
+      <p class="cita">«Un libro leído a solas termina en la última página. Conversado,
+        sigue andando.»</p>
+
+      <div class="cifras">
+        <div class="cifra"><b>+850</b><span>lectores en comunidad</span></div>
+        <div class="cifra"><b>+80</b><span>libros conversados</span></div>
+        <div class="cifra"><b>3</b><span>ciudades</span></div>
+      </div>
+
+      <figure class="figura ancha">
+        <a href="/portadas/gonzalo-biblioteca.jpg" target="_blank" rel="noopener">
+          <img src="/portadas/gonzalo-biblioteca.jpg" alt="Gonzalo Valdebenito junto a una pila de libros en una biblioteca" width="1400" height="788" loading="lazy">
+        </a>
+        <figcaption>Preparando una sesión. La pila de la mesa es el trabajo previo: elegir el libro es la mitad del club.</figcaption>
+      </figure>
+
+      <h3>Los clubes</h3>
+      <dl class="detalle">
+        <div>
+          <dt>Books Up</dt>
+          <dd>No ficción para pensar, aprender y entender mejor el mundo. Las lecturas se planifican cada trimestre entre quienes participan.</dd>
+        </div>
+        <div>
+          <dt>Exploración Literaria</dt>
+          <dd>Leemos de todo y el libro se vota cada mes, a partir del catálogo de la Biblioteca Santiago Severín.</dd>
+        </div>
+        <div>
+          <dt>Utopías de Bolsillo</dt>
+          <dd>Autores que se atrevieron a imaginar sociedades distintas, para conversar desde ahí sobre el presente.</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="bloque">
+    <div class="wrap">
+      <p class="rotulo">Charla</p>
+      <h2>TEDxUValpoChile 2025</h2>
+      <p class="nota">Universidad de Valparaíso · 3 de diciembre de 2025</p>
+
+      <p>
+        Hablé sobre <strong>lectura activa en la era de la distracción</strong>: qué
+        hace falta para volver a sostener la atención en un texto largo cuando todo
+        alrededor está hecho para interrumpirla.
+      </p>
+      <!-- POR CONFIRMAR: agregar aqui una o dos frases con la idea central de
+           la charla, en primera persona, y el enlace al video en TED cuando
+           este publicado. -->
+
+      <figure class="figura recorte">
+        <a href="/portadas/gonzalo-tedx.jpg" target="_blank" rel="noopener">
+          <img src="/portadas/gonzalo-tedx.jpg" alt="Afiche de la charla de Gonzalo Valdebenito en TEDxUValpoChile" width="399" height="501" loading="lazy">
+        </a>
+        <figcaption>El afiche de <b>TEDxUValpoChile</b>, en la edición organizada por la Escuela de Ingeniería Industrial de la Universidad de Valparaíso.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="bloque">
+    <div class="wrap">
+      <p class="rotulo">Lectura donde no llega</p>
+      <h2>Clubes fuera del circuito</h2>
+
+      <!-- POR CONFIRMAR: el relato de esta seccion. De la foto solo se puede
+           afirmar que es un club de lectura en una sala de clases, con
+           profesores y participantes adultos, y los rostros difuminados.
+           Falta: donde fue, con que institucion y durante cuanto tiempo. -->
+      <p>
+        No toda la lectura ocurre en una cafetería. Parte de lo que hago es llevar
+        los clubes a lugares donde el libro no llega solo: salas de clases, aulas de
+        educación para adultos, instituciones que trabajan con personas que no
+        tienen una librería cerca.
+      </p>
+      <p>
+        El formato es el mismo de siempre —un libro, un círculo, una conversación
+        mediada— y el efecto también: lo que cambia es quién está sentado en la mesa.
+      </p>
+
+      <figure class="figura ancha">
+        <a href="/portadas/gonzalo-club-lectura.jpg" target="_blank" rel="noopener">
+          <img src="/portadas/gonzalo-club-lectura.jpg" alt="Participantes de un club de lectura sosteniendo sus libros en una sala de clases" width="1400" height="788" loading="lazy">
+        </a>
+        <figcaption>Cada persona con el libro que eligió. Los rostros van difuminados para resguardar a quienes participaron.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="bloque">
+    <div class="wrap">
+      <p class="rotulo">Comunidad</p>
+      <h2>Ashoka</h2>
+
+      <!-- POR CONFIRMAR: que fue este encuentro, en que ano, y cual fue el rol
+           de Gonzalo ahi. El archivo original se llamaba "Ashoka mesa conjunta". -->
+      <p>
+        Participo en los encuentros de la red de <strong>Ashoka</strong> en Chile, que
+        reúne a personas que trabajan en proyectos de impacto social desde orillas
+        muy distintas. Es el tipo de mesa donde la lectura deja de ser un tema
+        cultural y pasa a ser una herramienta.
+      </p>
+
+      <figure class="figura ancha">
+        <a href="/portadas/gonzalo-ashoka.jpg" target="_blank" rel="noopener">
+          <img src="/portadas/gonzalo-ashoka.jpg" alt="Encuentro de la red de Ashoka en Chile" width="1400" height="786" loading="lazy">
+        </a>
+        <figcaption>Un encuentro conjunto de la red de <b>Ashoka</b>.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Gonzalo Valdebenito · Matchbook</p>
+    <p>
+      <a href="https://cl.linkedin.com/in/gonzalo-abv" target="_blank" rel="noopener">LinkedIn</a> ·
+      <a href="https://www.instagram.com/matchbook.cl/" target="_blank" rel="noopener">@matchbook.cl</a> ·
+      <a href="mailto:contacto@matchbook.cl">contacto@matchbook.cl</a>
+    </p>
+  </div>
+</footer>
+
+</body>
+</html>
