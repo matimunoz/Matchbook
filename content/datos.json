@@ -110,7 +110,7 @@
         {
           "cuposTotal": 10,
           "fecha": "Viernes 15 de Enero, 17:00 hrs",
-          "lugar": "Café Madrid, Viña de Mar",
+          "lugar": "La Pastora, Providencia",
           "moderador": {
             "nombre": "Matías",
             "foto": "/portadas/mati.jpg"
@@ -119,7 +119,7 @@
         {
           "cuposTotal": 10,
           "fecha": "Sábado 16 de Enero, 18:00 hrs",
-          "lugar": "La Pastora, Providencia",
+          "lugar": "Café Madrid, Viña de Mar",
           "moderador": {
             "nombre": "Matías",
             "foto": "/portadas/mati.jpg"
