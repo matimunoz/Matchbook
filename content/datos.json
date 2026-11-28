@@ -103,13 +103,13 @@
       "portada": "/portadas/inteligencia-primitiva.jpg"
     },
     {
-      "autor": "Aldous Huxley",
+      "autor": "Becky Chambers",
       "color": "#548f57",
       "precio": 5000,
       "sesiones": [
         {
           "cuposTotal": 10,
-          "fecha": "Viernes 20 de Noviembre, 18:30 hrs",
+          "fecha": "Viernes 15 de Enero, 17:00 hrs",
           "lugar": "Café Madrid, Viña de Mar",
           "moderador": {
             "nombre": "Matías",
@@ -118,8 +118,8 @@
         },
         {
           "cuposTotal": 10,
-          "fecha": "Viernes 27 de Noviembre, 18:30 hrs",
-          "lugar": "Providencia",
+          "fecha": "Sábado 16 de Enero, 18:00 hrs",
+          "lugar": "La Pastora, Providencia",
           "moderador": {
             "nombre": "Matías",
             "foto": "/portadas/mati.jpg"
@@ -128,10 +128,10 @@
       ],
       "club": "Utopías de Bolsillo",
       "sobreElClub": "Todos conocemos las distopías, pero ¿qué hay de las utopías? En este club exploramos las obras de grandes autores que se atrevieron a imaginar sociedades diferentes. Un espacio para cuestionar nuestro presente y conversar sobre el mundo que deseamos construir.",
-      "curaduria": "Cada mes leemos una utopía distinta para imaginar otros mundos posibles. Este mes: La isla, de Aldous Huxley, la última novela del autor de Un mundo feliz y su respuesta esperanzadora: una sociedad que intenta unir ciencia, espiritualidad y bienestar.",
-      "titulo": "La Isla",
+      "curaduria": "Cada mes leemos una utopía distinta para imaginar otros mundos posibles. Este mes leemos Monje y robot, de Becky Chambers, una utopía solarpunk en la que un monje y un robot recorren un mundo reconciliado con la naturaleza mientras buscan qué necesitan de verdad las personas.",
+      "titulo": "Monje y Robot",
       "mpLink": " https://mpago.la/2R9WruX",
-      "portada": "/portadas/La Isla - Aldous Huxley.webp"
+      "portada": "/portadas/a03f0022fc635c434f99b34051240655.jpeg"
     }
   ],
   "testimonios": [
